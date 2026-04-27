@@ -7,14 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.utils.ValidatorUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,10 +27,13 @@ import com.entity.OrdersEntity;
 import com.service.OrdersService;
 
 import com.entity.ShangpinxinxiEntity;
+import com.entity.TeabatchEntity;
 import com.entity.view.ShangpinxinxiView;
 
 import com.service.ShangpinxinxiService;
+import com.service.TeabatchService;
 import com.service.TokenService;
+import com.service.UserBehaviorService;
 import com.utils.PageUtils;
 import com.utils.R;
 import com.utils.MD5Util;
@@ -42,6 +42,8 @@ import com.utils.CommonUtil;
 import java.io.IOException;
 import com.service.StoreupService;
 import com.entity.StoreupEntity;
+import com.entity.TokenEntity;
+import com.interceptor.AuthorizationInterceptor;
 
 /**
  * 茶叶信息
@@ -61,7 +63,15 @@ public class ShangpinxinxiController {
 
     @Autowired
     private OrdersService ordersService;
-    
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private UserBehaviorService userBehaviorService;
+
+    @Autowired
+    private TeabatchService teabatchService;
 
 
     /**
@@ -129,8 +139,10 @@ public class ShangpinxinxiController {
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         ShangpinxinxiEntity shangpinxinxi = shangpinxinxiService.selectById(id);
-		shangpinxinxi.setClicktime(new Date());
-		shangpinxinxiService.updateById(shangpinxinxi);
+        if(shangpinxinxi != null){
+            shangpinxinxi.setClicktime(new Date());
+            shangpinxinxiService.updateById(shangpinxinxi);
+        }
         return R.ok().put("data", shangpinxinxi);
     }
 
@@ -139,10 +151,13 @@ public class ShangpinxinxiController {
      */
 	@IgnoreAuth
     @RequestMapping("/detail/{id}")
-    public R detail(@PathVariable("id") Long id){
+    public R detail(@PathVariable("id") Long id, HttpServletRequest request){
         ShangpinxinxiEntity shangpinxinxi = shangpinxinxiService.selectById(id);
-		shangpinxinxi.setClicktime(new Date());
-		shangpinxinxiService.updateById(shangpinxinxi);
+        if(shangpinxinxi != null){
+            shangpinxinxi.setClicktime(new Date());
+            shangpinxinxiService.updateById(shangpinxinxi);
+        }
+        recordViewBehavior(id, getTokenUserIdFromHeader(request));
         return R.ok().put("data", shangpinxinxi);
     }
     
@@ -156,6 +171,10 @@ public class ShangpinxinxiController {
     public R save(@RequestBody ShangpinxinxiEntity shangpinxinxi, HttpServletRequest request){
     	shangpinxinxi.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
     	//ValidatorUtils.validateEntity(shangpinxinxi);
+        R invalid = normalizeProduct(shangpinxinxi, request);
+        if(invalid != null) {
+            return invalid;
+        }
         shangpinxinxiService.insert(shangpinxinxi);
         return R.ok();
     }
@@ -167,6 +186,10 @@ public class ShangpinxinxiController {
     public R add(@RequestBody ShangpinxinxiEntity shangpinxinxi, HttpServletRequest request){
     	shangpinxinxi.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
     	//ValidatorUtils.validateEntity(shangpinxinxi);
+        R invalid = normalizeProduct(shangpinxinxi, request);
+        if(invalid != null) {
+            return invalid;
+        }
         shangpinxinxiService.insert(shangpinxinxi);
         return R.ok();
     }
@@ -193,6 +216,9 @@ public class ShangpinxinxiController {
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         shangpinxinxiService.deleteBatchIds(Arrays.asList(ids));
+        if(ids != null && ids.length > 0) {
+            storeupService.delete(new EntityWrapper<StoreupEntity>().eq("tablename", "shangpinxinxi").in("refid", Arrays.asList(ids)));
+        }
         return R.ok();
     }
     
@@ -250,21 +276,6 @@ public class ShangpinxinxiController {
     @RequestMapping("/autoSort")
     public R autoSort(@RequestParam Map<String, Object> params,ShangpinxinxiEntity shangpinxinxi, HttpServletRequest request,String pre){
         EntityWrapper<ShangpinxinxiEntity> ew = new EntityWrapper<ShangpinxinxiEntity>();
-        Map<String, Object> newMap = new HashMap<String, Object>();
-        Map<String, Object> param = new HashMap<String, Object>();
-		Iterator<Map.Entry<String, Object>> it = param.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, Object> entry = it.next();
-			String key = entry.getKey();
-			String newKey = entry.getKey();
-			if (pre.endsWith(".")) {
-				newMap.put(pre + newKey, entry.getValue());
-			} else if (StringUtils.isEmpty(pre)) {
-				newMap.put(newKey, entry.getValue());
-			} else {
-				newMap.put(pre + "." + newKey, entry.getValue());
-			}
-		}
 		params.put("sort", "clicktime");
         params.put("order", "desc");
 		PageUtils page = shangpinxinxiService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, shangpinxinxi), params), params));
@@ -325,6 +336,24 @@ public class ShangpinxinxiController {
         }
         page.setList(shangpinxinxiList);
         return R.ok().put("data", page);
+    }
+
+    private Long getTokenUserIdFromHeader(HttpServletRequest request) {
+        String token = request.getHeader(AuthorizationInterceptor.LOGIN_TOKEN_KEY);
+        if(token == null || token.trim().length() == 0) {
+            return null;
+        }
+        TokenEntity tokenEntity = tokenService.getTokenEntity(token);
+        if(tokenEntity == null || !"yonghu".equals(tokenEntity.getTablename())) {
+            return null;
+        }
+        return tokenEntity.getUserid();
+    }
+
+    private void recordViewBehavior(Long goodid, Long userid) {
+        if(userid != null && goodid != null) {
+            userBehaviorService.recordBehavior(userid, goodid, "view");
+        }
     }
 
 

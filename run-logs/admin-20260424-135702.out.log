@@ -1,0 +1,159 @@
+
+> mas-creator-admin@0.1.0 serve
+> set NODE_OPTIONS=--openssl-legacy-provider&& vue-cli-service serve
+
+ INFO  Starting development server...
+ DONE  Compiled successfully in 10133ms13:57:17
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+  Note that the development build is not optimized.
+  To create a production build, run npm run build.
+
+ WAIT  Compiling...20:37:35
+
+ DONE  Compiled successfully in 2216ms20:37:38
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...20:46:28
+
+ DONE  Compiled successfully in 460ms20:46:29
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:11:42
+
+ DONE  Compiled successfully in 1830ms23:11:44
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:12:53
+
+ DONE  Compiled successfully in 796ms23:12:54
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:13:09
+
+ DONE  Compiled successfully in 623ms23:13:10
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:13:27
+
+ DONE  Compiled successfully in 937ms23:13:28
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:16:23
+
+ DONE  Compiled successfully in 884ms23:16:24
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:21:12
+
+ DONE  Compiled successfully in 709ms23:21:13
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:21:54
+
+ DONE  Compiled successfully in 708ms23:21:55
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:25:10
+
+ DONE  Compiled successfully in 755ms23:25:11
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:25:34
+
+ DONE  Compiled successfully in 743ms23:25:35
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:25:47
+
+ DONE  Compiled successfully in 647ms23:25:48
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:40:42
+
+ DONE  Compiled successfully in 671ms23:40:43
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:41:03
+
+ DONE  Compiled successfully in 570ms23:41:04
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:42:06
+
+ DONE  Compiled successfully in 775ms23:42:07
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...23:43:37
+
+ DONE  Compiled successfully in 1005ms23:43:38
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+

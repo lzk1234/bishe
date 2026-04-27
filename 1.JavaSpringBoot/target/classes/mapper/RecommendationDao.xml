@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.RecommendationDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.entity.RecommendationEntity" id="recommendationMap">
+        <result property="userid" column="userid"/>
+        <result property="goodid" column="goodid"/>
+        <result property="score" column="score"/>
+        <result property="reason" column="reason"/>
+        <result property="algorithmType" column="algorithm_type"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+	<select id="selectListVO"
+		resultType="com.entity.vo.RecommendationVO" >
+		SELECT * FROM recommendation  recommendation         
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectVO"
+		resultType="com.entity.vo.RecommendationVO" >
+		SELECT  recommendation.* FROM recommendation  recommendation 	
+ 		<where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+
+    <select id="selectListView"
+		resultType="com.entity.view.RecommendationView" >
+
+		SELECT  recommendation.* FROM recommendation  recommendation 	        
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectView"
+		resultType="com.entity.view.RecommendationView" >
+		SELECT * FROM recommendation  recommendation <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<!-- 根据用户ID删除推荐记录 -->
+	<delete id="deleteByUserid">
+		DELETE FROM recommendation WHERE userid = #{userid}
+	</delete>
+	
+	<!-- 删除指定天数前的旧推荐记录 -->
+	<delete id="deleteOldRecommendations">
+		DELETE FROM recommendation WHERE create_time &lt; DATE_SUB(NOW(), INTERVAL #{days} DAY)
+	</delete>
+
+</mapper>

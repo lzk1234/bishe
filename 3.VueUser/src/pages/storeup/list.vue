@@ -13,7 +13,7 @@
     <el-row :gutter="20">
       <el-col :span="6" v-for="(item, index) in storeupList" :key="index" @click.native="toDetail(item)">
         <el-card :body-style="{ padding: '0px', cursor: 'pointer' }">
-          <el-image :src="baseUrl + item.picture" fit="fill" class="image"></el-image>
+          <el-image :src="getPictureUrl(item.picture)" fit="fill" class="image"></el-image>
           <div style="padding: 14px;">
             <span v-if="item.remark">{{item.name}}</span>
             <span v-if="!item.remark">{{item.name}}</span>
@@ -89,6 +89,18 @@
       },
       nextClick(page) {
         this.getStoreupList(page);
+      },
+      getPictureUrl(picture) {
+        if (!picture) {
+          return ''
+        }
+        if (/^(https?:)?\/\//.test(picture)) {
+          return picture
+        }
+        if (picture.charAt(0) === '/') {
+          return `${this.baseUrl.replace(/\/$/, '')}${picture}`
+        }
+        return `${this.baseUrl}${picture}`
       },
       toDetail(item) {
         this.$router.push({path: `/index/${item.tablename}Detail`, query: {storeupObj: JSON.stringify(item)}});

@@ -84,7 +84,10 @@ export default {
     // 上传文件成功后执行
     handleUploadSuccess(res, file, fileList) {
       if (res && res.code === 0) {
-        fileList[fileList.length - 1]["url"] = "upload/" + file.response.file;
+        const uploadUrl = res.url || (res.file ? "upload/" + res.file : "");
+        if (uploadUrl) {
+          fileList[fileList.length - 1]["url"] = uploadUrl;
+        }
         this.setFileList(fileList);
         this.$emit("change", this.fileUrlList.join(","));
       } else {
@@ -118,13 +121,14 @@ export default {
       let _this = this;
       fileList.forEach(function(item, index) {
         var url = item.url.split("?")[0];
-        if(!url.startsWith("http")) {
+        var isAbsoluteUrl = /^(https?:)?\/\//i.test(url) || /^data:/i.test(url) || /^blob:/i.test(url);
+        if(!isAbsoluteUrl) {
           url = _this.baseUrl +  url
         }
         var name = item.name;
         var file = {
           name: name,
-          url: url + "?token=" + token
+          url: isAbsoluteUrl ? url : url + "?token=" + token
         };
         fileArray.push(file);
         fileUrlArray.push(url);

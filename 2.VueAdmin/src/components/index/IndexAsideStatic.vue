@@ -1,39 +1,31 @@
 <template>
 	<div class="menu-preview">
-		<!-- 竖向 -->
 		<el-scrollbar wrap-class="scrollbar-wrapper">
-			<el-menu :default-openeds="[]" :unique-opened="true" :style='{"border":0,"padding":"0","listStyle":"none","margin":"0","position":"relative","background":"#FFF"}' class="el-menu-vertical-demo" default-active="0">
-				<el-image v-if="false" :style='{"width":"44px","margin":"10px auto","objectFit":"cover","borderRadius":"100%","display":"block","height":"44px"}' src="http://codegen.caihongy.cn/20201114/7856ba26477849ea828f481fa2773a95.jpg" fit="cover"></el-image>
-				<!-- <el-menu-item index="0" @click="menuHandler('')">
-					<i v-if='true' :style='{"width":"24px","verticalAlign":"middle","margin":"0 3px","fontSize":"18px","color":"inherit","textAlign":"center"}' class="el-icon-menu el-icon-s-home" />
-					<span :style='{"color":"inherit","verticalAlign":"middle","fontSize":"14px"}'>系统首页</span>
-				</el-menu-item> -->
-				
-				<el-submenu index="0" @click.native="menuHandler('')">
+			<el-menu :default-openeds="[]" :unique-opened="true" class="aside-menu" default-active="0">
+				<el-submenu index="0" @click.native="menuHandler('')" class="menu-home">
 					<template slot="title">
-						<i v-if='true' :style='{"width":"24px","verticalAlign":"middle","margin":"0 3px","fontSize":"18px","color":"inherit","textAlign":"center"}' class="el-icon-menu el-icon-s-home" />
-						<span :style='{"color":"inherit","verticalAlign":"middle","fontSize":"14px"}'>系统首页</span>
+						<i class="el-icon-s-home"></i>
+						<span>系统首页</span>
 					</template>
 				</el-submenu>
 				
 				<el-submenu index="1">
 					<template slot="title">
-						<i v-if='true' :style='{"width":"24px","verticalAlign":"middle","margin":"0 3px","fontSize":"18px","color":"inherit","textAlign":"center"}' class="el-icon-menu el-icon-user-solid" />
-						<span :style='{"color":"inherit","verticalAlign":"middle","fontSize":"14px"}'>个人中心</span>
+						<i class="el-icon-user-solid"></i>
+						<span>个人中心</span>
 					</template>
 					<el-menu-item index="1-1" @click="menuHandler('updatePassword')">修改密码</el-menu-item>
 					<el-menu-item index="1-2" @click="menuHandler('center')">个人信息</el-menu-item>
 				</el-submenu>
 				<el-submenu v-for=" (menu,index) in menuList.backMenu" :key="menu.menu" :index="index+2+''">
 					<template slot="title">
-						<i v-if='true' :style='{"width":"24px","verticalAlign":"middle","margin":"0 3px","fontSize":"18px","color":"inherit","textAlign":"center"}' class="el-icon-menu" :class="icons[index]" />
-						<span :style='{"color":"inherit","verticalAlign":"middle","fontSize":"14px"}'>{{ menu.menu }}</span>
+						<i class="el-icon-menu" :class="icons[index]"></i>
+						<span>{{ menu.menu }}</span>
 					</template>
 					<el-menu-item v-for=" (child,sort) in menu.child" :key="sort" :index="(index+2)+'-'+sort" @click="menuHandler(child.tableName)">{{ child.menu }}</el-menu-item>
 				</el-submenu>
 			</el-menu>
 		</el-scrollbar>
-
 	</div>
 </template>
 
@@ -90,10 +82,18 @@ export default {
 		}
 	},
 	mounted() {
-		const menus = menu.list()
-		if(menus) {
-			this.menuList = menus
-		} else {
+		let menus = menu.list()
+		// Ensure menus is always an array
+		if(!menus) {
+			// Try to get from storage
+			const storedMenus = this.$storage.get("menus")
+			if(storedMenus) {
+				menus = storedMenus
+			}
+		}
+		
+		// If still no menus, fetch from API
+		if(!menus) {
 			let params = {
 				page: 1,
 				limit: 1,
@@ -108,153 +108,130 @@ export default {
 				data
 			}) => {
 				if (data && data.code === 0) {
-					this.menuList = JSON.parse(data.data.list[0].menujson);
-					this.$storage.set("menus", this.menuList);
+					const menuData = JSON.parse(data.data.list[0].menujson);
+					this.$storage.set("menus", menuData);
+					this.processMenuData(menuData);
 				}
 			})
+		} else {
+			this.processMenuData(menus);
 		}
-		this.role = this.$storage.get('role')
-		
-		for(let i=0;i<this.menuList.length;i++) {
-			if(this.menuList[i].roleName == this.role) {
-				this.menuList = this.menuList[i];
-				break;
-			}
-		}
-		this.styleChange()
-	},
-	created(){
-		this.icons.sort(()=>{
-			return (0.5-Math.random())
-		})
 	},
 	methods: {
-		
-		styleChange() {
-			this.$nextTick(() => {
-								document.querySelectorAll('.el-menu-vertical-demo .el-submenu .el-menu').forEach(el => {
-				  el.removeAttribute('style')
-				  const icon = {"border":"none","display":"none"}
-				  Object.keys(icon).forEach((key) => {
-					el.style[key] = icon[key]
-				  })
-				})
-											})
+		processMenuData(menus) {
+			// Ensure menus is an array
+			if(!Array.isArray(menus)) {
+				menus = [menus];
+			}
+			
+			this.role = this.$storage.get('role')
+			
+			// Find matching role menu
+			let found = false;
+			for(let i=0; i<menus.length; i++) {
+				if(menus[i].roleName == this.role) {
+					this.menuList = menus[i];
+					found = true;
+					break;
+				}
+			}
+			
+			// If no matching role found, use first menu item or empty object
+			if(!found) {
+				this.menuList = menus[0] || { backMenu: [], frontMenu: [] };
+			}
 		},
 		menuHandler(name) {
 			let router = this.$router
 			name = '/'+name
 			router.push(name)
 		},
+	},
+	created(){
+		this.icons.sort(()=>{
+			return (0.5-Math.random())
+		})
 	}
 }
 </script>
 <style lang="scss" scoped>
 	.menu-preview {
-	  .el-scrollbar {
-	    height: 100%;
-	
-	    & ::v-deep .scrollbar-wrapper {
-	      overflow-x: hidden;
-	    }
-		
-				// 竖向
-		.el-menu-vertical-demo {
-		  .el-submenu:first-of-type ::v-deep .el-submenu__title .el-submenu__icon-arrow {
-		    display: none;
-		  }
+		height: 100%;
+		background: #f8faf9;
+
+		.el-scrollbar {
+			height: 100%;
+
+			& ::v-deep .scrollbar-wrapper {
+				overflow-x: hidden;
+			}
 		}
-		
-		.el-menu-vertical-demo>.el-menu-item {
-				  				  cursor: pointer;
-				  				  padding: 0 10px;
-				  				  color: #333;
-				  				  white-space: nowrap;
-				  				  background: #fff;
-				  				  border-color: rgba(216, 216, 216, 1);
-				  				  border-width: 0 0 1px;
-				  				  position: relative;
-				  				  border-style: solid;
-				  		}
-		
-		.el-menu-vertical-demo>.el-menu-item:hover {
-						background-color: #fff;
-						background-size: 100% 100%;
-						color: #333;
-						background-image: url(http://codegen.caihongy.cn/20220730/bd08dba7bfcf4340afb53d702a43ff6b.png);
+
+		.aside-menu {
+			border-right: none;
+			background: transparent;
+			padding: 12px;
+
+			// 首页菜单项隐藏箭头
+			.menu-home ::v-deep .el-submenu__icon-arrow {
+				display: none;
+			}
+
+			::v-deep .el-menu-item, ::v-deep .el-submenu__title {
+				height: 50px;
+				line-height: 50px;
+				border-radius: 8px;
+				margin-bottom: 4px;
+				color: #4a5d55;
+				transition: all 0.3s;
+				padding: 0 10px;
+
+				i {
+					color: #7a8c85;
+					margin-right: 10px;
+					font-size: 18px;
+				}
+
+				&:hover {
+					background-color: #ecf2f0 !important;
+					color: #2d5a27;
+
+					i {
+						color: #2d5a27;
 					}
-		
-		.el-menu-vertical-demo .el-submenu ::v-deep .el-submenu__title {
-						cursor: pointer;
-						padding: 0 10px;
-						color: #333;
-						white-space: nowrap;
-						background: #fff;
-						border-color: rgba(216, 216, 216, 1);
-						border-width: 0 0 1px;
-						position: relative;
-						border-style: solid;
-					}
-		
-		.el-menu-vertical-demo .el-submenu ::v-deep .el-submenu__title:hover {
-						background-color: #fff;
-						background-size: 100% 100%;
-						color: #333;
-						background-image: url(http://codegen.caihongy.cn/20220730/bd08dba7bfcf4340afb53d702a43ff6b.png);
-					}
-		
-		.el-menu-vertical-demo .el-submenu ::v-deep .el-submenu__title .el-submenu__icon-arrow {
-						margin: -5px -7px 0 0;
-						top: 50%;
-						color: #333;
-						vertical-align: middle;
-						font-size: 12px;
-						position: absolute;
-						right: 20px;
-					}
-		
-		.el-menu-vertical-demo .el-submenu {
-						padding: 0;
-						margin: 0;
-						list-style: none;
-					}
-		
-		// .el-menu-vertical-demo .el-submenu ::v-deep .el-menu {
-		// 				// 		border: none;
-		// 				// 		display: none;
-		// 				// }
-		
-		.el-menu-vertical-demo .el-submenu ::v-deep .el-menu .el-menu-item {
-						padding: 0 40px;
-						color: #666;
-						background: #fff;
-						border-color: rgba(216, 216, 216, 1);
-						border-width: 0 0 1px;
-						line-height: 50px;
-						border-style: dashed;
-						height: 50px;
-					}
-		
-		.el-menu-vertical-demo .el-submenu ::v-deep .el-menu .el-menu-item:hover {
-						background-color: #fff;
-						padding: 0 40px;
-						background-size: 100% 100%;
-						color: #333;
-						line-height: 50px;
-						background-image: url(http://codegen.caihongy.cn/20220730/bd08dba7bfcf4340afb53d702a43ff6b.png);
-						height: 50px;
-					}
-		
-		.el-menu-vertical-demo .el-submenu ::v-deep .el-menu .el-menu-item.is-active {
-						background-color: #fff;
-						padding: 0 40px;
-						background-size: 100% 100%;
-						color: #333;
-						line-height: 50px;
-						background-image: url(http://codegen.caihongy.cn/20220730/bd08dba7bfcf4340afb53d702a43ff6b.png);
-						height: 50px;
-					}
-		// 竖向
-			  }
-	  	}
+				}
+			}
+
+			::v-deep .el-menu-item.is-active {
+				background-color: #2d5a27 !important;
+				color: #ffffff !important;
+				box-shadow: 0 4px 12px rgba(45, 90, 39, 0.2);
+
+				i {
+					color: #ffffff;
+				}
+			}
+
+			// 子菜单展开项
+			::v-deep .el-submenu .el-menu .el-menu-item {
+				padding: 0 40px;
+				color: #666;
+				background: transparent;
+				border: none;
+				line-height: 50px;
+				height: 50px;
+				min-width: auto;
+
+				&:hover {
+					background-color: #ecf2f0 !important;
+					color: #2d5a27;
+				}
+
+				&.is-active {
+					background-color: #2d5a27 !important;
+					color: #ffffff !important;
+				}
+			}
+		}
+	}
 </style>

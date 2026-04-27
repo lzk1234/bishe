@@ -1,6 +1,6 @@
 <template>
-<div :style='{"border":"1px solid #dfdfdf","padding":"20px","margin":"20px auto 0","borderRadius":"16px","background":"#fff","width":"1200px","position":"relative"}'>
-    <div class="section-title" :style='{"margin":"0px 0","color":"#2087c3","borderRadius":"8px 8px 0 0","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221029/f414ce6eeb09429c9bc4d3d6643d9bd1.png) no-repeat center top","fontSize":"24px","lineHeight":"150px","fontWeight":"bold"}'>购物车</div>
+<div :style='{"border":"1px solid #f0f0ed","padding":"40px","margin":"40px auto","borderRadius":"var(--radius-main)","background":"#fff","width":"1200px","position":"relative"}'>
+    <div class="section-title" :style='{"margin":"0 0 40px","color":"var(--primary-color)","borderRadius":"4px","textAlign":"center","background":"#fdfdfb","fontSize":"24px","lineHeight":"100px","fontWeight":"600","letterSpacing":"4px","fontFamily":"serif","border":"1px solid #f0f0ed"}'>购物车</div>
     <el-table
       @selection-change="handleSelectionChange"
       :data="tableData"
@@ -10,10 +10,10 @@
         label="茶叶名称">
         <template slot-scope="scope">
           <div class="shangpin">
-            <el-image
-              style="width: 100px; height: 100px"
-              :src="baseUrl + scope.row.picture"
-              fit="fill"></el-image>
+            <img
+              class="cart-good-image"
+              :src="resolveImageUrl(scope.row.picture)"
+              alt="">
             <span style="margin-left: 10px">{{ scope.row.goodname }}</span>
           </div>
         </template>
@@ -70,6 +70,12 @@
     methods: {
       handleSelectionChange(e){
           this.selRows = e
+      },
+      resolveImageUrl(value) {
+        if (!value) return ''
+        const firstImage = String(value).split(',')[0]
+        if (/^https?:\/\//i.test(firstImage)) return firstImage
+        return this.baseUrl + firstImage.replace(/^\/+/, '')
       },
       getCartList() {
         this.$http.get('cart/list', {params: {page: 1, limit: 1000, userid: localStorage.getItem('userid')}}).then(res => {
@@ -164,6 +170,14 @@
 
   .shangpin {
     display: flex;
+    align-items: center;
+  }
+  .cart-good-image {
+    width: 100px;
+    height: 100px;
+    display: block;
+    object-fit: cover;
+    background: #f5f7fa;
   }
   .buy {
     text-align: right;

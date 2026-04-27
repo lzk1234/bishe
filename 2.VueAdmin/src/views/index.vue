@@ -3,6 +3,7 @@
 		<index-main></index-main>
 	</el-container>
 </template>
+
 <script>
 	import IndexMain from '@/components/index/IndexMain'
 	export default {
@@ -13,13 +14,11 @@
 </script>
 
 <style lang="scss" scoped>
-	// 铺满全屏
 	.el-container {
-		position: absolute;
+		position: relative;
 		width: 100%;
-		top: 0;
-		left: 0;
-		bottom: 0;
+		min-height: 100vh;
 		display: block;
+		overflow: visible;
 	}
 </style>

@@ -134,10 +134,10 @@
 				</el-form-item>
 			</template>
 				<el-form-item :style='{"width":"50%","margin":"0 0 20px 0","display":"inline-block"}' v-if="type!='info'"  label="物流" prop="logistics">
-					<editor 
+					<editor
 						style="min-width: 200px; max-width: 600px;"
-						v-model="ruleForm.logistics" 
-						class="editor" 
+						v-model="ruleForm.logistics"
+						class="editor"
 						action="file/upload">
 					</editor>
 				</el-form-item>
@@ -150,7 +150,7 @@
 				<el-button :style='{"border":"2px solid rgba(184, 222, 74, 1)","cursor":"pointer","padding":"0","margin":"0","outline":"none","color":"rgba(184, 222, 74, 1)","borderRadius":"40px","background":"rgba(255, 255, 255, 1)","width":"128px","lineHeight":"40px","fontSize":"14px","height":"40px"}' v-if="type=='info'" class="btn-close" @click="back()">返回</el-button>
 			</el-form-item>
 		</el-form>
-    
+
 
   </div>
 </template>
@@ -227,8 +227,8 @@ export default {
 			logistics: true,
 			id: '',
 			type: '',
-			
-			
+
+
 			ro:{
 				orderid : false,
 				tablename : false,
@@ -251,8 +251,8 @@ export default {
 				zhanghao : false,
 				goodtype : false,
 			},
-			
-			
+
+
 			ruleForm: {
 				orderid: this.getUUID(),
 				userid: '',
@@ -269,10 +269,10 @@ export default {
 				zhanghao: '',
 				goodtype: '',
 			},
-		
+
 			typeOptions: [],
 			statusOptions: [],
-			
+
 			rules: {
 				orderid: [
 					{ required: true, message: '订单编号不能为空', trigger: 'blur' },
@@ -338,7 +338,7 @@ export default {
 	created() {
 	},
 	methods: {
-		
+
 		// 下载
 		download(file){
 			window.open(`${file}`)
@@ -458,7 +458,7 @@ export default {
 							continue;
 						}
 				}
-				
+
 
 
 
@@ -480,12 +480,12 @@ export default {
 
 
 			}
-			
-			
-			
+
+
+
             this.typeOptions = "现金,积分".split(',')
             this.statusOptions = "未支付,已支付,已完成,已取消,已退款,已发货".split(',')
-			
+
 		},
     // 多级联动参数
 
@@ -588,20 +588,20 @@ var objcross = this.$storage.getObj('crossObj');
 		 if(crossrefid && crossuserid) {
 			 this.ruleForm.crossuserid = crossuserid;
 			 this.ruleForm.crossrefid = crossrefid;
-			let params = { 
-				page: 1, 
-				limit: 10, 
+			let params = {
+				page: 1,
+				limit: 10,
 				crossuserid:this.ruleForm.crossuserid,
 				crossrefid:this.ruleForm.crossrefid,
-			} 
-			this.$http({ 
-				url: "orders/page", 
-				method: "get", 
-				params: params 
-			}).then(({ 
-				data 
-			}) => { 
-				if (data && data.code === 0) { 
+			}
+			this.$http({
+				url: "orders/page",
+				method: "get",
+				params: params
+			}).then(({
+				data
+			}) => {
+				if (data && data.code === 0) {
 				       if(data.data.total>=crossoptnum) {
 					     this.$message.error(this.$storage.get('tips'));
 					       return false;
@@ -630,8 +630,8 @@ var objcross = this.$storage.getObj('crossObj');
 					 });
 
 				       }
-				} else { 
-				} 
+				} else {
+				}
 			});
 		 } else {
 			 this.$http({
@@ -682,62 +682,107 @@ var objcross = this.$storage.getObj('crossObj');
 		width: 100%;
 		height: 500px;
 	}
-	
+
 	.search-box {
 		position: absolute;
 	}
-	
+
 	.el-date-editor.el-input {
 		width: auto;
 	}
-	
+
+	.addEdit-block {
+		box-sizing: border-box;
+		min-height: 100%;
+		padding: 20px;
+		background: #f4f7f2;
+	}
+
+	.add-update-preview {
+		box-sizing: border-box;
+		width: 100%;
+		margin: 0 !important;
+		padding: 24px 28px !important;
+		border: 1px solid #dfe8d9;
+		border-radius: 10px !important;
+		background: #ffffff;
+		box-shadow: 0 10px 28px rgba(41, 83, 43, .07);
+	}
+
+	.add-update-preview .el-form-item {
+		box-sizing: border-box;
+		width: 50% !important;
+		margin: 0 0 18px !important;
+		padding-right: 18px;
+		vertical-align: top;
+	}
+
+	.add-update-preview .upload {
+		min-height: 120px;
+	}
+
 	.add-update-preview .el-form-item ::v-deep .el-form-item__label {
-	  	  padding: 0 10px 0 0;
-	  	  color: #666;
-	  	  font-weight: 600;
-	  	  width: 140px;
-	  	  font-size: 14px;
-	  	  line-height: 40px;
-	  	  text-align: right;
-	  	}
-	
+	  padding: 0 12px 0 0;
+	  color: #263f2a;
+	  font-weight: 600;
+	  width: 140px;
+	  font-size: 14px;
+	  line-height: 40px;
+	  text-align: right;
+	}
+
 	.add-update-preview .el-form-item ::v-deep .el-form-item__content {
 	  margin-left: 140px;
+	  min-height: 40px;
 	}
-	
+
 	.add-update-preview .el-input ::v-deep .el-input__inner {
-	  	  border: 2px solid #797979;
-	  	  border-radius: 4px;
-	  	  padding: 0 12px;
-	  	  outline: none;
-	  	  color: #333;
-	  	  width: 300px;
-	  	  font-size: 14px;
-	  	  height: 40px;
-	  	}
-	
+	  border: 1px solid #cfe0c6;
+	  border-radius: 4px;
+	  padding: 0 12px;
+	  outline: none;
+	  color: #203624;
+	  width: 100%;
+	  font-size: 14px;
+	  height: 40px;
+	}
+
+	.add-update-preview .el-input ::v-deep .el-input__inner:focus,
+	.add-update-preview .el-select ::v-deep .el-input__inner:focus,
+	.add-update-preview .el-textarea ::v-deep .el-textarea__inner:focus {
+		border-color: #78a85c;
+		box-shadow: 0 0 0 2px rgba(120, 168, 92, .12);
+	}
+
+	.add-update-preview .el-input.is-disabled ::v-deep .el-input__inner,
+	.add-update-preview .el-input ::v-deep .el-input__inner[readonly] {
+		background: #f8faf7;
+		color: #4d5d4d;
+		border-color: #dfe8d9;
+	}
+
 	.add-update-preview .el-select ::v-deep .el-input__inner {
-	  	  border: 2px solid #797979;
-	  	  border-radius: 4px;
-	  	  padding: 0 10px;
-	  	  outline: none;
-	  	  color: #333;
-	  	  width: 200px;
-	  	  font-size: 14px;
-	  	  height: 40px;
-	  	}
-	
+	  border: 1px solid #cfe0c6;
+	  border-radius: 4px;
+	  padding: 0 10px;
+	  outline: none;
+	  color: #203624;
+	  width: 100%;
+	  font-size: 14px;
+	  height: 40px;
+	}
+
 	.add-update-preview .el-date-editor ::v-deep .el-input__inner {
-	  	  border: 2px solid #797979;
-	  	  border-radius: 4px;
-	  	  padding: 0 10px 0 30px;
-	  	  outline: none;
-	  	  color: #333;
-	  	  width: 200px;
-	  	  font-size: 14px;
-	  	  height: 40px;
-	  	}
-	
+	  border: 1px solid #cfe0c6;
+	  border-radius: 4px;
+	  padding: 0 10px 0 30px;
+	  outline: none;
+	  color: #203624;
+	  width: 100%;
+	  font-size: 14px;
+	  height: 40px;
+	}
+
 	.add-update-preview ::v-deep .el-upload--picture-card {
 		background: transparent;
 		border: 0;
@@ -747,51 +792,90 @@ var objcross = this.$storage.getObj('crossObj');
 		line-height: initial;
 		vertical-align: middle;
 	}
-	
+
 	.add-update-preview ::v-deep .upload .upload-img {
-	  	  border: 2px dashed #797979;
-	  	  cursor: pointer;
-	  	  border-radius: 6px;
-	  	  color: #797979;
-	  	  width: 100px;
-	  	  font-size: 32px;
-	  	  line-height: 100px;
-	  	  text-align: center;
-	  	  height: 100px;
-	  	}
-	
+	  border: 1px solid #dfe8d9;
+	  cursor: pointer;
+	  border-radius: 6px;
+	  color: #7b897a;
+	  width: 100px;
+	  font-size: 32px;
+	  line-height: 100px;
+	  text-align: center;
+	  height: 100px;
+	}
+
 	.add-update-preview ::v-deep .el-upload-list .el-upload-list__item {
-	  	  border: 2px dashed #797979;
-	  	  cursor: pointer;
-	  	  border-radius: 6px;
-	  	  color: #797979;
-	  	  width: 100px;
-	  	  font-size: 32px;
-	  	  line-height: 100px;
-	  	  text-align: center;
-	  	  height: 100px;
-	  	}
-	
+	  border: 1px dashed #cfe0c6;
+	  cursor: pointer;
+	  border-radius: 6px;
+	  color: #7b897a;
+	  width: 100px;
+	  font-size: 32px;
+	  line-height: 100px;
+	  text-align: center;
+	  height: 100px;
+	}
+
 	.add-update-preview ::v-deep .el-upload .el-icon-plus {
-	  	  border: 2px dashed #797979;
-	  	  cursor: pointer;
-	  	  border-radius: 6px;
-	  	  color: #797979;
-	  	  width: 100px;
-	  	  font-size: 32px;
-	  	  line-height: 100px;
-	  	  text-align: center;
-	  	  height: 100px;
-	  	}
-	
+	  border: 1px dashed #cfe0c6;
+	  cursor: pointer;
+	  border-radius: 6px;
+	  color: #7b897a;
+	  width: 100px;
+	  font-size: 32px;
+	  line-height: 100px;
+	  text-align: center;
+	  height: 100px;
+	}
+
 	.add-update-preview .el-textarea ::v-deep .el-textarea__inner {
-	  	  border: 2px solid #797979;
-	  	  border-radius: 4px;
-	  	  padding: 12px;
-	  	  outline: none;
-	  	  color: #333;
-	  	  width: 400px;
-	  	  font-size: 14px;
-	  	  height: 120px;
-	  	}
+	  border: 1px solid #cfe0c6;
+	  border-radius: 4px;
+	  padding: 12px;
+	  outline: none;
+	  color: #203624;
+	  width: 100%;
+	  font-size: 14px;
+	  height: 120px;
+	}
+
+	.add-update-preview .btn {
+		display: block !important;
+		width: 100% !important;
+		margin-top: 4px !important;
+		padding-right: 0;
+		text-align: center;
+	}
+
+	.add-update-preview .btn ::v-deep .el-form-item__content {
+		margin-left: 0 !important;
+	}
+
+	.add-update-preview .btn .el-button {
+		border-radius: 6px !important;
+		width: 118px !important;
+		height: 40px !important;
+		line-height: 40px !important;
+	}
+
+	.add-update-preview .btn-success {
+		background: #2f6b35 !important;
+		border-color: #2f6b35 !important;
+		color: #fff !important;
+		box-shadow: 0 8px 18px rgba(47, 107, 53, .18);
+	}
+
+	.add-update-preview .btn-close {
+		background: #ffffff !important;
+		border: 1px solid #cfe0c6 !important;
+		color: #2f5f33 !important;
+	}
+
+	@media (max-width: 1200px) {
+		.add-update-preview .el-form-item {
+			width: 100% !important;
+			padding-right: 0;
+		}
+	}
 </style>

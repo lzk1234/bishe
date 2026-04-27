@@ -1,682 +1,384 @@
 <template>
-	<div class="main-content">
-		<!-- 列表页 -->
-		<template v-if="showFlag">
-			<el-form class="center-form-pv" :style='{"margin":"0 0 20px 0","position":"relative"}' :inline="true" :model="searchForm">
-				<el-row :style='{"width":"150px","position":"absolute","top":"0","left":"0","display":"block","zIndex":"1003"}' >
-					<div :style='{"margin":"0 0 5px","display":"inline-block"}'>
-						<label :style='{"margin":"0 10px 0 0","color":"#666","textAlign":"left","display":"inline-block","width":"100px","lineHeight":"40px","fontSize":"14px","fontWeight":"600","height":"40px"}' class="item-label">茶叶名称</label>
-						<el-input v-model="searchForm.shangpinmingcheng" placeholder="茶叶名称" clearable></el-input>
-					</div>
-					<div :style='{"margin":"0 0 5px","display":"inline-block"}'>
-						<label :style='{"margin":"0 10px 0 0","color":"#666","textAlign":"left","display":"inline-block","width":"100px","lineHeight":"40px","fontSize":"14px","fontWeight":"600","height":"40px"}' class="item-label">品牌</label>
-						<el-input v-model="searchForm.pinpai" placeholder="品牌" clearable></el-input>
-					</div>
-					<div :style='{"margin":"0 0 5px","display":"inline-block"}'>
-						<label :style='{"margin":"0 10px 0 0","color":"#666","textAlign":"left","display":"inline-block","width":"100px","lineHeight":"40px","fontSize":"14px","fontWeight":"600","height":"40px"}' class="item-label">价格</label>
-						<el-input v-model="searchForm.pricestart" placeholder="最小价格" clearable></el-input>
-					</div>
-					<div :style='{"margin":"0 0 5px","display":"inline-block"}' :label="'至'">
-						<el-input v-model="searchForm.priceend" placeholder="最大价格" clearable></el-input>
-					</div>
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","outline":"none","margin":"10px 0 0 0","color":"#fff","borderRadius":"4px","background":"rgba(184, 222, 74, 1)","width":"150px","fontSize":"14px","height":"40px"}' type="success" @click="search()">查询</el-button>
-				</el-row>
+  <div class="page-container">
+    <el-card shadow="never">
+      <div slot="header" class="header-row">
+        <span>茶品档案</span>
+        <div>
+          <el-button type="primary" @click="openDialog()">新增茶品</el-button>
+          <el-button type="danger" :disabled="!selection.length" @click="removeSelection">批量删除</el-button>
+        </div>
+      </div>
 
-				<el-row :style='{"margin":"0","justifyContent":"flex-end","display":"flex"}'>
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('shangpinxinxi','新增')" type="success" @click="addOrUpdateHandler()">新增</el-button>
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('shangpinxinxi','删除')" :disabled="dataListSelections.length <= 0" type="danger" @click="deleteHandler()">删除</el-button>
+      <el-form :inline="true" :model="searchForm" class="search-row">
+        <el-form-item label="茶品名称">
+          <el-input v-model="searchForm.shangpinmingcheng" clearable placeholder="搜索茶品名称" />
+        </el-form-item>
+        <el-form-item label="茶类等级">
+          <el-input v-model="searchForm.shangpinfenlei" clearable placeholder="搜索茶类等级" />
+        </el-form-item>
+        <el-form-item label="产地">
+          <el-input v-model="searchForm.chandi" clearable placeholder="搜索产地" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="fetchList">查询</el-button>
+          <el-button @click="resetSearch">重置</el-button>
+        </el-form-item>
+      </el-form>
 
+      <el-table :data="dataList" stripe v-loading="loading" @selection-change="selection = $event">
+        <el-table-column type="selection" width="55" />
+        <el-table-column prop="shangpinmingcheng" label="茶品名称" min-width="160" />
+        <el-table-column prop="shangpinfenlei" label="茶类等级" width="120" />
+        <el-table-column prop="pinpai" label="品牌" width="120" />
+        <el-table-column prop="chandi" label="产地" min-width="160" />
+        <el-table-column prop="haiba" label="海拔(m)" width="100" />
+        <el-table-column prop="shengchanpici" label="生产批次" width="140" />
+        <el-table-column prop="alllimittimes" label="库存" width="80" />
+        <el-table-column prop="price" label="销售价" width="100" />
+        <el-table-column label="图片" width="100">
+          <template slot-scope="{ row }">
+            <img v-if="row.tupian" :src="imageUrl(row.tupian)" class="table-image" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="240" fixed="right">
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="openDialog(row, true)">详情</el-button>
+            <el-button type="text" @click="openDialog(row)">编辑</el-button>
+            <el-button type="text" class="danger-text" @click="removeSelection([row.id])">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
+      <div class="pager">
+        <el-pagination
+          background
+          layout="total, prev, pager, next, sizes"
+          :current-page="pageIndex"
+          :page-size="pageSize"
+          :page-sizes="[10, 20, 30, 50]"
+          :total="total"
+          @current-change="pageIndex = $event; fetchList()"
+          @size-change="pageSize = $event; pageIndex = 1; fetchList()"
+        />
+      </div>
+    </el-card>
 
-
-				</el-row>
-			</el-form>
-			
-			<!-- <div> -->
-				<el-table class="tables"
-					:stripe='false'
-					:style='{"padding":"0","borderColor":"#eee","margin":"0 0 0 180px","borderWidth":"1px","background":"#fff","width":"88%","borderStyle":"solid"}' 
-					v-if="isAuth('shangpinxinxi','查看')"
-					:data="dataList"
-					v-loading="dataListLoading"
-				@selection-change="selectionChangeHandler">
-					<el-table-column :resizable='true' type="selection" align="center" width="50"></el-table-column>
-					<el-table-column :resizable='true' :sortable='false' label="索引" type="index" width="50" />
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="shangpinmingcheng"
-					label="茶叶名称">
-						<template slot-scope="scope">
-							{{scope.row.shangpinmingcheng}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="shangpinfenlei"
-					label="茶叶分类">
-						<template slot-scope="scope">
-							{{scope.row.shangpinfenlei}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false' prop="tupian" width="200" label="图片">
-						<template slot-scope="scope">
-							<div v-if="scope.row.tupian">
-								<img v-if="scope.row.tupian.substring(0,4)=='http'" :src="scope.row.tupian.split(',')[0]" width="100" height="100">
-								<img v-else :src="$base.url+scope.row.tupian.split(',')[0]" width="100" height="100">
-							</div>
-							<div v-else>无图片</div>
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="pinpai"
-					label="品牌">
-						<template slot-scope="scope">
-							{{scope.row.pinpai}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="shangjiariqi"
-					label="上架日期">
-						<template slot-scope="scope">
-							{{scope.row.shangjiariqi}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="onelimittimes"
-					label="单限">
-						<template slot-scope="scope">
-							{{scope.row.onelimittimes}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="alllimittimes"
-					label="库存">
-						<template slot-scope="scope">
-							{{scope.row.alllimittimes}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="price"
-					label="价格">
-						<template slot-scope="scope">
-							{{scope.row.price}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="vipprice"
-					label="会员价">
-						<template slot-scope="scope">
-							{{scope.row.vipprice}}
-						</template>
-					</el-table-column>
-					<el-table-column width="300" label="操作">
-						<template slot-scope="scope">
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if=" isAuth('shangpinxinxi','查看')" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">详情</el-button>
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if=" isAuth('shangpinxinxi','修改')" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">修改</el-button>
-
-
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if="isAuth('shangpinxinxi','查看评论')" type="primary" size="mini" @click="disscussListHandler(scope.row.id)">查看评论</el-button>
-
-
-
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if="isAuth('shangpinxinxi','删除') " type="danger" size="mini" @click="deleteHandler(scope.row.id)">删除</el-button>
-						</template>
-					</el-table-column>
-				</el-table>
-				<el-pagination
-					@size-change="sizeChangeHandle"
-					@current-change="currentChangeHandle"
-					:current-page="pageIndex"
-					background
-					:page-sizes="[10, 20, 30, 50]"
-					:page-size="pageSize"
-					:layout="layouts.join()"
-					:total="totalPage"
-					prev-text="<"
-					next-text=">"
-					:hide-on-single-page="false"
-					:style='{"padding":"0","margin":"20px 0 20px 180px","whiteSpace":"nowrap","color":"#333","textAlign":"center","width":"88%","fontWeight":"500"}'
-				></el-pagination>
-			<!-- </div> -->
-		</template>
-		
-		<!-- 添加/修改页面  将父组件的search方法传递给子组件-->
-		<add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
-
-
-
-
-
-	</div>
+    <el-dialog :title="dialogModeTitle" :visible.sync="dialogVisible" width="760px" :close-on-click-modal="false">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="110px" class="dialog-form">
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-form-item label="茶品名称" prop="shangpinmingcheng">
+              <el-input v-model="form.shangpinmingcheng" :disabled="readOnly" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="茶类等级" prop="shangpinfenlei">
+              <el-select v-model="form.shangpinfenlei" :disabled="readOnly" filterable style="width: 100%">
+                <el-option v-for="item in categoryOptions" :key="item" :label="item" :value="item" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="品牌" prop="pinpai">
+              <el-input v-model="form.pinpai" :disabled="readOnly" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="企业账号" prop="zhanghao">
+              <el-select v-model="form.zhanghao" :disabled="readOnly || isEnterprise" filterable clearable style="width: 100%" @change="onEnterpriseChange">
+                <el-option v-for="item in enterpriseOptions" :key="item.zhanghao" :label="enterpriseLabel(item)" :value="item.zhanghao" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="产地" prop="chandi">
+              <el-input v-model="form.chandi" :disabled="readOnly" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="海拔(m)" prop="haiba">
+              <el-input-number v-model="form.haiba" :disabled="readOnly" :min="0" controls-position="right" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="生产批次" prop="shengchanpici">
+              <el-select v-model="form.shengchanpici" :disabled="readOnly" filterable clearable style="width: 100%" @change="onBatchChange">
+                <el-option v-for="item in batchOptions" :key="item.batchcode" :label="batchLabel(item)" :value="item.batchcode" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="适饮场景" prop="shiyongchangjing">
+              <el-input v-model="form.shiyongchangjing" :disabled="readOnly" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="上架日期" prop="shangjiariqi">
+              <el-date-picker v-model="form.shangjiariqi" :disabled="readOnly" type="date" value-format="yyyy-MM-dd" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="库存" prop="alllimittimes">
+              <el-input-number v-model="form.alllimittimes" :disabled="readOnly" :min="0" controls-position="right" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="单次限购" prop="onelimittimes">
+              <el-input-number v-model="form.onelimittimes" :disabled="readOnly" :min="-1" controls-position="right" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="销售价" prop="price">
+              <el-input-number v-model="form.price" :disabled="readOnly" :min="0" :precision="2" controls-position="right" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="会员价" prop="vipprice">
+              <el-input-number v-model="form.vipprice" :disabled="readOnly" :min="0" :precision="2" controls-position="right" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="图片" prop="tupian">
+              <file-upload
+                v-if="!readOnly"
+                action="file/upload"
+                :limit="3"
+                :multiple="true"
+                :fileUrls="form.tupian || ''"
+                @change="form.tupian = $event"
+              />
+              <div v-else class="image-preview-list">
+                <img v-for="(img, index) in splitImages(form.tupian)" :key="index" :src="imageUrl(img)" class="preview-image" />
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="茶品介绍" prop="shangpinxiangqing">
+              <editor v-if="!readOnly" v-model="form.shangpinxiangqing" action="file/upload" />
+              <div v-else class="rich-preview" v-html="form.shangpinxiangqing"></div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">{{ readOnly ? '关闭' : '取消' }}</el-button>
+        <el-button v-if="!readOnly" type="primary" @click="submitForm">保存</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-import axios from 'axios'
-import AddOrUpdate from "./add-or-update";
+import FileUpload from '@/components/common/FileUpload'
+import Editor from '@/components/common/Editor'
+
+const emptyForm = () => ({
+  id: null,
+  shangpinmingcheng: '',
+  shangpinfenlei: '',
+  tupian: '',
+  pinpai: '',
+  zhanghao: '',
+  shangjiariqi: '',
+  shangpinxiangqing: '',
+  onelimittimes: -1,
+  alllimittimes: 0,
+  price: 0,
+  vipprice: 0,
+  chandi: '',
+  haiba: null,
+  shengchanpici: '',
+  shiyongchangjing: ''
+})
+
 export default {
+  components: { FileUpload, Editor },
   data() {
     return {
-      searchForm: {
-        key: ""
-      },
-      form:{},
+      loading: false,
       dataList: [],
+      selection: [],
       pageIndex: 1,
       pageSize: 10,
-      totalPage: 0,
-      dataListLoading: false,
-      dataListSelections: [],
-      showFlag: true,
-      sfshVisiable: false,
-      shForm: {},
-      chartVisiable: false,
-      chartVisiable1: false,
-      chartVisiable2: false,
-      chartVisiable3: false,
-      chartVisiable4: false,
-      chartVisiable5: false,
-      addOrUpdateFlag:false,
-      layouts: ["total","prev","pager","next","sizes","jumper"],
-
-    };
-  },
-  created() {
-    this.init();
-    this.getDataList();
-    this.contentStyleChange()
-  },
-  mounted() {
-  },
-  filters: {
-    htmlfilter: function (val) {
-      return val.replace(/<[^>]*>/g).replace(/undefined/g,'');
+      total: 0,
+      dialogVisible: false,
+      readOnly: false,
+      form: emptyForm(),
+      searchForm: {
+        shangpinmingcheng: '',
+        shangpinfenlei: '',
+        chandi: ''
+      },
+      enterpriseOptions: [],
+      batchOptions: [],
+      categoryOptions: [],
+      rules: {
+        shangpinmingcheng: [{ required: true, message: '请输入茶品名称', trigger: 'blur' }],
+        shangpinfenlei: [{ required: true, message: '请选择茶类等级', trigger: 'change' }],
+        pinpai: [{ required: true, message: '请输入品牌', trigger: 'blur' }],
+        zhanghao: [{ required: true, message: '请输入企业账号', trigger: 'blur' }],
+        price: [{ required: true, message: '请输入销售价', trigger: 'blur' }]
+      }
     }
   },
-  components: {
-    AddOrUpdate,
+  computed: {
+    isEnterprise() {
+      return this.$storage.get('role') === '商家'
+    },
+    dialogModeTitle() {
+      return this.readOnly ? '茶品详情' : (this.form.id ? '编辑茶品' : '新增茶品')
+    }
+  },
+  created() {
+    if (this.isEnterprise) {
+      this.form.zhanghao = this.$storage.get('adminName') || ''
+    }
+    this.loadEnterprises()
+    this.loadBatches(this.form.zhanghao)
+    this.fetchCategories()
+    this.fetchList()
   },
   methods: {
-
-    contentStyleChange() {
-      this.contentPageStyleChange()
+    enterpriseLabel(item) {
+      return item.shangjiaxingming ? `${item.zhanghao} / ${item.shangjiaxingming}` : item.zhanghao
     },
-    // 分页
-    contentPageStyleChange(){
-      let arr = []
-
-      // if(this.contents.pageTotal) arr.push('total')
-      // if(this.contents.pageSizes) arr.push('sizes')
-      // if(this.contents.pagePrevNext){
-      //   arr.push('prev')
-      //   if(this.contents.pagePager) arr.push('pager')
-      //   arr.push('next')
-      // }
-      // if(this.contents.pageJumper) arr.push('jumper')
-      // this.layouts = arr.join()
-      // this.contents.pageEachNum = 10
+    batchLabel(item) {
+      return `${item.batchcode || ''}${item.productname ? ' / ' + item.productname : ''}`
     },
-
-
-
-
-
-
-
-
-    init () {
+    imageUrl(value) {
+      const path = (value || '').split(',')[0]
+      if (!path) return ''
+      return path.startsWith('http') ? path : this.$base.url + path
     },
-    search() {
-      this.pageIndex = 1;
-      this.getDataList();
+    splitImages(value) {
+      return value ? value.split(',') : []
     },
-
-    // 获取数据列表
-    getDataList() {
-      this.dataListLoading = true;
-      let params = {
+    fetchCategories() {
+      this.$http.get('option/shangpinfenlei/shangpinfenlei').then(({ data }) => {
+        if (data && data.code === 0) {
+          this.categoryOptions = data.data || []
+        }
+      })
+    },
+    loadEnterprises() {
+      if (this.isEnterprise) {
+        const account = this.$storage.get('adminName') || ''
+        this.enterpriseOptions = account ? [{ zhanghao: account }] : []
+        return
+      }
+      this.$http.get('shangjia/page', { params: { page: 1, limit: 1000, sort: 'id', order: 'desc' } }).then(({ data }) => {
+        if (data && data.code === 0) this.enterpriseOptions = data.data.list || []
+      })
+    },
+    loadBatches(account) {
+      const params = { page: 1, limit: 1000, sort: 'id', order: 'desc' }
+      if (account) params.enterpriseaccount = account
+      this.$http.get('teabatch/page', { params }).then(({ data }) => {
+        if (data && data.code === 0) this.batchOptions = data.data.list || []
+      })
+    },
+    onEnterpriseChange(account) {
+      this.form.shengchanpici = ''
+      this.loadBatches(account)
+    },
+    onBatchChange(batchcode) {
+      const batch = this.batchOptions.find(item => item.batchcode === batchcode)
+      if (!batch) return
+      this.form.shengchanpici = batch.batchcode || ''
+      this.form.chandi = batch.basename || ''
+      this.form.haiba = batch.altitude == null ? this.form.haiba : batch.altitude
+      if (batch.teatype) this.form.shangpinfenlei = batch.teatype
+      if (!this.isEnterprise && batch.enterpriseaccount) {
+        this.form.zhanghao = batch.enterpriseaccount
+      }
+    },
+    fetchList() {
+      this.loading = true
+      const params = {
         page: this.pageIndex,
         limit: this.pageSize,
         sort: 'id',
-        order: 'desc',
+        order: 'desc'
       }
-           if(this.searchForm.shangpinmingcheng!='' && this.searchForm.shangpinmingcheng!=undefined){
-            params['shangpinmingcheng'] = '%' + this.searchForm.shangpinmingcheng + '%'
-          }
-           if(this.searchForm.pinpai!='' && this.searchForm.pinpai!=undefined){
-            params['pinpai'] = '%' + this.searchForm.pinpai + '%'
-          }
-    params['sort'] = 'shangjiariqi';
-    params['order'] = 'desc';
-           if(this.searchForm.pricestart!='' && this.searchForm.pricestart!=undefined ){
-            params['pricestart'] = this.searchForm.pricestart
-          }
-          if(this.searchForm.priceend!='' && this.searchForm.priceend!=undefined){
-            params['priceend'] = this.searchForm.priceend
-          }
-      this.$http({
-        url: "shangpinxinxi/page",
-        method: "get",
-        params: params
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.dataList = data.data.list;
-          this.totalPage = data.data.total;
-        } else {
-          this.dataList = [];
-          this.totalPage = 0;
+      Object.keys(this.searchForm).forEach(key => {
+        if (this.searchForm[key]) {
+          params[key] = `%${this.searchForm[key]}%`
         }
-        this.dataListLoading = false;
-      });
+      })
+      this.$http.get('shangpinxinxi/page', { params }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.dataList = data.data.list || []
+          this.total = data.data.total || 0
+        }
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
-    // 每页数
-    sizeChangeHandle(val) {
-      this.pageSize = val;
-      this.pageIndex = 1;
-      this.getDataList();
-    },
-    // 当前页
-    currentChangeHandle(val) {
-      this.pageIndex = val;
-      this.getDataList();
-    },
-    // 多选
-    selectionChangeHandler(val) {
-      this.dataListSelections = val;
-    },
-    // 添加/修改
-    addOrUpdateHandler(id,type) {
-      this.showFlag = false;
-      this.addOrUpdateFlag = true;
-      this.crossAddOrUpdateFlag = false;
-      if(type!='info'){
-        type = 'else';
+    resetSearch() {
+      this.searchForm = {
+        shangpinmingcheng: '',
+        shangpinfenlei: '',
+        chandi: ''
       }
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id,type);
-      });
+      this.pageIndex = 1
+      this.fetchList()
     },
-    // 查看评论
-    disscussListHandler(id,type) {
-	this.$router.push({path:'/discussshangpinxinxi',query:{refid:id}});
+    openDialog(row, readOnly = false) {
+      this.readOnly = readOnly
+      this.dialogVisible = true
+      if (!row) {
+        this.form = emptyForm()
+        if (this.isEnterprise) {
+          this.form.zhanghao = this.$storage.get('adminName') || ''
+        }
+        this.loadBatches(this.form.zhanghao)
+        this.$nextTick(() => this.$refs.formRef && this.$refs.formRef.clearValidate())
+        return
+      }
+      this.$http.get(`shangpinxinxi/info/${row.id}`).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.form = Object.assign(emptyForm(), data.data)
+          this.loadBatches(this.form.zhanghao)
+        }
+      })
     },
-    // 下载
-    download(file){
-      window.open(`${file}`)
-    },
-    // 删除
-    deleteHandler(id) {
-      var ids = id
-        ? [Number(id)]
-        : this.dataListSelections.map(item => {
-            return Number(item.id);
-          });
-      this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        this.$http({
-          url: "shangpinxinxi/delete",
-          method: "post",
-          data: ids
-        }).then(({ data }) => {
+    submitForm() {
+      this.$refs.formRef.validate(valid => {
+        if (!valid) return
+        const url = this.form.id ? 'shangpinxinxi/update' : 'shangpinxinxi/save'
+        this.$http.post(url, this.form).then(({ data }) => {
           if (data && data.code === 0) {
-            this.$message({
-              message: "操作成功",
-              type: "success",
-              duration: 1500,
-              onClose: () => {
-                this.search();
-              }
-            });
-          } else {
-            this.$message.error(data.msg);
+            this.$message.success('保存成功')
+            this.dialogVisible = false
+            this.fetchList()
           }
-        });
-      });
+        })
+      })
     },
-
-
+    removeSelection(ids) {
+      const targetIds = ids || this.selection.map(item => item.id)
+      if (!targetIds.length) return
+      this.$confirm('确定删除选中的茶品档案吗？', '提示', { type: 'warning' }).then(() => {
+        this.$http.post('shangpinxinxi/delete', targetIds).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message.success('删除成功')
+            this.fetchList()
+          }
+        })
+      })
+    }
   }
-
-};
+}
 </script>
-<style lang="scss" scoped>
-	
-	.center-form-pv {
-	  .el-date-editor.el-input {
-	    width: auto;
-	  }
-	}
-	
-	.el-input {
-	  width: auto;
-	}
-	
-	// form
-	.center-form-pv .el-input ::v-deep .el-input__inner {
-				border: 2px solid #B8DE4A;
-				border-radius: 4px;
-				padding: 0 12px;
-				outline: none;
-				color: rgba(0, 0, 0, 1);
-				width: 150px;
-				font-size: 14px;
-				height: 40px;
-			}
-	
-	.center-form-pv .el-select ::v-deep .el-input__inner {
-				border: 2px solid #B8DE4A;
-				border-radius: 4px;
-				padding: 0 10px;
-				outline: none;
-				color: rgba(0, 0, 0, 1);
-				width: 150px;
-				font-size: 14px;
-				height: 40px;
-			}
-	
-	.center-form-pv .el-date-editor ::v-deep .el-input__inner {
-				border: 2px solid #B8DE4A;
-				border-radius: 4px;
-				padding: 0 10px 0 30px;
-				outline: none;
-				color: rgba(0, 0, 0, 1);
-				width: 150px;
-				font-size: 14px;
-				height: 40px;
-			}
-	
-	// table
-	.el-table ::v-deep .el-table__header-wrapper thead {
-				color: #333;
-				font-weight: 500;
-				width: 100%;
-			}
-	
-	.el-table ::v-deep .el-table__header-wrapper thead tr {
-				background: #fff;
-			}
-	
-	.el-table ::v-deep .el-table__header-wrapper thead tr th {
-				padding: 12px 0;
-				background: rgba(226, 226, 226, 1);
-				border-color: #eee;
-				border-width: 0 1px 1px 0;
-				border-style: solid;
-				text-align: center;
-			}
 
-	.el-table ::v-deep .el-table__header-wrapper thead tr th .cell {
-				padding: 0 10px;
-				word-wrap: normal;
-				word-break: break-all;
-				white-space: normal;
-				font-weight: bold;
-				display: inline-block;
-				vertical-align: middle;
-				width: 100%;
-				line-height: 24px;
-				position: relative;
-				text-overflow: ellipsis;
-			}
-
-	
-	.el-table ::v-deep .el-table__body-wrapper tbody {
-				width: 100%;
-			}
-
-	.el-table ::v-deep .el-table__body-wrapper tbody tr {
-				background: #fff;
-			}
-	
-	.el-table ::v-deep .el-table__body-wrapper tbody tr td {
-				padding: 12px 0;
-				color: #999;
-				background: #fff;
-				border-color: #eee;
-				border-width: 0 1px 1px 0;
-				border-style: solid;
-				text-align: center;
-			}
-	
-		
-	.el-table ::v-deep .el-table__body-wrapper tbody tr:hover td {
-				padding: 12px 0;
-				color: #333;
-				background: rgba(226, 226, 226, .2);
-				border-color: #eee;
-				border-width: 0 1px 1px 0;
-				border-style: solid;
-				text-align: center;
-			}
-	
-	.el-table ::v-deep .el-table__body-wrapper tbody tr td {
-				padding: 12px 0;
-				color: #999;
-				background: #fff;
-				border-color: #eee;
-				border-width: 0 1px 1px 0;
-				border-style: solid;
-				text-align: center;
-			}
-
-	.el-table ::v-deep .el-table__body-wrapper tbody tr td .cell {
-				padding: 0 10px;
-				overflow: hidden;
-				word-break: break-all;
-				white-space: normal;
-				line-height: 24px;
-				text-overflow: ellipsis;
-			}
-	
-	// pagination
-	.main-content .el-pagination ::v-deep .el-pagination__total {
-				margin: 0 10px 0 0;
-				color: #666;
-				font-weight: 400;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .btn-prev {
-				border: none;
-				border-radius: 2px;
-				padding: 0;
-				margin: 0 5px;
-				color: #666;
-				background: #f4f4f5;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				min-width: 35px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .btn-next {
-				border: none;
-				border-radius: 2px;
-				padding: 0;
-				margin: 0 5px;
-				color: #666;
-				background: #f4f4f5;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				min-width: 35px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .btn-prev:disabled {
-				border: none;
-				cursor: not-allowed;
-				border-radius: 2px;
-				padding: 0;
-				margin: 0 5px;
-				color: #C0C4CC;
-				background: #f4f4f5;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .btn-next:disabled {
-				border: none;
-				cursor: not-allowed;
-				border-radius: 2px;
-				padding: 0;
-				margin: 0 5px;
-				color: #C0C4CC;
-				background: #f4f4f5;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				height: 28px;
-			}
-
-	.main-content .el-pagination ::v-deep .el-pager {
-				padding: 0;
-				margin: 0;
-				display: inline-block;
-				vertical-align: top;
-			}
-
-	.main-content .el-pagination ::v-deep .el-pager .number {
-				cursor: pointer;
-				padding: 0 4px;
-				margin: 0 5px;
-				color: #666;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				border-radius: 2px;
-				background: #f4f4f5;
-				text-align: center;
-				min-width: 30px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pager .number:hover {
-				cursor: pointer;
-				padding: 0 4px;
-				margin: 0 5px;
-				color: #b8de4a;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				border-radius: 2px;
-				background: #f4f4f5;
-				text-align: center;
-				min-width: 30px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pager .number.active {
-				cursor: default;
-				padding: 0 4px;
-				margin: 0 5px;
-				color: #FFF;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				border-radius: 2px;
-				background: #b8de4a;
-				text-align: center;
-				min-width: 30px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pagination__sizes {
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pagination__sizes .el-input {
-				margin: 0 5px;
-				width: 100px;
-				position: relative;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pagination__sizes .el-input .el-input__inner {
-				border: 1px solid #DCDFE6;
-				cursor: pointer;
-				padding: 0 25px 0 8px;
-				color: #606266;
-				display: inline-block;
-				font-size: 13px;
-				line-height: 28px;
-				border-radius: 3px;
-				outline: 0;
-				background: #FFF;
-				width: 100%;
-				text-align: center;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pagination__sizes .el-input span.el-input__suffix {
-				top: 0;
-				position: absolute;
-				right: 0;
-				height: 100%;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pagination__sizes .el-input .el-input__suffix .el-select__caret {
-				cursor: pointer;
-				color: #C0C4CC;
-				width: 25px;
-				font-size: 14px;
-				line-height: 28px;
-				text-align: center;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pagination__jump {
-				margin: 0 0 0 24px;
-				color: #606266;
-				display: inline-block;
-				vertical-align: top;
-				font-size: 13px;
-				line-height: 28px;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pagination__jump .el-input {
-				border-radius: 3px;
-				padding: 0 2px;
-				margin: 0 2px;
-				display: inline-block;
-				width: 50px;
-				font-size: 14px;
-				line-height: 18px;
-				position: relative;
-				text-align: center;
-				height: 28px;
-			}
-	
-	.main-content .el-pagination ::v-deep .el-pagination__jump .el-input .el-input__inner {
-				border: 1px solid #DCDFE6;
-				cursor: pointer;
-				padding: 0 3px;
-				color: #606266;
-				display: inline-block;
-				font-size: 14px;
-				line-height: 28px;
-				border-radius: 3px;
-				outline: 0;
-				background: #FFF;
-				width: 100%;
-				text-align: center;
-				height: 28px;
-			}
+<style scoped>
+.page-container { padding: 4px; }
+.header-row { display: flex; justify-content: space-between; align-items: center; }
+.search-row { margin-bottom: 12px; }
+.table-image, .preview-image { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; }
+.image-preview-list { display: flex; gap: 8px; flex-wrap: wrap; }
+.pager { margin-top: 16px; text-align: right; }
+.danger-text { color: #f56c6c; }
+.rich-preview { border: 1px solid #ebeef5; border-radius: 8px; padding: 12px; background: #fafafa; }
 </style>

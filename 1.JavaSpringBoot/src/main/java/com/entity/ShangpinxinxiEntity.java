@@ -74,6 +74,14 @@ public class ShangpinxinxiEntity<T> implements Serializable {
 	 */
 					
 	private String pinpai;
+
+	private String chandi;
+
+	private Integer haiba;
+
+	private String shengchanpici;
+
+	private String shiyongchangjing;
 	
 	/**
 	 * 账号
@@ -193,6 +201,30 @@ public class ShangpinxinxiEntity<T> implements Serializable {
 	 */
 	public String getPinpai() {
 		return pinpai;
+	}
+	public void setChandi(String chandi) {
+		this.chandi = chandi;
+	}
+	public String getChandi() {
+		return chandi;
+	}
+	public void setHaiba(Integer haiba) {
+		this.haiba = haiba;
+	}
+	public Integer getHaiba() {
+		return haiba;
+	}
+	public void setShengchanpici(String shengchanpici) {
+		this.shengchanpici = shengchanpici;
+	}
+	public String getShengchanpici() {
+		return shengchanpici;
+	}
+	public void setShiyongchangjing(String shiyongchangjing) {
+		this.shiyongchangjing = shiyongchangjing;
+	}
+	public String getShiyongchangjing() {
+		return shiyongchangjing;
 	}
 	/**
 	 * 设置：账号

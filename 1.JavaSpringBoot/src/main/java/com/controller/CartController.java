@@ -133,11 +133,7 @@ public class CartController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody CartEntity cart, HttpServletRequest request){
-    	cart.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(cart);
-    	cart.setUserid((Long)request.getSession().getAttribute("userId"));
-        cartService.insert(cart);
-        return R.ok();
+        return R.error(403, "admin cart creation is disabled");
     }
     
     /**
@@ -147,6 +143,7 @@ public class CartController {
     public R add(@RequestBody CartEntity cart, HttpServletRequest request){
     	cart.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
     	//ValidatorUtils.validateEntity(cart);
+    	cart.setUserid((Long)request.getSession().getAttribute("userId"));
         cartService.insert(cart);
         return R.ok();
     }
@@ -159,9 +156,7 @@ public class CartController {
     @RequestMapping("/update")
     @Transactional
     public R update(@RequestBody CartEntity cart, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(cart);
-        cartService.updateById(cart);//全部更新
-        return R.ok();
+        return R.error(403, "admin cart update is disabled");
     }
 
 

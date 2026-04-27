@@ -30,8 +30,10 @@ import com.annotation.IgnoreAuth;
 import com.entity.OrdersEntity;
 import com.entity.view.OrdersView;
 
+import com.service.OrderInventorySyncService;
 import com.service.OrdersService;
 import com.service.TokenService;
+import com.service.UserBehaviorService;
 import com.utils.PageUtils;
 import com.utils.R;
 import com.utils.MD5Util;
@@ -51,6 +53,12 @@ import java.io.IOException;
 public class OrdersController {
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private UserBehaviorService userBehaviorService;
+
+    @Autowired
+    private OrderInventorySyncService orderInventorySyncService;
 
 
     
@@ -82,7 +90,6 @@ public class OrdersController {
     /**
      * 前端列表
      */
-	@IgnoreAuth
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,OrdersEntity orders, 
 		HttpServletRequest request){
@@ -140,11 +147,7 @@ public class OrdersController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody OrdersEntity orders, HttpServletRequest request){
-    	orders.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(orders);
-    	orders.setUserid((Long)request.getSession().getAttribute("userId"));
-        ordersService.insert(orders);
-        return R.ok();
+        return R.error(403, "admin order creation is disabled");
     }
     
     /**
@@ -154,7 +157,12 @@ public class OrdersController {
     public R add(@RequestBody OrdersEntity orders, HttpServletRequest request){
     	orders.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
     	//ValidatorUtils.validateEntity(orders);
+        if("yonghu".equals(request.getSession().getAttribute("tableName")) && orders.getUserid() == null) {
+            orders.setUserid((Long)request.getSession().getAttribute("userId"));
+        }
         ordersService.insert(orders);
+        syncInventoryIfNeeded(null, orders);
+        recordBuyBehavior(orders, request);
         return R.ok();
     }
 
@@ -166,8 +174,65 @@ public class OrdersController {
     @RequestMapping("/update")
     @Transactional
     public R update(@RequestBody OrdersEntity orders, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(orders);
-        ordersService.updateById(orders);//全部更新
+        if(orders == null || orders.getId() == null) {
+            return R.error("order id required");
+        }
+        OrdersEntity previous = ordersService.selectById(orders.getId());
+        if(previous == null) {
+            return R.error(404, "order not found");
+        }
+        String tableName = String.valueOf(request.getSession().getAttribute("tableName"));
+        if("shangjia".equals(tableName)) {
+            String username = String.valueOf(request.getSession().getAttribute("username"));
+            if(!username.equals(previous.getZhanghao())) {
+                return R.error(403, "order enterprise mismatch");
+            }
+        }
+        OrdersEntity latest = ordersService.selectById(orders.getId());
+        if(orders.getStatus() != null) {
+            latest.setStatus(orders.getStatus());
+        }
+        if(orders.getLogistics() != null) {
+            latest.setLogistics(orders.getLogistics());
+        }
+        ordersService.updateById(latest);
+        syncInventoryIfNeeded(previous, latest);
+        return R.ok();
+    }
+
+    /**
+     * 发货
+     */
+    @RequestMapping("/ship")
+    @Transactional
+    public R ship(@RequestBody OrdersEntity orders, HttpServletRequest request) {
+        if(orders == null || orders.getId() == null) {
+            return R.error("订单不存在");
+        }
+        if(StringUtils.isBlank(orders.getLogistics())) {
+            return R.error("请填写物流信息");
+        }
+
+        OrdersEntity current = ordersService.selectById(orders.getId());
+        if(current == null) {
+            return R.error(404, "订单不存在");
+        }
+
+        String tableName = String.valueOf(request.getSession().getAttribute("tableName"));
+        if("shangjia".equals(tableName)) {
+            String username = String.valueOf(request.getSession().getAttribute("username"));
+            if(!username.equals(current.getZhanghao())) {
+                return R.error(403, "无权发货该订单");
+            }
+        }
+
+        if(!"已支付".equals(current.getStatus())) {
+            return R.error("只有已支付订单可以发货");
+        }
+
+        current.setLogistics(orders.getLogistics());
+        current.setStatus("已发货");
+        ordersService.updateById(current);
         return R.ok();
     }
 
@@ -315,6 +380,25 @@ public class OrdersController {
             }
         }
         return R.ok().put("data", result);
+    }
+
+    private void recordBuyBehavior(OrdersEntity orders, HttpServletRequest request) {
+        if(orders == null) {
+            return;
+        }
+        if(!"yonghu".equals(request.getSession().getAttribute("tableName"))) {
+            return;
+        }
+        if(!"shangpinxinxi".equals(orders.getTablename())) {
+            return;
+        }
+        if(orders.getUserid() != null && orders.getGoodid() != null) {
+            userBehaviorService.recordBehavior(orders.getUserid(), orders.getGoodid(), "buy");
+        }
+    }
+
+    private void syncInventoryIfNeeded(OrdersEntity previous, OrdersEntity current) {
+        orderInventorySyncService.syncOnOrderEffectiveStatusChange(previous, current);
     }
 
 

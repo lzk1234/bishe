@@ -28,10 +28,13 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.annotation.IgnoreAuth;
 
 import com.entity.StoreupEntity;
+import com.entity.ShangpinxinxiEntity;
 import com.entity.view.StoreupView;
 
 import com.service.StoreupService;
+import com.service.ShangpinxinxiService;
 import com.service.TokenService;
+import com.service.UserBehaviorService;
 import com.utils.PageUtils;
 import com.utils.R;
 import com.utils.MD5Util;
@@ -51,6 +54,12 @@ import java.io.IOException;
 public class StoreupController {
     @Autowired
     private StoreupService storeupService;
+
+    @Autowired
+    private UserBehaviorService userBehaviorService;
+
+    @Autowired
+    private ShangpinxinxiService shangpinxinxiService;
 
 
     
@@ -82,6 +91,7 @@ public class StoreupController {
         EntityWrapper<StoreupEntity> ew = new EntityWrapper<StoreupEntity>();
 
 		PageUtils page = storeupService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, storeup), params), params));
+        syncStoreupGoodsSnapshot(page);
         return R.ok().put("data", page);
     }
 
@@ -133,11 +143,7 @@ public class StoreupController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody StoreupEntity storeup, HttpServletRequest request){
-    	storeup.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(storeup);
-    	storeup.setUserid((Long)request.getSession().getAttribute("userId"));
-        storeupService.insert(storeup);
-        return R.ok();
+        return R.error(403, "admin favorite creation is disabled");
     }
     
     /**
@@ -147,7 +153,9 @@ public class StoreupController {
     public R add(@RequestBody StoreupEntity storeup, HttpServletRequest request){
     	storeup.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
     	//ValidatorUtils.validateEntity(storeup);
+    	storeup.setUserid((Long)request.getSession().getAttribute("userId"));
         storeupService.insert(storeup);
+        recordFavoriteBehavior(storeup, request);
         return R.ok();
     }
 
@@ -159,9 +167,7 @@ public class StoreupController {
     @RequestMapping("/update")
     @Transactional
     public R update(@RequestBody StoreupEntity storeup, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(storeup);
-        storeupService.updateById(storeup);//全部更新
-        return R.ok();
+        return R.error(403, "admin favorite update is disabled");
     }
 
 
@@ -221,7 +227,73 @@ public class StoreupController {
 		int count = storeupService.selectCount(wrapper);
 		return R.ok().put("count", count);
 	}
-	
+
+    private void recordFavoriteBehavior(StoreupEntity storeup, HttpServletRequest request) {
+        if(storeup == null) {
+            return;
+        }
+        if(!"yonghu".equals(request.getSession().getAttribute("tableName"))) {
+            return;
+        }
+        if(!"shangpinxinxi".equals(storeup.getTablename())) {
+            return;
+        }
+        if(storeup.getUserid() != null && storeup.getRefid() != null) {
+            userBehaviorService.recordBehavior(storeup.getUserid(), storeup.getRefid(), "favorite");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void syncStoreupGoodsSnapshot(PageUtils page) {
+        if(page == null || page.getList() == null || page.getList().isEmpty()) {
+            return;
+        }
+        List<StoreupEntity> originalList = (List<StoreupEntity>) page.getList();
+        List<Long> goodIds = new ArrayList<Long>();
+        for(StoreupEntity item : originalList) {
+            if(item != null && "shangpinxinxi".equals(item.getTablename()) && item.getRefid() != null) {
+                goodIds.add(item.getRefid());
+            }
+        }
+        Map<Long, ShangpinxinxiEntity> goodsMap = new HashMap<Long, ShangpinxinxiEntity>();
+        if(!goodIds.isEmpty()) {
+            List<ShangpinxinxiEntity> goodsList = shangpinxinxiService.selectBatchIds(goodIds);
+            for(ShangpinxinxiEntity goods : goodsList) {
+                if(goods != null && goods.getId() != null) {
+                    goodsMap.put(goods.getId(), goods);
+                }
+            }
+        }
+        List<StoreupEntity> filteredList = new ArrayList<StoreupEntity>();
+        List<Long> invalidStoreupIds = new ArrayList<Long>();
+        for(StoreupEntity item : originalList) {
+            if(item == null) {
+                continue;
+            }
+            if(!"shangpinxinxi".equals(item.getTablename()) || item.getRefid() == null) {
+                filteredList.add(item);
+                continue;
+            }
+            ShangpinxinxiEntity goods = goodsMap.get(item.getRefid());
+            if(goods == null) {
+                if(item.getId() != null) {
+                    invalidStoreupIds.add(item.getId());
+                }
+                continue;
+            }
+            item.setName(goods.getShangpinmingcheng());
+            item.setPicture(goods.getTupian());
+            filteredList.add(item);
+        }
+        if(!invalidStoreupIds.isEmpty()) {
+            storeupService.deleteBatchIds(invalidStoreupIds);
+        }
+        page.setList(filteredList);
+        page.setTotal(filteredList.size());
+        long totalPage = page.getPageSize() > 0 ? (long) Math.ceil((double) filteredList.size() / page.getPageSize()) : 0L;
+        page.setTotalPage(totalPage);
+    }
+
 
 
 

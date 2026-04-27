@@ -1,0 +1,53 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.jlwl:springbooty2rp6 >----------------------
+[INFO] Building springboot-schema 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:2.2.2.RELEASE:run (default-cli) > test-compile @ springbooty2rp6 >>>
+[INFO] 
+[INFO] --- resources:3.1.0:resources (default-resources) @ springbooty2rp6 ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] Copying 72 resources
+[INFO] 
+[INFO] --- compiler:3.8.1:compile (default-compile) @ springbooty2rp6 ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.1.0:testResources (default-testResources) @ springbooty2rp6 ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory F:\Desktop\chaye\TeaMallSystem\1.JavaSpringBoot\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.8.1:testCompile (default-testCompile) @ springbooty2rp6 ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< spring-boot:2.2.2.RELEASE:run (default-cli) < test-compile @ springbooty2rp6 <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:2.2.2.RELEASE:run (default-cli) @ springbooty2rp6 ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.2.2.RELEASE)
+
+2026-04-23 19:29:34.791  INFO 28032 --- [           main] com.SpringbootSchemaApplication          : Starting SpringbootSchemaApplication on MMR with PID 28032 (F:\Desktop\chaye\TeaMallSystem\1.JavaSpringBoot\target\classes started by LZK in F:\Desktop\chaye\TeaMallSystem\1.JavaSpringBoot)
+2026-04-23 19:29:34.805  INFO 28032 --- [           main] com.SpringbootSchemaApplication          : No active profile set, falling back to default profiles: default
+2026-04-23 19:29:42.811  INFO 28032 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-04-23 19:29:42.828  INFO 28032 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-23 19:29:42.828  INFO 28032 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.29]
+2026-04-23 19:29:42.922  INFO 28032 --- [           main] o.a.c.c.C.[.[.[/springbooty2rp6]         : Initializing Spring embedded WebApplicationContext
+2026-04-23 19:29:42.924  INFO 28032 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 8047 ms
+2026-04-23 19:29:43.207  INFO 28032 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-23 19:29:44.625  INFO 28032 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-23 19:29:46.826  INFO 28032 --- [           main] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2026-04-23 19:29:46.988  INFO 28032 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/springbooty2rp6'
+2026-04-23 19:29:46.994  INFO 28032 --- [           main] com.SpringbootSchemaApplication          : Started SpringbootSchemaApplication in 12.694 seconds (JVM running for 13.241)
+2026-04-23 19:30:18.733  INFO 28032 --- [nio-8080-exec-1] o.a.c.c.C.[.[.[/springbooty2rp6]         : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-23 19:30:18.734  INFO 28032 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-23 19:30:18.741  INFO 28032 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms

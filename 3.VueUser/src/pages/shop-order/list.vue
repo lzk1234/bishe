@@ -1,7 +1,7 @@
 <template>
-<div :style='{"border":"1px solid #dfdfdf","padding":"20px","margin":"20px auto 0","borderRadius":"16px","background":"#fff","width":"1200px","position":"relative"}'>
-    <el-button :style='{"border":"0","cursor":"pointer","padding":"0 10px","margin":"0 5px 0 0","outline":"none","color":"#fff","borderRadius":"4px","background":"rgba(64, 158, 255, 1)","width":"auto","lineHeight":"40px","fontSize":"14px","height":"40px"}' type="warning" size="mini" @click="backClick" class="el-icon-back">返回</el-button>
-    <div class="section-title" :style='{"margin":"0px 0","color":"#2087c3","borderRadius":"8px 8px 0 0","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221029/f414ce6eeb09429c9bc4d3d6643d9bd1.png) no-repeat center top","fontSize":"24px","lineHeight":"150px","fontWeight":"bold"}'>我的订单</div>
+<div :style='{"border":"1px solid #f0f0ed","padding":"40px","margin":"40px auto","borderRadius":"var(--radius-main)","background":"#fff","width":"1200px","position":"relative"}'>
+    <el-button :style='{"border":"1px solid #ddd","cursor":"pointer","padding":"0 20px","margin":"0 0 30px","outline":"none","color":"var(--text-secondary)","borderRadius":"4px","background":"#fff","width":"auto","lineHeight":"40px","fontSize":"14px","height":"40px"}' type="warning" size="mini" @click="backClick" class="el-icon-back">返回</el-button>
+    <div class="section-title" :style='{"margin":"0 0 40px","color":"var(--primary-color)","borderRadius":"4px","textAlign":"center","background":"#fdfdfb","fontSize":"24px","lineHeight":"100px","fontWeight":"600","letterSpacing":"4px","fontFamily":"serif","border":"1px solid #f0f0ed"}'>我的订单</div>
     <el-tabs v-model="activeName" @tab-click="handleClick"">
       <el-tab-pane label="未支付" name="未支付"></el-tab-pane>
       <el-tab-pane label="已支付" name="已支付"></el-tab-pane>
@@ -15,7 +15,10 @@
       <el-table-column label="茶叶" align="center" width="200px">
         <template slot-scope="scope">
           <div class="shangpin">
-            <el-image style="width: 100px; height: 100px" :src="baseUrl + scope.row.picture" fit="fill"></el-image>
+            <img
+              class="order-list-image"
+              :src="resolveImageUrl(scope.row.picture)"
+              alt="">
             <span style="margin-left: 10px" >{{ scope.row.goodname }}</span>
           </div>
         </template>
@@ -98,6 +101,12 @@
       this.getMyOrderList(1);
     },
     methods: {
+      resolveImageUrl(value) {
+        if (!value) return ''
+        const firstImage = String(value).split(',')[0]
+        if (/^https?:\/\//i.test(firstImage)) return firstImage
+        return this.baseUrl + firstImage.replace(/^\/+/, '')
+      },
       backClick() {
           this.$router.push('/index/center')
       },
@@ -173,12 +182,6 @@
                                         this.$http.post(`shangpinxinxi/update`, good).then(res => {
                                         });
                                     }
-                                    if(item.tablename == `miaoshashangpin`){
-                                        // 加回库存数量
-                                        good.alllimittimes = good.alllimittimes + item.buynumber;
-                                        this.$http.post(`miaoshashangpin/update`, good).then(res => {
-                                        });
-                                    }
                                     this.$message({
                                       message: '退款成功',
                                       type: 'success',
@@ -199,12 +202,6 @@
                                         // 加回库存数量
                                         good.alllimittimes = good.alllimittimes + item.buynumber;
                                         this.$http.post(`shangpinxinxi/update`, good).then(res => {
-                                        });
-                                    }
-                                    if(item.tablename == `miaoshashangpin`){
-                                        // 加回库存数量
-                                        good.alllimittimes = good.alllimittimes + item.buynumber;
-                                        this.$http.post(`miaoshashangpin/update`, good).then(res => {
                                         });
                                     }
                                     this.$message({
@@ -259,12 +256,6 @@
                                         this.$http.post(`shangpinxinxi/update`, good).then(res => {
                                         });
                                     }
-                                    if(item.tablename == `miaoshashangpin`){
-                                        // 加回库存数量
-                                        good.alllimittimes = good.alllimittimes + item.buynumber;
-                                        this.$http.post(`miaoshashangpin/update`, good).then(res => {
-                                        });
-                                    }
                                     this.$message({
                                       message: '退货成功',
                                       type: 'success',
@@ -285,12 +276,6 @@
                                         // 加回库存数量
                                         good.alllimittimes = good.alllimittimes + item.buynumber;
                                         this.$http.post(`shangpinxinxi/update`, good).then(res => {
-                                        });
-                                    }
-                                    if(item.tablename == `miaoshashangpin`){
-                                        // 加回库存数量
-                                        good.alllimittimes = good.alllimittimes + item.buynumber;
-                                        this.$http.post(`miaoshashangpin/update`, good).then(res => {
                                         });
                                     }
                                     this.$message({
@@ -388,17 +373,6 @@
                             });
                         }
                   });
-                    // 获取茶叶详情信息
-                    this.$http.get(item.tablename+'/info/'+item.goodid, {}).then(res => {
-                        // 茶叶信息
-                        let good = res.data.data;
-                        if(item.tablename == `miaoshashangpin`){
-                            // 加回库存数量
-                            good.alllimittimes = good.alllimittimes + item.buynumber;
-                            this.$http.post(`miaoshashangpin/update`, good).then(res => {
-                            });
-                        }
-                  });
                   this.$message({
                     message: '订单取消成功',
                     type: 'success',
@@ -441,7 +415,15 @@
 
 	.shangpin {
 	  display: flex;
+      align-items: center;
 	}
+    .order-list-image {
+      width: 100px;
+      height: 100px;
+      display: block;
+      object-fit: cover;
+      background: #f5f7fa;
+    }
 	
 	.el-pagination ::v-deep .el-pagination__total {
 		margin: 0 10px 0 0;
@@ -563,7 +545,7 @@
 		font-size: 13px;
 		line-height: 28px;
 		border-radius: 2px;
-		background: #409EFF;
+		background: var(--primary-color);
 		text-align: center;
 		min-width: 30px;
 		height: 28px;

@@ -8,7 +8,6 @@
 				</el-row>
 
 				<el-row :style='{"margin":"0","justifyContent":"flex-end","display":"flex"}'>
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('cart','新增')" type="success" @click="addOrUpdateHandler()">新增</el-button>
 					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('cart','删除')" :disabled="dataListSelections.length <= 0" type="danger" @click="deleteHandler()">删除</el-button>
 
 
@@ -95,12 +94,6 @@
 					<el-table-column width="300" label="操作">
 						<template slot-scope="scope">
 							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if=" isAuth('cart','查看')" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">详情</el-button>
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if=" isAuth('cart','修改')" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">修改</el-button>
-
-
-
-
-
 							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if="isAuth('cart','删除') " type="danger" size="mini" @click="deleteHandler(scope.row.id)">删除</el-button>
 						</template>
 					</el-table-column>

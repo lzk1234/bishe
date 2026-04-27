@@ -79,6 +79,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
         
 		PrintWriter writer = null;
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=utf-8");
 		try {

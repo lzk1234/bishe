@@ -1,6 +1,291 @@
 const menu = {
-    list() {
-        return [{"backMenu":[{"child":[{"appFrontIcon":"cuIcon-clothes","buttons":["新增","查看","修改","删除"],"menu":"用户","menuJump":"列表","tableName":"yonghu"}],"menu":"用户管理"},{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["新增","查看","修改","删除"],"menu":"商家","menuJump":"列表","tableName":"shangjia"}],"menu":"商家管理"},{"child":[{"appFrontIcon":"cuIcon-brand","buttons":["新增","查看","修改","删除"],"menu":"茶叶分类","menuJump":"列表","tableName":"shangpinfenlei"}],"menu":"茶叶分类管理"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看","修改","删除","查看评论"],"menu":"茶叶信息","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息管理"},{"child":[{"appFrontIcon":"cuIcon-copy","buttons":["查看","修改","删除","查看评论"],"menu":"秒杀茶叶","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶管理"},{"child":[{"appFrontIcon":"cuIcon-news","buttons":["新增","查看","修改","删除"],"menu":"商城资讯","tableName":"news"},{"appFrontIcon":"cuIcon-cardboard","buttons":["查看","修改"],"menu":"关于我们","tableName":"aboutus"},{"appFrontIcon":"cuIcon-form","buttons":["查看","修改"],"menu":"轮播图管理","tableName":"config"}],"menu":"系统管理"}],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"是","hasBackRegister":"否","hasFrontLogin":"否","hasFrontRegister":"否","roleName":"管理员","tableName":"users"},{"backMenu":[],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"否","hasBackRegister":"否","hasFrontLogin":"是","hasFrontRegister":"是","roleName":"用户","tableName":"yonghu"},{"backMenu":[{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["新增","查看","修改","删除","查看评论"],"menu":"茶叶信息","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息管理"},{"child":[{"appFrontIcon":"cuIcon-copy","buttons":["新增","查看","修改","删除","查看评论"],"menu":"秒杀茶叶","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶管理"},{"child":[{"appFrontIcon":"cuIcon-goods","buttons":["查看","删除"],"menu":"已退款订单","tableName":"orders/已退款"},{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看","删除"],"menu":"未支付订单","tableName":"orders/未支付"},{"appFrontIcon":"cuIcon-present","buttons":["查看","删除"],"menu":"已发货订单","tableName":"orders/已发货"},{"appFrontIcon":"cuIcon-goodsnew","buttons":["查看","发货","删除"],"menu":"已支付订单","tableName":"orders/已支付"},{"appFrontIcon":"cuIcon-explore","buttons":["查看","删除","日销量","月销量","品销量","类销量","月销额","日销额","品销额","类销额"],"menu":"已完成订单","tableName":"orders/已完成"},{"appFrontIcon":"cuIcon-pic","buttons":["查看","删除"],"menu":"已取消订单","tableName":"orders/已取消"}],"menu":"订单管理"}],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"是","hasBackRegister":"是","hasFrontLogin":"否","hasFrontRegister":"否","roleName":"商家","tableName":"shangjia"}]
-    }
+  list() {
+    return [
+      {
+        roleName: '管理员',
+        tableName: 'users',
+        hasBackLogin: '是',
+        hasBackRegister: '否',
+        hasFrontLogin: '否',
+        hasFrontRegister: '否',
+        backMenu: [
+          {
+            menu: '基础档案',
+            child: [
+              {
+                menu: '茶企档案',
+                tableName: 'shangjia',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '客户档案',
+                tableName: 'yonghu',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '茶类等级',
+                tableName: 'shangpinfenlei',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '茶品档案',
+                tableName: 'shangpinxinxi',
+                buttons: ['新增', '查看', '修改', '删除', '查看评论']
+              }
+            ]
+          },
+          {
+            menu: '生产管理',
+            child: [
+              {
+                menu: '茶园基地',
+                tableName: 'teabase',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '生产批次',
+                tableName: 'teabatch',
+                buttons: ['新增', '查看', '修改', '删除']
+              }
+            ]
+          },
+          {
+            menu: '供应库存',
+            child: [
+              {
+                menu: '库存台账',
+                tableName: 'inventoryrecord',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '仓库档案',
+                tableName: 'warehouse',
+                buttons: ['新增', '查看', '修改', '删除']
+              }
+            ]
+          },
+          {
+            menu: '销售管理',
+            child: [
+              {
+                menu: '销售订单',
+                tableName: 'orders/已支付',
+                buttons: ['查看', '发货', '删除']
+              },
+              {
+                menu: '发货订单',
+                tableName: 'orders/已发货',
+                buttons: ['查看', '删除']
+              },
+              {
+                menu: '完成订单',
+                tableName: 'orders/已完成',
+                buttons: ['查看', '删除', '日销量', '月销量', '品销量', '类销量', '月销售额', '日销售额', '品销售额', '类销售额']
+              },
+              {
+                menu: '未支付订单',
+                tableName: 'orders/未支付',
+                buttons: ['查看', '删除']
+              },
+              {
+                menu: '退款订单',
+                tableName: 'orders/已退款',
+                buttons: ['查看', '删除']
+              }
+            ]
+          },
+          {
+            menu: '决策中心',
+            child: [
+              {
+                menu: '经营建议',
+                tableName: 'decisionAdvice',
+                buttons: ['查看']
+              },
+              {
+                menu: '茶园产能地图',
+                tableName: 'baseMap',
+                buttons: ['查看']
+              },
+              {
+                menu: '年度产销计划',
+                tableName: 'productionSalesPlan',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '产销计划看板',
+                tableName: 'productionSalesBoard',
+                buttons: ['查看']
+              },
+              {
+                menu: '调拨建议',
+                tableName: 'inventoryTransferSuggestion',
+                buttons: ['新增', '查看', '修改', '删除', '确认']
+              },
+              {
+                menu: '推荐管理',
+                tableName: 'recommendation',
+                buttons: ['查看', '删除', '刷新']
+              }
+            ]
+          },
+          {
+            menu: '系统管理',
+            child: [
+              {
+                menu: '行业资讯',
+                tableName: 'news',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '项目介绍',
+                tableName: 'aboutus',
+                buttons: ['查看', '修改']
+              },
+              {
+                menu: '首页轮播',
+                tableName: 'config',
+                buttons: ['查看', '修改']
+              }
+            ]
+          }
+        ],
+        frontMenu: []
+      },
+      {
+        roleName: '用户',
+        tableName: 'yonghu',
+        hasBackLogin: '否',
+        hasBackRegister: '否',
+        hasFrontLogin: '是',
+        hasFrontRegister: '是',
+        backMenu: [],
+        frontMenu: [
+          {
+            menu: '茶品采购',
+            child: [
+              {
+                menu: '茶品列表',
+                tableName: 'shangpinxinxi',
+                buttons: ['查看']
+              }
+            ]
+          }
+        ]
+      },
+      {
+        roleName: '商家',
+        tableName: 'shangjia',
+        hasBackLogin: '是',
+        hasBackRegister: '是',
+        hasFrontLogin: '否',
+        hasFrontRegister: '否',
+        backMenu: [
+          {
+            menu: '基础档案',
+            child: [
+              {
+                menu: '茶品档案',
+                tableName: 'shangpinxinxi',
+                buttons: ['新增', '查看', '修改', '删除', '查看评论']
+              }
+            ]
+          },
+          {
+            menu: '生产管理',
+            child: [
+              {
+                menu: '茶园基地',
+                tableName: 'teabase',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '生产批次',
+                tableName: 'teabatch',
+                buttons: ['新增', '查看', '修改', '删除']
+              }
+            ]
+          },
+          {
+            menu: '供应库存',
+            child: [
+              {
+                menu: '库存台账',
+                tableName: 'inventoryrecord',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '仓库档案',
+                tableName: 'warehouse',
+                buttons: ['新增', '查看', '修改', '删除']
+              }
+            ]
+          },
+          {
+            menu: '销售管理',
+            child: [
+              {
+                menu: '销售订单',
+                tableName: 'orders/已支付',
+                buttons: ['查看', '发货', '删除']
+              },
+              {
+                menu: '发货订单',
+                tableName: 'orders/已发货',
+                buttons: ['查看', '删除']
+              },
+              {
+                menu: '完成订单',
+                tableName: 'orders/已完成',
+                buttons: ['查看', '删除', '日销量', '月销量', '品销量', '类销量', '月销售额', '日销售额', '品销售额', '类销售额']
+              },
+              {
+                menu: '未支付订单',
+                tableName: 'orders/未支付',
+                buttons: ['查看', '删除']
+              },
+              {
+                menu: '退款订单',
+                tableName: 'orders/已退款',
+                buttons: ['查看', '删除']
+              }
+            ]
+          },
+          {
+            menu: '决策中心',
+            child: [
+              {
+                menu: '经营建议',
+                tableName: 'decisionAdvice',
+                buttons: ['查看']
+              },
+              {
+                menu: '茶园产能地图',
+                tableName: 'baseMap',
+                buttons: ['查看']
+              },
+              {
+                menu: '年度产销计划',
+                tableName: 'productionSalesPlan',
+                buttons: ['新增', '查看', '修改', '删除']
+              },
+              {
+                menu: '产销计划看板',
+                tableName: 'productionSalesBoard',
+                buttons: ['查看']
+              },
+              {
+                menu: '调拨建议',
+                tableName: 'inventoryTransferSuggestion',
+                buttons: ['新增', '查看', '修改', '删除', '确认']
+              }
+            ]
+          }
+        ],
+        frontMenu: []
+      }
+    ]
+  }
 }
-export default menu;
+
+export default menu

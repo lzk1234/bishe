@@ -1,8 +1,8 @@
 <template>
-<div class="center-preview" :style='{"border":"1px solid #dfdfdf","boxShadow":"1px 2px 3px #eee","margin":"20px auto","borderRadius":"16px","background":"#fff","width":"1200px","position":"relative"}'>
-	<div class="title" :style='{"margin":"0px 0","color":"#2087c3","borderRadius":"8px 8px 0 0","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221029/f414ce6eeb09429c9bc4d3d6643d9bd1.png) no-repeat center top","fontSize":"24px","lineHeight":"150px","fontWeight":"bold"}'>{{ title }}</div>
+<div class="center-preview" :style='{"border":"1px solid #f0f0ed","margin":"40px auto","borderRadius":"var(--radius-main)","background":"#fff","width":"1200px","position":"relative"}'>
+	<div class="title" :style='{"margin":"0","color":"#fff","borderRadius":"4px 4px 0 0","textAlign":"center","background":"var(--primary-color)","fontSize":"24px","lineHeight":"120px","fontWeight":"600","letterSpacing":"4px","fontFamily":"serif"}'>{{ title }}</div>
 
-    <el-tabs tab-position="left" :style='{"border":"0","padding":"20px","margin":"0","borderRadius":"0 0 16px 16px","background":"none"}' @tab-click="handleClick">
+    <el-tabs tab-position="left" :style='{"border":"0","padding":"40px","margin":"0","background":"none"}' @tab-click="handleClick">
       <el-tab-pane label="个人中心">
         <el-form class="center-preview-pv" ref="sessionForm" :model="sessionForm" :rules="rules" label-width="80px">
           <el-form-item :style='{"border":"1px solid #dfdfdf","padding":"10px","boxShadow":"1px 2px 3px #eee","margin":"0 0 10px","borderRadius":"8px","background":"radial-gradient(circle, rgba(246,246,246,1) 0%, rgba(230,230,230,1) 100%)"}' v-if="userTableName=='yonghu'" label="用户名" prop="yonghuming">
@@ -374,14 +374,14 @@
       yonghutouxiangHandleAvatarSuccess(res, file) {
         if (res.code == 0) {
           if ('yonghu' == this.userTableName) {
-            this.sessionForm.touxiang = 'upload/' + res.file;
+            this.sessionForm.touxiang = res.url || (res.file ? 'upload/' + res.file : this.sessionForm.touxiang);
           }
         }
       },
       shangjiatouxiangHandleAvatarSuccess(res, file) {
         if (res.code == 0) {
           if ('shangjia' == this.userTableName) {
-            this.sessionForm.touxiang = 'upload/' + res.file;
+            this.sessionForm.touxiang = res.url || (res.file ? 'upload/' + res.file : this.sessionForm.touxiang);
           }
         }
       },
@@ -527,65 +527,39 @@
   }
   
   .center-preview .el-tabs ::v-deep .el-tabs__header {
-	border-radius: 12px;
-	padding: 12px 0 16px;
-	box-shadow: 1px 3px 6px #bbb;
-	margin: 0px;
-	background: linear-gradient(180deg, rgba(160,215,255,1) 0%, rgba(39,139,213,1) 100%);
-	width: 226px;
-	border-color: #007abf;
-	border-width: 1px 1px 1px 1px;
+	border-radius: 4px;
+	padding: 20px 0;
+	margin: 0;
+	background: #fdfdfb;
+	width: 220px;
+	border: 1px solid #f0f0ed;
 	position: relative;
 	float: left;
-	border-style: solid;
   }
   
   .center-preview .el-tabs ::v-deep .el-tabs__header .el-tabs__item {
-  	padding: 0 10px;
-  	margin: 0 12px 8px 12px;
-  	color: #333;
+  	padding: 0 20px;
+  	margin: 0 15px 10px 15px;
+  	color: var(--text-secondary);
   	white-space: nowrap;
   	font-weight: 500;
   	font-size: 14px;
-  	line-height: 40px;
-  	text-overflow: ellipsis;
-  	border-radius: 12px;
-  	box-shadow: 1px 2px 4px #1f6599,inset 0px 0px 56px 0px #f6f6f6;
-  	overflow: hidden;
-  	background: #d9e8f3;
-  	position: relative;
+  	line-height: 45px;
+  	border-radius: 2px;
+  	transition: all 0.3s;
   	text-align: center;
-  	height: 40px;
+  	height: 45px;
   }
   
   .center-preview .el-tabs ::v-deep .el-tabs__header .el-tabs__item:hover {
-  	border-radius: 12px;
-  	padding: 0 10px;
-  	box-shadow: 1px 2px 4px #1f6599;
-  	margin: 0 12px 8px 12px;
-  	color: #fff;
-  	background: radial-gradient(circle, rgba(146,195,249,1) 0%, rgba(36,153,251,1) 100%);
-  	font-weight: 500;
-  	font-size: 14px;
-  	line-height: 40px;
-  	position: relative;
-  	text-align: center;
-  	height: 40px;
+  	color: var(--primary-color);
+  	background: rgba(166, 137, 102, 0.05);
   }
   
   .center-preview .el-tabs ::v-deep .el-tabs__header .el-tabs__item.is-active {
-  	border-radius: 12px;
-  	padding: 0 10px;
-  	box-shadow: 1px 2px 4px #1f6599;
-  	margin: 0 12px 8px 12px;
   	color: #fff;
-  	background: radial-gradient(circle, rgba(146,195,249,1) 0%, rgba(36,153,251,1) 100%);
-  	font-weight: 500;
-  	font-size: 14px;
-  	line-height: 40px;
-  	position: relative;
-  	text-align: center;
-  	height: 40px;
+  	background: var(--primary-color);
+  	font-weight: 600;
   }
   
   .center-preview .el-tabs ::v-deep .el-tabs__content .el-tab-pane {
@@ -609,25 +583,39 @@
     margin-left: 80px;
   }
   
+  .center-preview-pv .el-form-item {
+	  border: none !important;
+	  box-shadow: none !important;
+	  background: transparent !important;
+	  margin-bottom: 25px !important;
+  }
+  
   .center-preview-pv .el-input ::v-deep .el-input__inner {
-  	border: 1px solid #ccc;
-  	border-radius: 4px;
-  	padding: 0 12px;
+  	border: none;
+  	border-bottom: 1px solid #e0e0e0;
+  	border-radius: 0;
+  	padding: 0 10px;
   	outline: none;
-  	color: #999;
-  	background: #f9f9f9;
+  	color: var(--text-main);
+  	background: transparent;
   	width: 400px;
   	font-size: 14px;
   	height: 40px;
+  	transition: all 0.3s;
+  }
+
+  .center-preview-pv .el-input ::v-deep .el-input__inner:focus {
+	  border-bottom-color: var(--accent-color);
   }
   
   .center-preview-pv .el-select ::v-deep .el-input__inner {
-  	border: 1px solid #ccc;
-  	border-radius: 4px;
-  	padding: 0 12px;
+  	border: none;
+  	border-bottom: 1px solid #e0e0e0;
+  	border-radius: 0;
+  	padding: 0 10px;
   	outline: none;
-  	color: #999;
-  	background: #f9f9f9;
+  	color: var(--text-main);
+  	background: transparent;
   	width: 400px;
   	font-size: 14px;
   	height: 40px;

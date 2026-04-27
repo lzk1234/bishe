@@ -1,32 +1,60 @@
 <template>
-<div>
-	<div class="container" :style='{"minHeight":"100vh","alignItems":"center","background":"url(https://pic.imgdb.cn/item/65eac96d9f345e8d03c6aa2b.jpg) no-repeat","display":"flex","width":"100%","backgroundSize":"cover","backgroundPosition":"center center","backgroundRepeat":"no-repeat","justifyContent":"center"}'>
-		<el-form ref="loginForm" :model="loginForm" :style='{"padding":"35px 20px 30px","boxShadow":"0 1px 3px rgba(64, 158, 255, .8)","margin":"0","borderRadius":"32px 32px","background":"url(http://codegen.caihongy.cn/20221029/ea2be95667c4485286b36febaa97a64e.png) no-repeat center top,url(http://codegen.caihongy.cn/20221029/238e5e194bc348e9b292b2ffaed4c06d.png) no-repeat center bottom,linear-gradient(180deg, rgba(204,204,204,1) 0%, rgba(246,246,246,1) 15%, rgba(255,255,255,1) 51%, rgba(246,246,246,1) 85%, rgba(204,204,204,1) 100%)","width":"800px","height":"auto"}' :rules="rules">
-			<div v-if="true" :style='{"margin":"0 0 10px 0","color":"#409eff","textAlign":"center","width":"100%","fontSize":"20px","textShadow":"4px 4px 2px rgba(64, 158, 255, .5)","fontWeight":"bold"}'>USER / LOGIN</div>
-			<div v-if="true" :style='{"margin":"0 0 4px 0","color":"#409eff","textAlign":"center","width":"100%","fontSize":"20px","textShadow":"4px 4px 2px rgba(64, 158, 255, .5)","fontWeight":"bold"}'>基于SpringBoot的茶叶商城系统的设计与实现登录</div>
-			<el-form-item v-if="loginType==1" class="list-item" :style='{"width":"80%","margin":"0 auto 10px"}' prop="username">
-				<div v-if="true" :style='{"width":"64px","lineHeight":"40px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>账号：</div>
-				<input :style='{"border":"1px solid #999","padding":"0 10px","boxShadow":"1px 2px 4px #ccc","color":"#999","borderRadius":"8px","background":"-webkit-linear-gradient(top,#fff,#eee)","width":"100%","fontSize":"14px","height":"44px"}' v-model="loginForm.username" placeholder="请输入账户">
-			</el-form-item>
-			<el-form-item v-if="loginType==1" class="list-item" :style='{"width":"80%","margin":"0 auto 10px"}' prop="password">
-				<div v-if="true" :style='{"width":"64px","lineHeight":"40px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>密码：</div>
-				<input :style='{"border":"1px solid #999","padding":"0 10px","boxShadow":"1px 2px 4px #ccc","color":"#999","borderRadius":"8px","background":"-webkit-linear-gradient(top,#fff,#eee)","width":"100%","fontSize":"14px","height":"44px"}' v-model="loginForm.password" placeholder="请输入密码" type="password">
-			</el-form-item>
-			<el-form-item v-if="roles.length>1" class="list-type" :style='{"width":"80%","margin":"20px auto"}' prop="role">
-				<el-radio v-model="loginForm.tableName" :label="item.tableName" v-for="(item, index) in roles" :key="index" @change.native="getCurrentRow(item)">{{item.roleName}}</el-radio>
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","margin":"20px auto"}'>
-				<el-button v-if="loginType==1" :style='{"border":"0","cursor":"pointer","padding":"0 24px","boxShadow":"1px 2px 3px #52a1db","margin":"0 5px","outline":"none","color":"#fff","borderRadius":"30%","background":"radial-gradient(circle, rgba(128,184,246,1) 0%, rgba(36,153,251,1) 100%)","width":"auto","fontSize":"14px","height":"40px"}' @click="submitForm('loginForm')">登录</el-button>
-				<el-button v-if="loginType==1" :style='{"border":"1px solid #bbb","cursor":"pointer","padding":"0 24px","boxShadow":"1px 2px 3px #ccc","margin":"0 5px","outline":"none","color":"#999","borderRadius":"30%","background":"#fff","width":"auto","fontSize":"14px","height":"40px"}' @click="resetForm('loginForm')">重置</el-button>
-                <el-upload v-if="loginType==2" :action="baseUrl + 'file/upload'" :show-file-list="false" :on-success="faceLogin">
-                    <el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","boxShadow":"1px 2px 3px #52a1db","margin":"0 5px","outline":"none","color":"#fff","borderRadius":"30%","background":"radial-gradient(circle, rgba(128,184,246,1) 0%, rgba(36,153,251,1) 100%)","width":"auto","fontSize":"14px","height":"40px"}'>人脸识别登录</el-button>
-                </el-upload>
-			</el-form-item>
-			<div :style='{"width":"80%","margin":"20px auto"}'>
-			<router-link :style='{"cursor":"pointer","margin":"0 5px","fontSize":"14px","textDecoration":"none","color":"#278bd5"}' :to="{path: '/register', query: {role: item.tableName,pageFlag:'register'}}" v-if="item.hasFrontRegister=='是'" v-for="(item, index) in roles" :key="index">注册{{item.roleName.replace('注册','')}}</router-link>
+<div class="login-wrapper">
+	<div class="login-container">
+		<div class="login-box fade-in-up">
+			<div class="login-header">
+				<div class="logo-text">萃茗阁</div>
+				<h2>欢迎回来</h2>
+				<p>品味名茶之韵，感悟人生之静</p>
 			</div>
-		</el-form>
-    </div>
+			
+			<el-form ref="loginForm" :model="loginForm" :rules="rules" class="login-form">
+				<el-form-item prop="username">
+					<el-input 
+						v-model="loginForm.username" 
+						placeholder="请输入账户" 
+						prefix-icon="el-icon-user"
+					></el-input>
+				</el-form-item>
+				
+				<el-form-item prop="password">
+					<el-input 
+						v-model="loginForm.password" 
+						placeholder="请输入密码" 
+						type="password" 
+						prefix-icon="el-icon-lock"
+						show-password
+					></el-input>
+				</el-form-item>
+				
+				<el-form-item v-if="roles.length > 1" class="role-selection">
+					<el-radio-group v-model="loginForm.tableName">
+						<el-radio 
+							v-for="(item, index) in roles" 
+							:key="index" 
+							:label="item.tableName"
+							@change="getCurrentRow(item)"
+						>{{item.roleName}}</el-radio>
+					</el-radio-group>
+				</el-form-item>
+				
+				<div class="form-actions">
+					<el-button type="primary" class="submit-btn" @click="submitForm('loginForm')">立即登录</el-button>
+				</div>
+				
+				<div class="form-footer">
+					<router-link 
+						v-for="(item, index) in roles" 
+						:key="index"
+						v-if="item.hasFrontRegister=='是'"
+						:to="{path: '/register', query: {role: item.tableName, pageFlag:'register'}}"
+						class="register-link"
+					>注册{{item.roleName}}</router-link>
+					<span class="reset-link" @click="resetForm('loginForm')">重置</span>
+				</div>
+			</el-form>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -38,7 +66,7 @@ export default {
 		return {
             baseUrl: this.$config.baseUrl,
             loginType: 1,
-			roleMenus: [{"backMenu":[{"child":[{"appFrontIcon":"cuIcon-clothes","buttons":["新增","查看","修改","删除"],"menu":"用户","menuJump":"列表","tableName":"yonghu"}],"menu":"用户管理"},{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["新增","查看","修改","删除"],"menu":"商家","menuJump":"列表","tableName":"shangjia"}],"menu":"商家管理"},{"child":[{"appFrontIcon":"cuIcon-brand","buttons":["新增","查看","修改","删除"],"menu":"茶叶分类","menuJump":"列表","tableName":"shangpinfenlei"}],"menu":"茶叶分类管理"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看","修改","删除","查看评论"],"menu":"茶叶信息","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息管理"},{"child":[{"appFrontIcon":"cuIcon-copy","buttons":["查看","修改","删除","查看评论"],"menu":"秒杀茶叶","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶管理"},{"child":[{"appFrontIcon":"cuIcon-news","buttons":["新增","查看","修改","删除"],"menu":"商城资讯","tableName":"news"},{"appFrontIcon":"cuIcon-cardboard","buttons":["查看","修改"],"menu":"关于我们","tableName":"aboutus"},{"appFrontIcon":"cuIcon-form","buttons":["查看","修改"],"menu":"轮播图管理","tableName":"config"}],"menu":"系统管理"}],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"是","hasBackRegister":"否","hasFrontLogin":"否","hasFrontRegister":"否","roleName":"管理员","tableName":"users"},{"backMenu":[],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"否","hasBackRegister":"否","hasFrontLogin":"是","hasFrontRegister":"是","roleName":"用户","tableName":"yonghu"},{"backMenu":[{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["新增","查看","修改","删除","查看评论"],"menu":"茶叶信息","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息管理"},{"child":[{"appFrontIcon":"cuIcon-copy","buttons":["新增","查看","修改","删除","查看评论"],"menu":"秒杀茶叶","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶管理"},{"child":[{"appFrontIcon":"cuIcon-goods","buttons":["查看","删除"],"menu":"已退款订单","tableName":"orders/已退款"},{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看","删除"],"menu":"未支付订单","tableName":"orders/未支付"},{"appFrontIcon":"cuIcon-present","buttons":["查看","删除"],"menu":"已发货订单","tableName":"orders/已发货"},{"appFrontIcon":"cuIcon-goodsnew","buttons":["查看","发货","删除"],"menu":"已支付订单","tableName":"orders/已支付"},{"appFrontIcon":"cuIcon-explore","buttons":["查看","删除","日销量","月销量","品销量","类销量","月销额","日销额","品销额","类销额"],"menu":"已完成订单","tableName":"orders/已完成"},{"appFrontIcon":"cuIcon-pic","buttons":["查看","删除"],"menu":"已取消订单","tableName":"orders/已取消"}],"menu":"订单管理"}],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"是","hasBackRegister":"是","hasFrontLogin":"否","hasFrontRegister":"否","roleName":"商家","tableName":"shangjia"}],
+			roleMenus: [{"backMenu":[{"child":[{"appFrontIcon":"cuIcon-clothes","buttons":["新增","查看","修改","删除"],"menu":"用户","menuJump":"列表","tableName":"yonghu"}],"menu":"用户管理"},{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["新增","查看","修改","删除"],"menu":"商家","menuJump":"列表","tableName":"shangjia"}],"menu":"商家管理"},{"child":[{"appFrontIcon":"cuIcon-brand","buttons":["新增","查看","修改","删除"],"menu":"茶叶分类","menuJump":"列表","tableName":"shangpinfenlei"}],"menu":"茶叶分类管理"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看","修改","删除","查看评论"],"menu":"茶叶信息","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息管理"},{"child":[{"appFrontIcon":"cuIcon-news","buttons":["新增","查看","修改","删除"],"menu":"商城资讯","tableName":"news"},{"appFrontIcon":"cuIcon-cardboard","buttons":["查看","修改"],"menu":"关于我们","tableName":"aboutus"},{"appFrontIcon":"cuIcon-form","buttons":["查看","修改"],"menu":"轮播图管理","tableName":"config"}],"menu":"系统管理"}],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"}],"hasBackLogin":"是","hasBackRegister":"否","hasFrontLogin":"否","hasFrontRegister":"否","roleName":"管理员","tableName":"users"},{"backMenu":[],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"}],"hasBackLogin":"否","hasBackRegister":"否","hasFrontLogin":"是","hasFrontRegister":"是","roleName":"用户","tableName":"yonghu"},{"backMenu":[{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["新增","查看","修改","删除","查看评论"],"menu":"茶叶信息","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息管理"},{"child":[{"appFrontIcon":"cuIcon-goods","buttons":["查看","删除"],"menu":"已退款订单","tableName":"orders/已退款"},{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看","删除"],"menu":"未支付订单","tableName":"orders/未支付"},{"appFrontIcon":"cuIcon-present","buttons":["查看","删除"],"menu":"已发货订单","tableName":"orders/已发货"},{"appFrontIcon":"cuIcon-goodsnew","buttons":["查看","发货","删除"],"menu":"已支付订单","tableName":"orders/已支付"},{"appFrontIcon":"cuIcon-explore","buttons":["查看","删除","日销量","月销量","品销量","类销量","月销额","日销额","品销额","类销额"],"menu":"已完成订单","tableName":"orders/已完成"},{"appFrontIcon":"cuIcon-pic","buttons":["查看","删除"],"menu":"已取消订单","tableName":"orders/已取消"}],"menu":"订单管理"}],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"}],"hasBackLogin":"是","hasBackRegister":"是","hasFrontLogin":"否","hasFrontRegister":"否","roleName":"商家","tableName":"shangjia"}],
 			loginForm: {
 				username: '',
 				password: '',
@@ -171,58 +199,145 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-	.container {
+	.login-wrapper {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: #1B3022;
+		background-image: linear-gradient(rgba(27, 48, 34, 0.8), rgba(27, 48, 34, 0.8)), url(https://images.unsplash.com/photo-1594631252845-29fc458695d3?q=80&w=2000&auto=format&fit=crop);
+		background-size: cover;
+		background-position: center;
 		position: relative;
-		background: url(https://pic.imgdb.cn/item/65eac96d9f345e8d03c6aa2b.jpg) no-repeat;
+	}
+
+	.login-container {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	.login-box {
+		width: 440px;
+		padding: 60px 50px;
+		background: #fff;
+		border-radius: 4px;
+		box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+		position: relative;
+		&::before {
+			content: '';
+			position: absolute;
+			top: 10px; left: 10px; right: 10px; bottom: 10px;
+			border: 1px solid rgba(166, 137, 102, 0.2);
+			pointer-events: none;
+		}
 		
+		.login-header {
+			text-align: center;
+			margin-bottom: 45px;
+
+			.logo-text {
+				font-size: 32px;
+				color: var(--primary-color);
+				font-weight: 600;
+				letter-spacing: 4px;
+				margin-bottom: 15px;
+				font-family: serif;
+			}
+
+			h2 {
+				font-size: 20px;
+				color: var(--text-main);
+				margin: 0 0 10px;
+				font-weight: 500;
+				letter-spacing: 1px;
+			}
+
+			p {
+				font-size: 13px;
+				color: var(--text-secondary);
+				margin: 0;
+				font-style: italic;
+				opacity: 0.7;
+			}
+		}
+	}
+
+	.login-form {
 		.el-form-item {
-		  & ::v-deep .el-form-item__content {
-		    width: 100%;
-		  }
+			margin-bottom: 25px;
 		}
-		
-		.list-item ::v-deep .el-input .el-input__inner {
-			border: 1px solid #999;
-			border-radius: 8px;
-			padding: 0 10px;
-			box-shadow: 1px 2px 4px #ccc;
-			color: #999;
-			background: -webkit-linear-gradient(top,#fff,#eee);
+
+		::v-deep .el-input__inner {
+			height: 45px;
+			line-height: 45px;
+			border-radius: 0;
+			border: none;
+			border-bottom: 1px solid #e0e0e0;
+			padding-left: 35px;
+			background: transparent;
+			transition: var(--transition-main);
+
+			&:focus {
+				border-bottom-color: var(--accent-color);
+			}
+		}
+
+		::v-deep .el-input__prefix {
+			left: 5px;
+			color: #b2bec3;
+		}
+
+		.role-selection {
+			text-align: center;
+			margin: 15px 0 30px;
+			::v-deep .el-radio__label {
+				font-size: 13px;
+			}
+			::v-deep .el-radio__input.is-checked .el-radio__inner {
+				background-color: var(--accent-color);
+				border-color: var(--accent-color);
+			}
+			::v-deep .el-radio__input.is-checked + .el-radio__label {
+				color: var(--accent-color);
+			}
+		}
+
+		.submit-btn {
 			width: 100%;
-			font-size: 14px;
-			height: 44px;
+			height: 45px;
+			font-size: 15px;
+			font-weight: 600;
+			border-radius: 0;
+			letter-spacing: 4px;
+			margin-bottom: 25px;
+			background: var(--primary-color) !important;
+			border: none !important;
+			color: var(--accent-color) !important;
 		}
-		
-		.list-code ::v-deep .el-input .el-input__inner {
-			border: 1px solid #999;
-			border-radius: 8px;
-			padding: 0 10px;
-			box-shadow: 1px 2px 4px #ccc;
-			outline: none;
-			color: #999;
-			background: -webkit-linear-gradient(top,#fff,#eee);
-			display: inline-block;
-			vertical-align: middle;
-			width: calc(100% - 164px);
-			font-size: 14px;
-			height: 44px;
-		}
-		
-		.list-type ::v-deep .el-radio__input .el-radio__inner {
-			background: rgba(53, 53, 53, 0);
-			border-color: #666666;
-		}
-		.list-type ::v-deep .el-radio__input.is-checked .el-radio__inner {
-			background: rgba(64, 158, 255, 1);
-			border-color: rgba(64, 158, 255, 1);
-		}
-		.list-type ::v-deep .el-radio__label {
-			color: #666666;
-			font-size: 14px;
-		}
-		.list-type ::v-deep .el-radio__input.is-checked+.el-radio__label {
-			color: rgba(64, 158, 255, 1);
-			font-size: 14px;
+
+		.form-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 13px;
+
+			.register-link {
+				color: var(--accent-color);
+				text-decoration: none;
+				font-weight: 500;
+				transition: 0.3s;
+				&:hover { opacity: 0.8; text-decoration: underline; }
+			}
+
+			.reset-link {
+				color: var(--text-secondary);
+				cursor: pointer;
+				transition: 0.3s;
+				&:hover { color: var(--text-main); }
+			}
 		}
 	}
 </style>

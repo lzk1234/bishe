@@ -1,0 +1,60 @@
+
+> mas-creator-admin@0.1.0 serve
+> set NODE_OPTIONS=--openssl-legacy-provider&& vue-cli-service serve
+
+ INFO  Starting development server...
+ DONE  Compiled successfully in 7568ms01:05:09
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+  Note that the development build is not optimized.
+  To create a production build, run npm run build.
+
+ WAIT  Compiling...01:28:32
+
+ DONE  Compiled successfully in 507ms01:28:33
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...01:29:23
+
+ DONE  Compiled successfully in 380ms01:29:24
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...01:29:50
+
+ DONE  Compiled successfully in 325ms01:29:50
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...01:35:43
+
+ DONE  Compiled successfully in 438ms01:35:44
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+
+ WAIT  Compiling...01:36:05
+
+ DONE  Compiled successfully in 300ms01:36:06
+
+
+  App running at:
+  - Local:   http://localhost:8081/ 
+  - Network: http://10.50.58.33:8081/
+

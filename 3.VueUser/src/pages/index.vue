@@ -1,51 +1,81 @@
-<template>
+﻿<template>
 	<div class="main-containers">
-		<div class="top-container" :style='{"boxShadow":"0 0px 0px rgba(64, 158, 255, .3)","padding":"0px","margin":"0 auto","overflow":"hidden","alignItems":"center","background":"url(http://codegen.caihongy.cn/20221028/83b96336016c4895aa387cda7fa006ae.png) fixed","display":"flex","width":"100%","position":"relative","justifyContent":"space-around","height":"75px","zIndex":"1002"}'>
-			<img v-if='false' :style='{"width":"44px","objectFit":"cover","borderRadius":"100%","display":"block","height":"44px"}' src='http://codegen.caihongy.cn/20201114/7856ba26477849ea828f481fa2773a95.jpg'>
-			<div v-if="true" :style='{"margin":"0 0 12px","color":"rgba(64, 158, 255, 1)","textAlign":"center","background":"none","display":"inline-block","fontSize":"24px","fontWeight":"bold"}'>基于SpringBoot的茶叶商城系统的设计与实现</div>
-			<div>
-				<div v-if="true" :style='{"color":"#666","fontSize":"14px","display":"inline-block"}'></div>
-				<div v-if="Token" :style='{"color":"#666","fontSize":"14px","display":"inline-block"}'>{{username}}</div>
-				<el-button v-if="!Token" @click="toLogin()" :style='{"border":"1px solid #1773c1","padding":"0 12px","boxShadow":"1px 2px 4px #aaa","margin":"0 0 12px","color":"#f4f4f5","borderRadius":"2px","background":"#278bd5","display":"inline-block","fontSize":"14px","lineHeight":"32px","height":"32px"}'>登录/注册</el-button>
-                <el-button v-if="Token" @click="logout" :style='{"border":"1px solid #278bd5","padding":"0 12px","boxShadow":"1px 2px 4px #bbb","margin":"0 0 0 10px","color":"#278bd5","borderRadius":"2px","background":"#fff","display":"inline-block","fontSize":"14px","lineHeight":"32px","height":"32px"}'>退出</el-button>
+		<div class="top-container" :style='{"boxShadow":"0 1px 0 rgba(0,0,0,0.05)","padding":"0 40px","margin":"0 auto","overflow":"hidden","alignItems":"center","background":"var(--card-bg)","display":"flex","width":"100%","position":"relative","justifyContent":"space-between","height":"80px","zIndex":"1002"}'>
+			<img v-if='true' :style='{"width":"140px","objectFit":"contain","display":"block","height":"50px"}' src='@/assets/logo.png'>
+			<div v-if="true" :style='{"margin":"0","color":"var(--primary-color)","textAlign":"center","background":"none","display":"inline-block","fontSize":"22px","fontWeight":"600","letterSpacing":"2px"}'>钀冭寳闃?路 鑼跺彾鍟嗗煄</div>
+			<div class="user-actions">
+				<div v-if="Token" :style='{"color":"var(--text-secondary)","fontSize":"14px","display":"inline-block","marginRight":"15px"}'>灏婅吹浼氬憳锛歿{username}}</div>
+				<el-button v-if="!Token" @click="toLogin()" type="primary" size="small" style="border-radius: 4px;">鐧诲綍 / 娉ㄥ唽</el-button>
+                <el-button v-if="Token" @click="logout" size="small" style="border-radius: 4px; border: 1px solid #ddd; color: #666;">瀹夊叏閫€鍑?/el-button>
 			</div>
 		</div>
 		
 		
-		<div class="body-containers" :style='"horizontal" == "vertical" ? {"minHeight":"100vh","padding":"64px 0 0","margin":"0 0 0 210px","position":"relative","background":"rgba(64, 158, 255, .3)","display":"block"} : {"minHeight":"100vh","padding":"0","margin":"0","position":"relative","background":"url(http://codegen.caihongy.cn/20221028/83b96336016c4895aa387cda7fa006ae.png) fixed"}'>
-			<div class="menu-preview" :style='{"padding":"0 20px","borderColor":"#efefef","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221027/4058b35f34564533adc258a0075041ed.png) repeat-x","borderWidth":"0 0 0px 0","width":"100%","borderStyle":"solid","height":"auto"}'>
-				<el-menu class="el-menu-horizontal-demo" :style='{"border":0,"padding":"0","margin":"0 auto","borderColor":"#006fc3","alignItems":"flex-end","display":"flex","justifyContent":"center","listStyle":"none","overflow":"hidden","flexWrap":"wrap","background":"none","borderWidth":"0px 1px 0px 0px","width":"100%","position":"relative","borderStyle":"solid","height":"40px"}' :default-active="activeIndex" :unique-opened="true" mode="horizontal" :router="true" @select="handleSelect">
-					<el-image v-if="false" :style='{"width":"44px","margin":"8px 10px 8px 0","objectFit":"cover","borderRadius":"100%","float":"left","height":"44px"}' src="http://codegen.caihongy.cn/20201114/7856ba26477849ea828f481fa2773a95.jpg" fit="cover"></el-image>
+		<div class="body-containers" :style='{"minHeight":"100vh","padding":"0","margin":"0","position":"relative","background":"var(--bg-color)"}'>
+			<div class="menu-preview" :style='{"padding":"0","borderColor":"#f0f0f0","textAlign":"center","background":"var(--primary-color)","borderWidth":"0 0 1px 0","width":"100%","borderStyle":"solid","height":"50px"}'>
+				<el-menu class="el-menu-horizontal-demo" :style='{"border":0,"padding":"0","margin":"0 auto","borderColor":"transparent","alignItems":"center","display":"flex","justifyContent":"center","listStyle":"none","background":"none","width":"1200px","position":"relative","height":"50px"}' :default-active="activeIndex" :unique-opened="true" mode="horizontal" :router="true" @select="handleSelect">
 					<el-menu-item v-for="(menu, index) in menuList" :index="index + ''" :key="index" :route="menu.url">
-						<i v-if="true" :style='{"padding":"0 10px","margin":"0","color":"inherit","width":"14px","lineHeight":"40px","fontSize":"14px","height":"40px"}' :class="iconArr[index]"></i>
-						<span :style='{"padding":"0 10px","lineHeight":"40px","fontSize":"14px","color":"inherit","height":"40px"}'>{{menu.name}}</span>
+						<i v-if="true" :style='{"marginRight":"5px","color":"inherit","fontSize":"16px"}' :class="iconArr[index]"></i>
+						<span :style='{"fontSize":"15px","color":"inherit"}'>{{menu.name}}</span>
 					</el-menu-item>
 					<el-menu-item :index="menuList.length + 1 + ''" @click="goMenu('/index/cart')">
-						<i v-if="true" :style='{"padding":"0 10px","margin":"0","color":"inherit","width":"14px","lineHeight":"40px","fontSize":"14px","height":"40px"}' class="el-icon-shopping-cart-2"></i>
-						<span :style='{"padding":"0 10px","lineHeight":"40px","fontSize":"14px","color":"inherit","height":"40px"}'>购物车</span>
+						<i v-if="true" :style='{"marginRight":"5px","color":"inherit","fontSize":"16px"}' class="el-icon-shopping-cart-2"></i>
+						<span :style='{"fontSize":"15px","color":"inherit"}'>璐墿杞?/span>
 					</el-menu-item>
 					<el-menu-item :index="menuList.length + 2 + ''" v-if="Token && notAdmin" @click="goMenu('/index/center')">
-						<i v-if="true" :style='{"padding":"0 10px","margin":"0","color":"inherit","width":"14px","lineHeight":"40px","fontSize":"14px","height":"40px"}' class="el-icon-user"></i>
-						<span :style='{"padding":"0 10px","lineHeight":"40px","fontSize":"14px","color":"inherit","height":"40px"}'>个人中心</span>
+						<i v-if="true" :style='{"marginRight":"5px","color":"inherit","fontSize":"16px"}' class="el-icon-user"></i>
+						<span :style='{"fontSize":"15px","color":"inherit"}'>涓汉涓績</span>
 					</el-menu-item>
 				</el-menu>
 			</div>
 			
-			<div class="banner-preview" :style='{"width":"100%","margin":"0","height":"auto"}'>
-				<el-carousel :style='{"width":"100%","margin":"0 auto"}' trigger="click" indicator-position="inside" arrow="always" type="default" direction="horizontal" height="500px" :autoplay="true" :interval="3000" :loop="true">
+			<div v-if="showBanner" class="banner-preview" :style='{"width":"100%","margin":"0","height":"auto"}'>
+				<el-carousel :style='{"width":"100%","margin":"0 auto"}' trigger="click" indicator-position="inside" arrow="always" type="default" direction="horizontal" :height="bannerHeight" :autoplay="true" :interval="3000" :loop="true">
 					<el-carousel-item :style='{"borderRadius":"0","width":"100%","height":"100%"}' v-for="item in carouselList" :key="item.id">
-						<el-image :style='{"objectFit":"cover","width":"100%","height":"100%"}' :src="baseUrl + item.value" fit="cover"></el-image>
+						<el-image class="banner-image" :style='{"width":"100%","height":"100%"}' :src="baseUrl + item.value" fit="contain"></el-image>
 					</el-carousel-item>
 				</el-carousel>
 			</div>
 			
 			<router-view></router-view>
 			
-			<div class="bottom-preview" :style='{"minHeight":"150px","padding":"20px 0","alignItems":"center","color":"#fff","background":"url(http://codegen.caihongy.cn/20221027/7dde17b7fdcf4f6caa0c0a26be67a1e8.png) #034281 repeat-x","flexDirection":"column","display":"flex","width":"100%","justifyContent":"center"}'>
-			    <img :style='{"width":"44px","objectFit":"cover","borderRadius":"100%","display":"none","height":"44px"}' src="http://codegen.caihongy.cn/20201114/7856ba26477849ea828f481fa2773a95.jpg" >
-			    <div :style='{"margin":"0","fontSize":"14px","lineHeight":"28px","color":"#fff"}'></div>
-			    <div :style='{"margin":"10px 0 0","fontSize":"14px","lineHeight":"28px","color":"#fff"}'></div>
-			    <div :style='{"margin":"10px 0 0","fontSize":"14px","lineHeight":"28px","color":"#fff"}'></div>
+			<div class="bottom-preview" :style='{"padding":"60px 0","background":"#1B3022","color":"#fff","width":"100%","borderTop":"4px solid var(--accent-color)"}'>
+				<div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start;">
+					<div style="flex: 1.5;">
+						<div style="font-size: 24px; color: var(--accent-color); font-weight: 600; margin-bottom: 20px;">钀冭寳闃?路 鑼跺彾鍟嗗煄</div>
+						<p style="color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.8; max-width: 400px;">
+							鎵胯鍗冨勾鑼堕亾绮鹃珦锛岃崯钀冨悕灞变紭璐ㄥソ鑼躲€傛垜浠嚧鍔涗簬涓虹埍鑼朵箣浜烘彁渚涙渶绾銆侀珮鍝佽川鐨勯ギ鑼朵綋楠岋紝璁╂瘡涓€鍙惰尪棣欓兘鑳戒紶閫掍竴浠藉畞闈欎笌鍠滄偊銆?
+						</p>
+					</div>
+					<div style="flex: 1; display: flex; justify-content: space-around;">
+						<div>
+							<h4 style="color: #fff; margin-bottom: 20px;">閫夎喘鎸囧崡</h4>
+							<ul style="list-style: none; padding: 0; font-size: 14px; color: rgba(255,255,255,0.6); line-height: 2.5;">
+								<li>缁胯尪绯诲垪</li>
+								<li>绾㈣尪鐗归€?/li>
+								<li>涔岄緳鍚嶅搧</li>
+								<li>鏅幢闄堥</li>
+							</ul>
+						</div>
+						<div>
+							<h4 style="color: #fff; margin-bottom: 20px;">鍏充簬鎴戜滑</h4>
+							<ul style="list-style: none; padding: 0; font-size: 14px; color: rgba(255,255,255,0.6); line-height: 2.5;">
+								<li>鍝佺墝鏁呬簨</li>
+								<li>鑱旂郴鎴戜滑</li>
+								<li>鏈嶅姟澹版槑</li>
+								<li>鍔犲叆鎴戜滑</li>
+							</ul>
+						</div>
+					</div>
+					<div style="flex: 0.8; text-align: right;">
+						<h4 style="color: #fff; margin-bottom: 20px;">鏈嶅姟鐑嚎</h4>
+						<div style="font-size: 20px; color: var(--accent-color); font-weight: 600;">400-888-6666</div>
+						<p style="font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 10px;">鍛ㄤ竴鑷冲懆鏃?9:00 - 18:00</p>
+					</div>
+				</div>
+				<div style="max-width: 1200px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: rgba(255,255,255,0.4); font-size: 12px;">
+                    © 2026 高山茶智能决策平台 版权所有
+				</div>
 			</div>
 		</div>
 		
@@ -58,9 +88,10 @@ export default {
     data() {
 		return {
             activeIndex: '0',
-			roleMenus: [{"backMenu":[{"child":[{"appFrontIcon":"cuIcon-clothes","buttons":["新增","查看","修改","删除"],"menu":"用户","menuJump":"列表","tableName":"yonghu"}],"menu":"用户管理"},{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["新增","查看","修改","删除"],"menu":"商家","menuJump":"列表","tableName":"shangjia"}],"menu":"商家管理"},{"child":[{"appFrontIcon":"cuIcon-brand","buttons":["新增","查看","修改","删除"],"menu":"茶叶分类","menuJump":"列表","tableName":"shangpinfenlei"}],"menu":"茶叶分类管理"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看","修改","删除","查看评论"],"menu":"茶叶信息","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息管理"},{"child":[{"appFrontIcon":"cuIcon-copy","buttons":["查看","修改","删除","查看评论"],"menu":"秒杀茶叶","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶管理"},{"child":[{"appFrontIcon":"cuIcon-news","buttons":["新增","查看","修改","删除"],"menu":"商城资讯","tableName":"news"},{"appFrontIcon":"cuIcon-cardboard","buttons":["查看","修改"],"menu":"关于我们","tableName":"aboutus"},{"appFrontIcon":"cuIcon-form","buttons":["查看","修改"],"menu":"轮播图管理","tableName":"config"}],"menu":"系统管理"}],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"是","hasBackRegister":"否","hasFrontLogin":"否","hasFrontRegister":"否","roleName":"管理员","tableName":"users"},{"backMenu":[],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"否","hasBackRegister":"否","hasFrontLogin":"是","hasFrontRegister":"是","roleName":"用户","tableName":"yonghu"},{"backMenu":[{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["新增","查看","修改","删除","查看评论"],"menu":"茶叶信息","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息管理"},{"child":[{"appFrontIcon":"cuIcon-copy","buttons":["新增","查看","修改","删除","查看评论"],"menu":"秒杀茶叶","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶管理"},{"child":[{"appFrontIcon":"cuIcon-goods","buttons":["查看","删除"],"menu":"已退款订单","tableName":"orders/已退款"},{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看","删除"],"menu":"未支付订单","tableName":"orders/未支付"},{"appFrontIcon":"cuIcon-present","buttons":["查看","删除"],"menu":"已发货订单","tableName":"orders/已发货"},{"appFrontIcon":"cuIcon-goodsnew","buttons":["查看","发货","删除"],"menu":"已支付订单","tableName":"orders/已支付"},{"appFrontIcon":"cuIcon-explore","buttons":["查看","删除","日销量","月销量","品销量","类销量","月销额","日销额","品销额","类销额"],"menu":"已完成订单","tableName":"orders/已完成"},{"appFrontIcon":"cuIcon-pic","buttons":["查看","删除"],"menu":"已取消订单","tableName":"orders/已取消"}],"menu":"订单管理"}],"frontMenu":[{"child":[{"appFrontIcon":"cuIcon-flashlightopen","buttons":["查看"],"menu":"茶叶信息列表","menuJump":"列表","tableName":"shangpinxinxi"}],"menu":"茶叶信息模块"},{"child":[{"appFrontIcon":"cuIcon-newshot","buttons":["查看"],"menu":"秒杀茶叶列表","menuJump":"列表","tableName":"miaoshashangpin"}],"menu":"秒杀茶叶模块"}],"hasBackLogin":"是","hasBackRegister":"是","hasFrontLogin":"否","hasFrontRegister":"否","roleName":"商家","tableName":"shangjia"}],
+			roleMenus: [],
 			baseUrl: '',
 			carouselList: [],
+			bannerHeight: '500px',
 			menuList: [],
 			form: {
 				ask: '',
@@ -103,6 +134,11 @@ export default {
 			],	
 		}
     },
+	computed: {
+		showBanner() {
+			return this.$route.path === '/index/home';
+		}
+	},
     created() {
 		this.baseUrl = this.$config.baseUrl;
 		this.menuList = this.$config.indexNav;
@@ -110,7 +146,12 @@ export default {
     },
     mounted() {
         this.activeIndex = localStorage.getItem('keyPath') || '0';
+		this.updateBannerHeight();
+		window.addEventListener('resize', this.updateBannerHeight);
     },
+	beforeDestroy() {
+		window.removeEventListener('resize', this.updateBannerHeight);
+	},
     watch: {
         $route(newValue) {
             let that = this
@@ -142,7 +183,7 @@ export default {
             this.Token = ''
             this.$forceUpdate()
             this.$message({
-                message: '登出成功',
+                message: '鐧诲嚭鎴愬姛',
                 type: 'success',
                 duration: 1000,
             });
@@ -153,6 +194,12 @@ export default {
 					this.carouselList = res.data.data.list;
 				}
 			});
+		},
+		updateBannerHeight() {
+			const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 1200;
+			const height = Math.round(viewportWidth * 625 / 1608);
+			const boundedHeight = Math.max(146, Math.min(500, height));
+			this.bannerHeight = `${boundedHeight}px`;
 		},
 		goBackend() {
 			window.open(`${this.$config.baseUrl}admin/dist/index.html`, "_blank");
@@ -182,62 +229,59 @@ export default {
 	
 	.menu-preview .el-menu-horizontal-demo .el-menu-item {
 		cursor: pointer;
-		padding: 0;
-		color: #fff;
+		padding: 0 30px;
+		color: rgba(255, 255, 255, 0.7);
 		white-space: nowrap;
 		display: block;
-		font-size: 14px;
-		border-color:  #00254a #00254a #006fc3 #006fc3;
-		line-height: 40px;
+		font-size: 15px;
+		line-height: 50px;
 		background: none;
-		width: 120px;
-		border-width: 0px 0px 0px 1px;
-		position: relative;
-		border-style: solid;
-		list-style: none;
-		height: 40px;
+		border: none !important;
+		transition: all 0.3s;
+		height: 50px;
 	}
 	
 	.menu-preview .el-menu-horizontal-demo .el-menu-item:hover {
-		cursor: pointer;
-		padding: 0;
-		color: #fff;
-		white-space: nowrap;
-		font-size: 14px;
-		border-color:  #00254a #00254a #006fc3 #006fc3;
-		line-height: 40px;
-		background: url(http://codegen.caihongy.cn/20221027/8c0f3f3d4c0b4e38bd59dee72577a66b.png) no-repeat;
-		width: 120px;
-		border-width: 0px 0px 0px 1px;
-		position: relative;
-		border-style: solid;
-		list-style: none;
-		height: 40px;
+		color: var(--accent-color) !important;
+		background: rgba(255, 255, 255, 0.05) !important;
 	}
 	
 	.menu-preview .el-menu-horizontal-demo .el-menu-item.is-active {
-		cursor: pointer;
-		padding: 0;
-		color: #fff;
-		white-space: nowrap;
-		font-size: 14px;
-		border-color:  #00254a #00254a #006fc3 #006fc3;
-		line-height: 40px;
-		background: url(http://codegen.caihongy.cn/20221027/8c0f3f3d4c0b4e38bd59dee72577a66b.png) no-repeat;
-		width: 120px;
-		border-width: 0px 0px 0px 1px;
+		color: #fff !important;
+		font-weight: 600;
+		background: rgba(255, 255, 255, 0.1) !important;
 		position: relative;
-		border-style: solid;
-		list-style: none;
-		height: 40px;
+		&::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 20%;
+			width: 60%;
+			height: 3px;
+			background: var(--accent-color);
+		}
 	}
 	
 	.banner-preview {
+	  background: #eef5ef;
+
 	  .el-carousel ::v-deep .el-carousel__indicator button {
 	    width: 0;
 	    height: 0;
 	    display: none;
 	  }
+	}
+
+	.banner-preview ::v-deep .banner-image {
+		display: block;
+		background: #eef5ef;
+	}
+
+	.banner-preview ::v-deep .banner-image .el-image__inner {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		display: block;
 	}
 	
 	.banner-preview .el-carousel ::v-deep .el-carousel__container .el-carousel__arrow--left {
@@ -313,3 +357,4 @@ export default {
       }
     }
 </style>
+

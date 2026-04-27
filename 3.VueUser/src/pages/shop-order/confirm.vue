@@ -37,10 +37,10 @@
         label="茶叶名称">
         <template slot-scope="scope">
           <div class="shangpin">
-            <el-image
-              style="width: 100px; height: 100px"
-              :src="baseUrl + scope.row.picture"
-              fit="fill"></el-image>
+            <img
+              class="order-good-image"
+              :src="resolveImageUrl(scope.row.picture)"
+              alt="">
             <span style="margin-left: 10px">{{ scope.row.goodname }}</span>
           </div>
         </template>
@@ -115,7 +115,6 @@
           goodid: 0,
           goodname: "",
           zhanghao : "",
-          zhanghao : "",
           orderid: "",
           picture: "",
           price: 0,
@@ -153,6 +152,12 @@
       this.type = this.$route.query.type;
     },
     methods: {
+      resolveImageUrl(value) {
+        if (!value) return ''
+        const firstImage = String(value).split(',')[0]
+        if (/^https?:\/\//i.test(firstImage)) return firstImage
+        return this.baseUrl + firstImage.replace(/^\/+/, '')
+      },
       getSession() {
         this.$http.get(`${this.userTableName}/session`, {emulateJSON: true}).then(res => {
           if (res.data.code == 0) {
@@ -191,7 +196,6 @@
                   picture: this.$route.query.picture,
                   goodname: this.$route.query.goodname,
                   goodtype: this.$route.query.goodtype,
-                  goodtype: this.$route.query.goodtype,
                   tablename: this.$route.query.tablename,
                   userid: localStorage.getItem('userid'),
                   price: this.$route.query.price
@@ -220,7 +224,7 @@
           }
         });
       },
-        // 正常下单，生成订单，减少余额，添加积分，减少库存，修改状态已支付
+        // 正常下单，先检查余额，再减少库存，生成订单，修改状态已支付
         payClick() {
             if (this.radio == -1) {
               this.$message({
@@ -238,6 +242,16 @@
                     // 订单编号
                     var orderId = this.createOrder();
                     let data = res.data.data;
+                    // 先判断余额是否充足
+                    if (Number(this.user.money) < Number(item.price * item.buynumber)) {
+                        this.$message({
+                            message: '余额不足，请先充值',
+                            type: 'error',
+                            duration: 1500
+                        });
+                        return
+                    }
+                    // 减少库存
                     data.alllimittimes = data.alllimittimes - item.buynumber;
                     // 更新库存信息
                     this.$http.post(`${item.tablename}/update`, data).then(res => {
@@ -250,8 +264,6 @@
                             goodname: item.goodname,
                             zhanghao: item.zhanghao,
                             goodtype: item.goodtype,
-                            zhanghao: item.zhanghao,
-                            goodtype: item.goodtype,
                             picture: item.picture,
                             buynumber: item.buynumber,
                             discountprice: item.price,
@@ -259,7 +271,6 @@
                             total: item.price * item.buynumber,
                             discounttotal: item.price * item.buynumber,
                             type: this.type?this.type:1,
-                            //total: this.totalPrice,
                             address: this.addressList[this.radio].address,
                             tel: this.addressList[this.radio].phone,
                             consignee: this.addressList[this.radio].name,
@@ -267,16 +278,6 @@
                             status: '未支付'
                         }
                         this.$http.post('orders/add', order).then(res => {
-                            // 减少余额，更新订单状态
-                            // 判断余额是否充足
-                            if (Number(this.user.money) < Number(item.price * item.buynumber)) {
-                                this.$message({
-                                    message: '余额不足，请先充值',
-                                    type: 'error',
-                                    duration: 1500
-                                });
-                                return
-                            }
                             // 如果该茶叶存在积分
                             if (data.jf) {
                                 this.user.jf = Number(this.user.jf) + Number(item.price * item.buynumber);
@@ -331,19 +332,19 @@
                 var orderId = this.createOrder();
                 this.$http.get(`${item.tablename}/info/${item.goodid}`).then(res => {
                     let data = res.data.data;
+                    // 先判断积分是否充足
+                    if (this.user.jf < this.totalPrice) {
+                        this.$message({
+                            message: '积分不足，兑换失败',
+                            type: 'error',
+                            duration: 1500
+                        });
+                        return
+                    }
                     // 减少库存
                     data.alllimittimes = data.alllimittimes - item.buynumber;
                     // 更新库存信息
                     this.$http.post(`${item.tablename}/update`, data).then(res => {
-                        // 判断积分是否充足
-                        if (this.user.jf < this.totalPrice) {
-                            this.$message({
-                                message: '积分不足，兑换失败',
-                                type: 'error',
-                                duration: 1500
-                            });
-                            return
-                        }
                         // 添加订单信息
                         let order = {
                             orderid: orderId,
@@ -353,8 +354,6 @@
                             goodname: item.goodname,
                             zhanghao: item.zhanghao,
                             goodtype: item.goodtype,
-                            zhanghao: item.zhanghao,
-                            goodtype: item.goodtype,
                             picture: item.picture,
                             buynumber: item.buynumber,
                             discountprice: item.price,
@@ -362,7 +361,6 @@
                             total: item.price * item.buynumber,
                             discounttotal: item.price * item.buynumber,
                             type: 2,
-                            total: this.totalPrice,
                             address: this.addressList[this.radio].address,
                             tel: this.addressList[this.radio].phone,
                             consignee: this.addressList[this.radio].name,
@@ -386,7 +384,7 @@
                 });
             });
         },
-        // 选座下单,生成订单，减少余额，添加积分，减少库存，修改状态为已支付
+        // 选座下单,先检查余额，再减少库存，生成订单，修改状态为已支付
         xzPayClick() {
             // 生成订单
             this.tableData.forEach(item => {
@@ -395,6 +393,15 @@
                 // 获取茶叶详情信息
                 this.$http.get(`${item.tablename}/info/${item.goodid}`).then(res => {
                     let data = res.data.data;
+                    // 先判断余额是否充足
+                    if (Number(this.user.money) < Number(item.price * item.buynumber)) {
+                        this.$message({
+                            message: '余额不足，请先充值',
+                            type: 'error',
+                            duration: 1500
+                        });
+                        return
+                    }
                     // 减少库存
                     data.alllimittimes = data.alllimittimes - item.buynumber;
                     // 获取已经被预定的座位号
@@ -416,8 +423,6 @@
                             goodname: item.goodname,
                             zhanghao: item.zhanghao,
                             goodtype: item.goodtype,
-                            zhanghao: item.zhanghao,
-                            goodtype: item.goodtype,
                             picture: item.picture,
                             buynumber: item.buynumber,
                             discountprice: item.price,
@@ -429,16 +434,6 @@
                             status: '未支付'
                         }
                         this.$http.post('orders/add', order).then(res => {
-                            // 减少余额，更新订单状态
-                            // 判断余额是否充足
-                            if (Number(this.user.money) < Number(item.price * item.buynumber)) {
-                                this.$message({
-                                    message: '余额不足，请先充值',
-                                    type: 'error',
-                                    duration: 1500
-                                });
-                                return
-                            }
                             // 如果该茶叶存在积分
                             if (data.jf) {
                                 this.user.jf = Number(this.user.jf) + Number(data.jf * item.buynumber);
@@ -514,6 +509,14 @@
 
   .shangpin {
     display: flex;
+    align-items: center;
+  }
+  .order-good-image {
+    width: 100px;
+    height: 100px;
+    display: block;
+    object-fit: cover;
+    background: #f5f7fa;
   }
   .buy {
     text-align: right;

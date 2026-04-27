@@ -1,109 +1,62 @@
 <template>
-	<div>
+	<div class="register-wrapper">
+		<div class="register-container">
+			<el-form class='rgs-form fade-in-up' v-if="pageFlag=='register'" ref="registerForm" :model="registerForm" :rules="rules">
+				<div class="register-header">
+					<div class="logo-text">萃茗阁</div>
+					<h2>账号注册</h2>
+					<p>加入萃茗阁，探索源头好茶</p>
+				</div>
 
-	<div class="container" :style='{"minHeight":"100vh","alignItems":"center","background":"url(https://pic.imgdb.cn/item/65eac96d9f345e8d03c6aa2b.jpg) no-repeat","display":"flex","width":"100%","backgroundSize":"cover","backgroundPosition":"center center","backgroundRepeat":"no-repeat","justifyContent":"center"}'>
-		<el-form class='rgs-form' v-if="pageFlag=='register'" :style='{"padding":"20px","boxShadow":"0 1px 3px rgba(64, 158, 255, .8)","margin":"0","borderRadius":"16px 32px","background":"url(http://codegen.caihongy.cn/20221029/ea2be95667c4485286b36febaa97a64e.png) no-repeat center top,url(http://codegen.caihongy.cn/20221029/238e5e194bc348e9b292b2ffaed4c06d.png) no-repeat center bottom,linear-gradient(180deg, rgba(204,204,204,1) 0%, rgba(246,246,246,1) 15%, rgba(255,255,255,1) 51%, rgba(246,246,246,1) 85%, rgba(204,204,204,1) 100%)","width":"800px","height":"auto"}' ref="registerForm" :model="registerForm" :rules="rules">
-			<div v-if="true" :style='{"margin":"0 0 10px 0","color":"rgba(64, 158, 255, 1)","textAlign":"center","width":"100%","fontSize":"20px","textShadow":"4px 4px 2px rgba(64, 158, 255, .5)","fontWeight":"bold"}'>USER / REGISTER</div>
-			<div v-if="true" :style='{"margin":"0 0 24px 0","color":"rgba(64, 158, 255, 1)","textAlign":"center","width":"100%","fontSize":"20px","textShadow":"4px 4px 2px rgba(64, 158, 255, .5)","fontWeight":"bold"}'>基于SpringBoot的茶叶商城系统的设计与实现注册</p></div>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='yonghu'" prop="yonghuming">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>用户名：</div>
-				<el-input v-model="registerForm.yonghuming"  placeholder="请输入用户名" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='yonghu'" prop="mima">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>密码：</div>
-				<el-input v-model="registerForm.mima" type="password" placeholder="请输入密码" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='yonghu'" prop="mima">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>确认密码：</div>
-				<el-input v-model="registerForm.mima2" type="password" placeholder="请再次输入密码" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='yonghu'" prop="xingming">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>姓名：</div>
-				<el-input v-model="registerForm.xingming"  placeholder="请输入姓名" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='yonghu'" prop="touxiang">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>头像：</div>
-                <file-upload
-					tip="点击上传头像"
-					action="file/upload"
-					:limit="1"
-					:multiple="true"
-					:fileUrls="registerForm.touxiang?registerForm.touxiang:''"
-					@change="yonghutouxiangUploadChange"
-				></file-upload>
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='yonghu'" prop="xingbie">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>性别：</div>
-                <el-select v-model="registerForm.xingbie" placeholder="请选择性别" >
-                  <el-option
-                      v-for="(item,index) in yonghuxingbieOptions"
-                      :key="index"
-                      :label="item"
-                      :value="item">
-                  </el-option>
-                </el-select>
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='yonghu'" prop="youxiang">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>邮箱：</div>
-				<el-input v-model="registerForm.youxiang"  placeholder="请输入邮箱" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='yonghu'" prop="shouji">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>手机：</div>
-				<el-input v-model="registerForm.shouji"  placeholder="请输入手机" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='shangjia'" prop="zhanghao">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>账号：</div>
-				<el-input v-model="registerForm.zhanghao"  placeholder="请输入账号" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='shangjia'" prop="mima">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>密码：</div>
-				<el-input v-model="registerForm.mima" type="password" placeholder="请输入密码" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='shangjia'" prop="mima">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>确认密码：</div>
-				<el-input v-model="registerForm.mima2" type="password" placeholder="请再次输入密码" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='shangjia'" prop="shangjiaxingming">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>商家姓名：</div>
-				<el-input v-model="registerForm.shangjiaxingming"  placeholder="请输入商家姓名" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='shangjia'" prop="xingbie">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>性别：</div>
-                <el-select v-model="registerForm.xingbie" placeholder="请选择性别" >
-                  <el-option
-                      v-for="(item,index) in shangjiaxingbieOptions"
-                      :key="index"
-                      :label="item"
-                      :value="item">
-                  </el-option>
-                </el-select>
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='shangjia'" prop="touxiang">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>头像：</div>
-                <file-upload
-					tip="点击上传头像"
-					action="file/upload"
-					:limit="1"
-					:multiple="true"
-					:fileUrls="registerForm.touxiang?registerForm.touxiang:''"
-					@change="shangjiatouxiangUploadChange"
-				></file-upload>
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='shangjia'" prop="youxiang">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>邮箱：</div>
-				<el-input v-model="registerForm.youxiang"  placeholder="请输入邮箱" />
-			</el-form-item>
-			<el-form-item :style='{"width":"80%","padding":"0","margin":"0px auto 24px","height":"auto"}' v-if="tableName=='shangjia'" prop="lianxidianhua">
-				<div v-if="false" :style='{"width":"64px","lineHeight":"44px","fontSize":"14px","color":"rgba(64, 158, 255, 1)"}'>联系电话：</div>
-				<el-input v-model="registerForm.lianxidianhua"  placeholder="请输入联系电话" />
-			</el-form-item>
-			<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","boxShadow":"1px 2px 3px #52a1db","margin":"12px 16px 5px 290px","color":"#fff","display":"inline-block","outline":"none","borderRadius":"30%","background":"radial-gradient(circle, rgba(128,184,246,1) 0%, rgba(36,153,251,1) 100%)","width":"auto","fontSize":"16px","height":"40px"}' type="primary" @click="submitForm('registerForm')">注册</el-button>
-			<el-button :style='{"border":"1px solid #bbb","cursor":"pointer","padding":"0 24px","boxShadow":"1px 2px 3px #ccc","margin":"12px auto 5px","color":"#999","display":"inline-block","outline":"none","borderRadius":"30%","background":"#fff","width":"auto","fontSize":"16px","height":"40px"}' @click="resetForm('registerForm')">重置</el-button>
-			<router-link :style='{"cursor":"pointer","padding":"0 10%","color":"#278bd5","display":"inline-block","width":"100%","lineHeight":"1","fontSize":"12px","textDecoration":"none"}' to="/login">已有账户登录</router-link>
-		</el-form>
-    </div>
-  </div>
-</div>
+				<el-form-item v-if="tableName=='yonghu'" prop="yonghuming" class="form-item">
+					<el-input v-model="registerForm.yonghuming" placeholder="请输入用户名" prefix-icon="el-icon-user" />
+				</el-form-item>
+				
+				<el-form-item v-if="tableName=='yonghu'" prop="mima" class="form-item">
+					<el-input v-model="registerForm.mima" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" show-password />
+				</el-form-item>
+				
+				<el-form-item v-if="tableName=='yonghu'" prop="mima2" class="form-item">
+					<el-input v-model="registerForm.mima2" type="password" placeholder="请再次输入密码" prefix-icon="el-icon-circle-check" show-password />
+				</el-form-item>
+				
+				<el-form-item v-if="tableName=='yonghu'" prop="xingming" class="form-item">
+					<el-input v-model="registerForm.xingming" placeholder="请输入姓名" prefix-icon="el-icon-edit" />
+				</el-form-item>
+
+				<el-form-item v-if="tableName=='yonghu'" prop="shouji" class="form-item">
+					<el-input v-model="registerForm.shouji" placeholder="请输入手机" prefix-icon="el-icon-mobile-phone" />
+				</el-form-item>
+				
+				<el-form-item v-if="tableName=='yonghu'" prop="xingbie" class="form-item">
+					<el-select v-model="registerForm.xingbie" placeholder="请选择性别" style="width: 100%">
+						<el-option v-for="(item,index) in yonghuxingbieOptions" :key="index" :label="item" :value="item"></el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item v-if="tableName=='shangjia'" prop="zhanghao" class="form-item">
+					<el-input v-model="registerForm.zhanghao" placeholder="请输入账号" prefix-icon="el-icon-user" />
+				</el-form-item>
+
+				<el-form-item v-if="tableName=='shangjia'" prop="mima" class="form-item">
+					<el-input v-model="registerForm.mima" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" show-password />
+				</el-form-item>
+
+				<el-form-item v-if="tableName=='shangjia'" prop="shangjiaxingming" class="form-item">
+					<el-input v-model="registerForm.shangjiaxingming" placeholder="请输入商家姓名" prefix-icon="el-icon-edit" />
+				</el-form-item>
+
+				<div class="form-actions">
+					<el-button type="primary" class="submit-btn" @click="submitForm('registerForm')">提交注册</el-button>
+				</div>
+				
+				<div class="form-footer">
+					<router-link to="/login" class="login-link">已有账号？立即登录</router-link>
+					<span class="reset-link" @click="resetForm('registerForm')">重置</span>
+				</div>
+			</el-form>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -224,110 +177,119 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-	.container {
-		position: relative;
-		background: url(https://pic.imgdb.cn/item/65eac96d9f345e8d03c6aa2b.jpg) no-repeat;
+	.register-wrapper {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: #1B3022;
+		background-image: linear-gradient(rgba(27, 48, 34, 0.8), rgba(27, 48, 34, 0.8)), url(https://pic.imgdb.cn/item/65eac96d9f345e8d03c6aa2b.jpg);
+		background-size: cover;
+		background-position: center;
+	}
 
-		.el-date-editor.el-input {
+	.register-container {
+		width: 100%;
+		max-width: 500px;
+		padding: 20px;
+	}
+
+	.rgs-form {
+		background: #fff;
+		padding: 50px 40px;
+		border-radius: 4px;
+		box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+		position: relative;
+		&::before {
+			content: '';
+			position: absolute;
+			top: 10px; left: 10px; right: 10px; bottom: 10px;
+			border: 1px solid rgba(166, 137, 102, 0.2);
+			pointer-events: none;
+		}
+
+		.register-header {
+			text-align: center;
+			margin-bottom: 40px;
+
+			.logo-text {
+				font-size: 32px;
+				color: var(--primary-color);
+				font-weight: 600;
+				letter-spacing: 4px;
+				margin-bottom: 15px;
+				font-family: serif;
+			}
+
+			h2 {
+				font-size: 20px;
+				color: var(--text-main);
+				margin: 0 0 10px;
+				font-weight: 500;
+				letter-spacing: 1px;
+			}
+
+			p {
+				font-size: 13px;
+				color: var(--text-secondary);
+				margin: 0;
+				font-style: italic;
+				opacity: 0.7;
+			}
+		}
+
+		.form-item {
+			margin-bottom: 20px;
+			::v-deep .el-input__inner {
+				height: 45px;
+				line-height: 45px;
+				border-radius: 0;
+				border: none;
+				border-bottom: 1px solid #e0e0e0;
+				padding-left: 35px;
+				background: transparent;
+				transition: var(--transition-main);
+				&:focus {
+					border-bottom-color: var(--accent-color);
+				}
+			}
+			::v-deep .el-input__prefix {
+				left: 5px;
+				color: #b2bec3;
+			}
+		}
+
+		.submit-btn {
 			width: 100%;
-		}
-		
-		.rgs-form .el-input ::v-deep .el-input__inner {
-						border: 1px solid #999;
-						border-radius: 8px;
-						padding: 0 10px;
-						box-shadow: 1px 2px 4px #ccc;
-						outline: none;
-						color: #999;
-						background: -webkit-linear-gradient(top,#fff,#eee);
-						width: 100%;
-						font-size: 14px;
-						height: 40px;
-					}
-		
-		.rgs-form .el-select ::v-deep .el-input__inner {
-						border: 1px solid #999;
-						border-radius: 8px;
-						padding: 0 10px;
-						box-shadow: 1px 2px 4px #ccc;
-						outline: none;
-						color: #999;
-						background: -webkit-linear-gradient(top,#fff,#eee);
-						width: 288px;
-						font-size: 14px;
-						height: 40px;
-					}
-		
-		.rgs-form .el-date-editor ::v-deep .el-input__inner {
-						border: 1px solid #999;
-						border-radius: 8px;
-						padding: 0 10px 0 30px;
-						box-shadow: 1px 2px 4px #ccc;
-						outline: none;
-						color: #999;
-						background: -webkit-linear-gradient(top,#fff,#eee);
-						width: 288px;
-						font-size: 14px;
-						height: 40px;
-					}
-		
-		.rgs-form .el-date-editor ::v-deep .el-input__inner {
-						border: 1px solid #999;
-						border-radius: 8px;
-						padding: 0 10px 0 30px;
-						box-shadow: 1px 2px 4px #ccc;
-						outline: none;
-						color: #999;
-						background: -webkit-linear-gradient(top,#fff,#eee);
-						width: 288px;
-						font-size: 14px;
-						height: 40px;
-					}
-		
-		.rgs-form ::v-deep .el-upload--picture-card {
-			background: transparent;
-			border: 0;
+			height: 45px;
+			font-size: 15px;
+			font-weight: 600;
 			border-radius: 0;
-			width: auto;
-			height: auto;
-			line-height: initial;
-			vertical-align: middle;
+			letter-spacing: 4px;
+			margin: 20px 0;
+			background: var(--primary-color) !important;
+			border: none !important;
+			color: var(--accent-color) !important;
 		}
-		
-		.rgs-form ::v-deep .upload .upload-img {
-		  		  border: 1px dashed #999;
-		  		  cursor: pointer;
-		  		  border-radius: 8px;
-		  		  color: #999;
-		  		  width: 160px;
-		  		  font-size: 32px;
-		  		  line-height: 120px;
-		  		  text-align: center;
-		  		  height: 120px;
-		  		}
-		
-		.rgs-form ::v-deep .el-upload-list .el-upload-list__item {
-		  		  border: 1px dashed #999;
-		  		  cursor: pointer;
-		  		  border-radius: 8px;
-		  		  color: #999;
-		  		  width: 160px;
-		  		  font-size: 32px;
-		  		  line-height: 120px;
-		  		  text-align: center;
-		  		  height: 120px;
-		  		}
-		
-		.rgs-form ::v-deep .el-upload .el-icon-plus {
-		  		  border: 1px dashed #999;
-		  		  cursor: pointer;
-		  		  border-radius: 8px;
-		  		  color: #999;
-		  		  width: 160px;
-		  		  font-size: 32px;
-		  		  line-height: 120px;
-		  		  text-align: center;
-		  		  height: 120px;
-		  		}
+
+		.form-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 13px;
+
+			.login-link {
+				color: var(--accent-color);
+				text-decoration: none;
+				font-weight: 500;
+				&:hover { opacity: 0.8; text-decoration: underline; }
+			}
+
+			.reset-link {
+				color: var(--text-secondary);
+				cursor: pointer;
+				&:hover { color: var(--text-main); }
+			}
+		}
 	}
 </style>

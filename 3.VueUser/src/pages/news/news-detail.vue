@@ -1,11 +1,11 @@
 <template>
-  <div :style='{"border":"1px solid #dfdfdf","padding":"20px","margin":"20px auto 0","borderRadius":"16px","background":"#fff","width":"1200px","position":"relative"}'>
-    <div class="section-title" :style='{"margin":"0px 0","color":"#2087c3","borderRadius":"8px 8px 0 0","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221029/f414ce6eeb09429c9bc4d3d6643d9bd1.png) no-repeat center top","fontSize":"24px","lineHeight":"150px","fontWeight":"bold"}'>商城资讯</div>
+  <div :style='{"border":"1px solid #f0f0ed","padding":"60px 40px","margin":"40px auto","borderRadius":"var(--radius-main)","background":"#fff","width":"1200px","position":"relative"}'>
+    <div class="section-title" :style='{"margin":"0 0 50px","color":"var(--primary-color)","borderRadius":"4px","textAlign":"center","background":"#fdfdfb","fontSize":"24px","lineHeight":"100px","fontWeight":"600","letterSpacing":"4px","fontFamily":"serif","border":"1px solid #f0f0ed"}'>商城资讯</div>
     <div class="section-content">
-      <div class="content-title">{{detail.title}}</div>
-      <div class="content-sub-title">发布时间：{{detail.addtime}}</div>
-      <el-divider></el-divider>
-      <div class="content-detail" v-html="detail.content"></div>
+      <div class="content-title" :style='{"color":"var(--primary-color)","fontSize":"28px","fontFamily":"serif","marginBottom":"20px"}'>{{detail.title}}</div>
+      <div class="content-sub-title" :style='{"color":"var(--text-secondary)","fontStyle":"italic"}'>发布时间：{{detail.addtime}}</div>
+      <el-divider><i class="el-icon-coffee-cup" :style='{"color":"var(--accent-color)"}'></i></el-divider>
+      <div class="content-detail" v-html="detail.content" :style='{"lineHeight":"2","fontSize":"16px","color":"var(--text-main)"}'></div>
     </div>
   </div>
 </template>

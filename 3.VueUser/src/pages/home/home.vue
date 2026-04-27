@@ -1,494 +1,258 @@
 <template>
-<div class="home-preview" :style='{"width":"1200px","margin":"20px auto 20px","flexWrap":"wrap","justifyContent":"space-between","display":"flex"}'>
+  <div class="portal-home">
+    <section class="hero-section fade-in-up">
+      <div class="hero-copy">
+        <span class="eyebrow">Mountain Tea Decision Platform</span>
+        <h1>高山茶产供销智能决策平台</h1>
+        <p>面向茶企、采购客户与管理者的产地展示、茶品采购与经营分析门户。</p>
+        <div class="hero-actions">
+          <el-button type="primary" @click="moreBtn('shangpinxinxi')">进入茶品采购</el-button>
+          <el-button plain @click="moreBtn('news')">查看市场资讯</el-button>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="panel-card">
+          <div class="metric">{{ shangpinxinxiRecommend.length || 0 }}</div>
+          <div class="label">今日推荐茶品</div>
+        </div>
+        <div class="panel-card">
+          <div class="metric">{{ newsList.length || 0 }}</div>
+          <div class="label">最新资讯</div>
+        </div>
+      </div>
+    </section>
 
+    <section class="feature-section fade-in-up" style="animation-delay: 0.1s">
+      <div class="feature-card">
+        <h3>产地可信</h3>
+        <p>展示茶园基地、海拔、批次等关键字段，突出高山茶来源与品质。</p>
+      </div>
+      <div class="feature-card">
+        <h3>采购便捷</h3>
+        <p>保留购物车、订单、地址等完整采购链路，支撑“销”环节演示。</p>
+      </div>
+      <div class="feature-card">
+        <h3>经营可视</h3>
+        <p>后台通过库存预警、滞销提醒与销售趋势支撑决策建议。</p>
+      </div>
+    </section>
 
+    <section class="recommend-section fade-in-up" style="animation-delay: 0.2s">
+      <div class="section-header">
+        <div>
+          <h2>精选推荐</h2>
+          <p>结合近期行为与热度，为采购用户推荐关注度较高的高山茶品。</p>
+        </div>
+        <div class="header-actions">
+          <el-button type="primary" icon="el-icon-refresh" size="small" @click="refreshRecommendations" :disabled="!token">刷新推荐</el-button>
+          <span class="more-link" @click="moreBtn('recommendation')">查看更多</span>
+        </div>
+      </div>
 
-<div class="recommend" :style='{"border":"1px solid #dfdfdf","boxShadow":"1px 2px 3px #eee","margin":"20px 0 80px","overflow":"hidden","borderRadius":"16px","background":"#fff","width":"100%","height":"auto","order":"1"}'>
-	<div v-if="false" class="idea recommendIdea" :style='{"padding":"20px","flexWrap":"wrap","background":"#efefef","justifyContent":"space-between","display":"flex"}'>
-		<div class="box1" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box2" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box3" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box4" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box5" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box6" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box7" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box8" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box9" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box10" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-	</div>
-	
-    <div class="title" :style='{"width":"100%","margin":"24px 0 24px 0","lineHeight":"1.5","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221027/fc985400d2a2484d8d9e17eb893d2c05.png) no-repeat 240px center,url(http://codegen.caihongy.cn/20221027/6602c4fb09df4bd4881cabfef19d2ed3.png) no-repeat 760px center"}'>
-		<span :style='{"fontSize":"24px","color":"#005aad","textShadow":"2px 4px 2px #eee","fontWeight":"bold"}'>茶叶信息推荐</span>
-	</div>
-	
-	
-	<!-- 样式一 -->
-	<div class="list list1 index-pv1" :style='{"width":"100%","padding":"0 10px","background":"#fff","height":"auto"}'>
-		<div :style='{"margin":"10px","borderRadius":"8px","background":"none","display":"inline-block","width":"274px","position":"relative","height":"auto"}' v-for="(item,index) in shangpinxinxiRecommend" :key="index" @click="toDetail('shangpinxinxiDetail', item)" class="list-item animation-box">
-			<img :style='{"cursor":"pointer","boxShadow":"1px 1px 1px #ddd","objectFit":"cover","borderRadius":"8px","display":"block","width":"274px","height":"274px"}' v-if="preHttp(item.tupian)" :src="item.tupian.split(',')[0]" alt="" />
-			<img :style='{"cursor":"pointer","boxShadow":"1px 1px 1px #ddd","objectFit":"cover","borderRadius":"8px","display":"block","width":"274px","height":"274px"}' v-else :src="baseUrl + (item.tupian?item.tupian.split(',')[0]:'')" alt="" />
-			<div class="name line1" :style='{"cursor":"pointer","padding":"4px 10px","boxShadow":"1px 1px 1px #ddd","margin":"4px 0 0 0","whiteSpace":"nowrap","overflow":"hidden","color":"#333","borderRadius":"8px","background":"#f5f5f5","lineHeight":"24px","fontSize":"14px","textOverflow":"ellipsis"}'>{{item.shangpinmingcheng}}</div>
-			<div class="name line1" :style='{"cursor":"pointer","padding":"4px 10px","boxShadow":"1px 1px 1px #ddd","margin":"4px 0 0 0","whiteSpace":"nowrap","overflow":"hidden","color":"#333","borderRadius":"8px","background":"#f5f5f5","lineHeight":"24px","fontSize":"14px","textOverflow":"ellipsis"}'>{{item.shangpinfenlei}}</div>
-			<div class="name line1" :style='{"cursor":"pointer","padding":"4px 10px","boxShadow":"1px 1px 1px #ddd","margin":"4px 0 0 0","whiteSpace":"nowrap","overflow":"hidden","color":"#333","borderRadius":"8px","background":"#f5f5f5","lineHeight":"24px","fontSize":"14px","textOverflow":"ellipsis"}'>{{item.pinpai}}</div>
-		</div>
-	</div>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<div @click="moreBtn('shangpinxinxi')" :style='{"border":"1px solid #89c2f9","cursor":"pointer","boxShadow":"0px 4px 1px #c7d3de,inset 0px 0px 56px 0px #a0cbf7","margin":"20px auto","borderRadius":"30%","textAlign":"center","left":"47%","background":"#fff","display":"block","width":"120px","lineHeight":"36px","position":"absolute"}'>
-		<span :style='{"color":"#0583fc","fontSize":"14px"}'>查看更多</span>
-		<i v-if="true" :style='{"color":"#0583fc","fontSize":"14px"}' class="el-icon-d-arrow-right"></i>
-	</div>
-	
-</div>
-<div class="recommend" :style='{"border":"1px solid #dfdfdf","boxShadow":"1px 2px 3px #eee","margin":"20px 0 80px","overflow":"hidden","borderRadius":"16px","background":"#fff","width":"100%","height":"auto","order":"1"}'>
-	<div v-if="false" class="idea recommendIdea" :style='{"padding":"20px","flexWrap":"wrap","background":"#efefef","justifyContent":"space-between","display":"flex"}'>
-		<div class="box1" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box2" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box3" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box4" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box5" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box6" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box7" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box8" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box9" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box10" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-	</div>
-	
-    <div class="title" :style='{"width":"100%","margin":"24px 0 24px 0","lineHeight":"1.5","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221027/fc985400d2a2484d8d9e17eb893d2c05.png) no-repeat 240px center,url(http://codegen.caihongy.cn/20221027/6602c4fb09df4bd4881cabfef19d2ed3.png) no-repeat 760px center"}'>
-		<span :style='{"fontSize":"24px","color":"#005aad","textShadow":"2px 4px 2px #eee","fontWeight":"bold"}'>秒杀茶叶推荐</span>
-	</div>
-	
-	
-	<!-- 样式一 -->
-	<div class="list list1 index-pv1" :style='{"width":"100%","padding":"0 10px","background":"#fff","height":"auto"}'>
-		<div :style='{"margin":"10px","borderRadius":"8px","background":"none","display":"inline-block","width":"274px","position":"relative","height":"auto"}' v-for="(item,index) in miaoshashangpinRecommend" :key="index" @click="toDetail('miaoshashangpinDetail', item)" class="list-item animation-box">
-			<img :style='{"cursor":"pointer","boxShadow":"1px 1px 1px #ddd","objectFit":"cover","borderRadius":"8px","display":"block","width":"274px","height":"274px"}' v-if="preHttp(item.tupian)" :src="item.tupian.split(',')[0]" alt="" />
-			<img :style='{"cursor":"pointer","boxShadow":"1px 1px 1px #ddd","objectFit":"cover","borderRadius":"8px","display":"block","width":"274px","height":"274px"}' v-else :src="baseUrl + (item.tupian?item.tupian.split(',')[0]:'')" alt="" />
-			<div class="name line1" :style='{"cursor":"pointer","padding":"4px 10px","boxShadow":"1px 1px 1px #ddd","margin":"4px 0 0 0","whiteSpace":"nowrap","overflow":"hidden","color":"#333","borderRadius":"8px","background":"#f5f5f5","lineHeight":"24px","fontSize":"14px","textOverflow":"ellipsis"}'>{{item.shangpinmingcheng}}</div>
-			<div class="name line1" :style='{"cursor":"pointer","padding":"4px 10px","boxShadow":"1px 1px 1px #ddd","margin":"4px 0 0 0","whiteSpace":"nowrap","overflow":"hidden","color":"#333","borderRadius":"8px","background":"#f5f5f5","lineHeight":"24px","fontSize":"14px","textOverflow":"ellipsis"}'>{{item.shangpinfenlei}}</div>
-			<div class="name line1" :style='{"cursor":"pointer","padding":"4px 10px","boxShadow":"1px 1px 1px #ddd","margin":"4px 0 0 0","whiteSpace":"nowrap","overflow":"hidden","color":"#333","borderRadius":"8px","background":"#f5f5f5","lineHeight":"24px","fontSize":"14px","textOverflow":"ellipsis"}'>{{item.pinpai}}</div>
-		</div>
-	</div>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<div @click="moreBtn('miaoshashangpin')" :style='{"border":"1px solid #89c2f9","cursor":"pointer","boxShadow":"0px 4px 1px #c7d3de,inset 0px 0px 56px 0px #a0cbf7","margin":"20px auto","borderRadius":"30%","textAlign":"center","left":"47%","background":"#fff","display":"block","width":"120px","lineHeight":"36px","position":"absolute"}'>
-		<span :style='{"color":"#0583fc","fontSize":"14px"}'>查看更多</span>
-		<i v-if="true" :style='{"color":"#0583fc","fontSize":"14px"}' class="el-icon-d-arrow-right"></i>
-	</div>
-	
-</div>
+      <div class="product-grid" v-loading="loading">
+        <div v-for="item in shangpinxinxiRecommend" :key="item.id || item.goodid" class="product-card" @click="toGoodsDetail(item)">
+          <div class="image-wrapper">
+            <img v-if="preHttp(item.tupian)" :src="item.tupian.split(',')[0]" alt="" />
+            <img v-else :src="baseUrl + imagePath(item.tupian)" alt="" />
+          </div>
+          <div class="product-info">
+            <span class="category">{{ item.shangpinfenlei || '未分类' }}</span>
+            <h3>{{ item.shangpinmingcheng }}</h3>
+            <p>{{ item.pinpai || '平台精选茶品' }}</p>
+            <p class="reason" v-if="item.reason">{{ item.reason }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-	
-<div class="news" :style='{"border":"1px solid #dfdfdf","padding":"20px","boxShadow":"1px 2px 3px #eee","margin":"0 0 80px","overflow":"hidden","borderRadius":"16px","background":"#fff","width":"49%","height":"660px","order":"2"}'>
-	<div v-if="false" class="idea newsIdea" :style='{"padding":"20px","flexWrap":"wrap","background":"#efefef","justifyContent":"space-between","display":"flex"}'>
-		<div class="box1" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box2" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box3" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box4" :style='{"width":"20%","background":"#fff","height":"80px"}'></div>
-		<div class="box5" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box6" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box7" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box8" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box9" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-		<div class="box10" :style='{"width":"20%","background":"#fff","display":"none","height":"80px"}'></div>
-	</div>
-	
-	<div class="title" :style='{"width":"100%","margin":"24px 0 24px 0","lineHeight":"1.5","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221027/fc985400d2a2484d8d9e17eb893d2c05.png) no-repeat -70px bottom,url(http://codegen.caihongy.cn/20221027/6602c4fb09df4bd4881cabfef19d2ed3.png) no-repeat 400px bottom"}'>
-		<span :style='{"fontSize":"24px","color":"#005aad","textShadow":"2px 4px 2px #eee","fontWeight":"bold"}'>商城资讯</span>
-	</div>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<!-- 样式八 -->
-	<div v-if="newsList.length" class="list list8 index-pv1" :style='{"cursor":"pointer","padding":"10px","flexWrap":"wrap","background":"none","display":"flex","width":"100%","height":"auto"}'>
-	  <div @click="toDetail('newsDetail', newsList[0])" v-if="newsList.length>0" :style='{"padding":"10px","boxShadow":"1px 1px 1px #ddd,inset 0px 0px 56px 0px #eee","margin":"0 10px 10px","borderRadius":"8px","background":"#f5f5f5","display":"flex","width":"100%","height":"auto"}' class="list-item animation-box">
-	    <div :style='{"width":"400px","padding":"0 10px","height":"auto","order":"2"}'>
-	      <div :style='{"whiteSpace":"nowrap","overflow":"hidden","color":"#333","fontSize":"14px","lineHeight":"24px","textOverflow":"ellipsis","fontWeight":"bold"}'>{{newsList[0].title}}</div>
-	      <div :style='{"fontSize":"14px","lineHeight":"24px","overflow":"hidden","color":"#666","textIndent":"2em","height":"48px"}'>{{newsList[0].introduction}}</div>
-	      <div :style='{"color":"#999","fontSize":"12px","lineHeight":"24px"}'>{{newsList[0].addtime.split(" ")[0]}}</div>
-	    </div>
-	    <img :style='{"width":"100px","objectFit":"cover","borderRadius":"8px","height":"100px"}' :src="baseUrl + newsList[0].picture" >
-	  </div>
-	  <div @click="toDetail('newsDetail', newsList[1])" v-if="newsList.length>1" :style='{"padding":"10px","boxShadow":"1px 1px 1px #ddd,inset 0px 0px 56px 0px #eee","margin":"0 10px 10px","borderRadius":"8px","background":"#f5f5f5","display":"flex","width":"100%","height":"auto"}' class="list-item animation-box">
-	    <img :style='{"width":"100px","objectFit":"cover","borderRadius":"8px","height":"100px"}' :src="baseUrl + newsList[1].picture" >
-	    <div :style='{"width":"400px","padding":"0 10px","height":"auto"}'>
-	      <div :style='{"whiteSpace":"nowrap","overflow":"hidden","color":"#333","fontSize":"14px","lineHeight":"24px","textOverflow":"ellipsis","fontWeight":"bold"}'>{{newsList[1].title}}</div>
-	      <div :style='{"fontSize":"14px","lineHeight":"24px","overflow":"hidden","color":"#666","textIndent":"2em","height":"48px"}'>{{newsList[1].introduction}}</div>
-	      <div :style='{"color":"#999","fontSize":"12px","lineHeight":"24px"}'>{{newsList[1].addtime.split(" ")[0]}}</div>
-	    </div>
-	  </div>
-	  <div @click="toDetail('newsDetail', newsList[2])" v-if="newsList.length>2" :style='{"padding":"10px","boxShadow":"1px 1px 1px #ddd,inset 0px 0px 56px 0px #eee","margin":"0 10px 10px","borderRadius":"8px","background":"#f5f5f5","display":"flex","width":"100%","height":"auto"}' class="list-item animation-box">
-	    <div :style='{"width":"400px","padding":"0 10px","height":"auto","order":"2"}'>
-	      <div :style='{"whiteSpace":"nowrap","overflow":"hidden","color":"#333","fontSize":"14px","lineHeight":"28px","textOverflow":"ellipsis","fontWeight":"bold"}'>{{newsList[2].title}}</div>
-	      <div :style='{"fontSize":"14px","lineHeight":"24px","overflow":"hidden","color":"#666","textIndent":"2em","height":"48px"}'>{{newsList[2].introduction}}</div>
-	      <div :style='{"color":"#999","fontSize":"12px","lineHeight":"24px"}'>{{newsList[2].addtime.split(" ")[0]}}</div>
-	    </div>
-	    <img :style='{"width":"100px","objectFit":"cover","borderRadius":"8px","height":"100px"}' :src="baseUrl + newsList[2].picture" >
-	  </div>
-	  <div @click="toDetail('newsDetail', newsList[3])" v-if="newsList.length>3" :style='{"padding":"10px","boxShadow":"1px 1px 1px #ddd,inset 0px 0px 56px 0px #eee","margin":"0 10px","borderRadius":"8px","background":"#f5f5f5","display":"flex","width":"100%","height":"auto"}' class="list-item animation-box">
-	    <img :style='{"width":"100px","objectFit":"cover","borderRadius":"8px","height":"100px"}' :src="baseUrl + newsList[3].picture" >
-	    <div :style='{"width":"400px","padding":"0 10px","height":"auto"}'>
-	      <div :style='{"whiteSpace":"nowrap","overflow":"hidden","color":"#333","fontSize":"14px","lineHeight":"28px","textOverflow":"ellipsis","fontWeight":"bold"}'>{{newsList[3].title}}</div>
-	      <div :style='{"fontSize":"14px","lineHeight":"24px","overflow":"hidden","color":"#666","textIndent":"2em","height":"48px"}'>{{newsList[3].introduction}}</div>
-	      <div :style='{"color":"#999","fontSize":"12px","lineHeight":"24px"}'>{{newsList[3].addtime.split(" ")[0]}}</div>
-	    </div>
-	  </div>
-	</div>
-	
-	
-	
-	<div @click="moreBtn('news')" :style='{"border":"1px solid #89c2f9","cursor":"pointer","boxShadow":"0px 4px 1px #c7d3de,inset 0px 0px 56px 0px #a0cbf7","margin":"42px auto","borderRadius":"30%","textAlign":"center","left":"47%","background":"none","display":"block","width":"120px","lineHeight":"36px","position":"absolute"}'>
-		<span :style='{"color":"#0583fc","fontSize":"14px"}'>查看更多</span>
-		<i v-if="true" :style='{"color":"#0583fc","fontSize":"14px"}' class="el-icon-d-arrow-right"></i>
-	</div>
-	
-</div>
+    <section class="content-section fade-in-up" style="animation-delay: 0.3s">
+      <div class="news-section">
+        <div class="section-header">
+          <div>
+            <h2>市场资讯</h2>
+            <p>围绕高山茶行业动态、市场信息与平台公告。</p>
+          </div>
+          <span class="more-link" @click="moreBtn('news')">更多资讯</span>
+        </div>
+        <div class="news-list">
+          <div v-for="(item, index) in newsList.slice(0, 4)" :key="index" class="news-item" @click="toDetail('newsDetail', item)">
+            <div class="news-date">
+              <span class="day">{{ getDay(item.addtime) }}</span>
+              <span class="month">{{ getMonth(item.addtime) }}月</span>
+            </div>
+            <div class="news-content">
+              <h4>{{ item.title }}</h4>
+              <p>{{ item.introduction }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-
-
-
-	<!-- 关于我们 -->
-	<div :style='{"border":"1px solid #dfdfdf","padding":"20px","boxShadow":"1px 2px 3px #eee","margin":"0px 0 20px","overflow":"hidden","borderRadius":"16px","background":"#fff","width":"49%","height":"660px","order":"1"}'>
-	  <div :style='{"margin":"12px 0 0 0","color":"#005aad","textAlign":"center","background":"url(http://codegen.caihongy.cn/20221027/fc985400d2a2484d8d9e17eb893d2c05.png) no-repeat -70px bottom,url(http://codegen.caihongy.cn/20221027/6602c4fb09df4bd4881cabfef19d2ed3.png) no-repeat 400px bottom","width":"100%","lineHeight":"1.5","fontSize":"24px","textShadow":"2px 4px 2px #eee","fontWeight":"bold"}'>{{aboutUsDetail.title}}</div>
-	  <div :style='{"width":"100%","margin":"0 0 24px 0","lineHeight":"1.5","fontSize":"14px","color":"#999","textAlign":"center"}'>{{aboutUsDetail.subtitle}}</div>
-	  <div :style='{"width":"100%","padding":"0px","float":"left","display":"inline-block","height":"auto"}'>
-	    <img :style='{"boxShadow":"1px 1px 1px #ddd","margin":"0px","objectFit":"cover","borderRadius":"8px","display":"block","width":"48%","float":"left","height":"170px"}' :src="baseUrl + aboutUsDetail.picture1">
-	    <img :style='{"margin":"0 0px","objectFit":"cover","borderRadius":"8px","display":"block","width":"48%","float":"right","height":"170px"}' :src="baseUrl + aboutUsDetail.picture2">
-	    <img :style='{"margin":"0 10px","objectFit":"cover","flex":1,"display":"none","height":"120px"}' :src="baseUrl + aboutUsDetail.picture3">
-	  </div>
-	  <div :style='{"padding":"12px","boxShadow":"1px 1px 1px #ddd,inset 0px 0px 56px 0px #eee","margin":"20px 0 0 0","color":"rgb(102, 102, 102)","display":"inline-block","float":"right","textIndent":"2em","overflow":"hidden","borderRadius":"8px","background":"url(http://codegen.caihongy.cn/20221029/2745081538874ed18856d58d8d939868.png) no-repeat center bottom,#fff","width":"100%","lineHeight":"24px","fontSize":"14px","height":"340px"}' v-html="aboutUsDetail.content"></div>
-	  <div :style='{"width":"285px","background":"url(\"http://codegen.caihongy.cn/20201114/7856ba26477849ea828f481fa2773a95.jpg\") 0% 0% / cover no-repeat","display":"none","height":"100px"}' />
-	  <div :style='{"width":"285px","background":"url(\"http://codegen.caihongy.cn/20201114/7856ba26477849ea828f481fa2773a95.jpg\") 0% 0% / cover no-repeat","display":"none","height":"100px"}' />
-	  <div :style='{"width":"285px","background":"url(\"http://codegen.caihongy.cn/20201114/7856ba26477849ea828f481fa2773a95.jpg\") 0% 0% / cover no-repeat","display":"none","height":"100px"}' />
-	  <div :style='{"width":"285px","background":"url(\"http://codegen.caihongy.cn/20201114/7856ba26477849ea828f481fa2773a95.jpg\") 0% 0% / cover no-repeat","display":"none","height":"100px"}' />
-	</div>
-</div>
+      <div class="about-section">
+        <div class="section-header">
+          <div>
+            <h2>项目介绍</h2>
+            <p>用于答辩展示平台定位、建设背景与功能亮点。</p>
+          </div>
+        </div>
+        <div class="about-card">
+          <div class="about-images">
+            <img :src="baseUrl + (aboutUsDetail.picture1 || '')" class="img1">
+            <img :src="baseUrl + (aboutUsDetail.picture2 || '')" class="img2">
+          </div>
+          <div class="about-text">
+            <h3>{{ aboutUsDetail.title }}</h3>
+            <p class="subtitle">{{ aboutUsDetail.subtitle }}</p>
+            <div class="content-preview" v-html="aboutUsDetail.content"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script>
-  export default {
-    //数据集合
-    data() {
-      return {
-        baseUrl: '',
-        aboutUsDetail: {},
-        newsList: [],
-        shangpinxinxiRecommend: [],
-        miaoshashangpinRecommend: [],
-
+export default {
+  data() {
+    return {
+      baseUrl: '',
+      aboutUsDetail: {},
+      newsList: [],
+      shangpinxinxiRecommend: [],
+      loading: false,
+      token: localStorage.getItem('Token')
+    }
+  },
+  created() {
+    this.baseUrl = this.$config.baseUrl
+    this.getNewsList()
+    this.getAboutUs()
+    this.getList()
+  },
+  methods: {
+    preHttp(str) {
+      return !!str && str.substr(0, 4) === 'http'
+    },
+    imagePath(value) {
+      return value ? value.split(',')[0] : ''
+    },
+    getDay(value) {
+      return value ? value.split(' ')[0].split('-')[2] : ''
+    },
+    getMonth(value) {
+      return value ? value.split(' ')[0].split('-')[1] : ''
+    },
+    getAboutUs() {
+      this.$http.get('aboutus/detail/1').then(res => {
+        if (res.data.code === 0) {
+          this.aboutUsDetail = res.data.data || {}
+        }
+      })
+    },
+    getNewsList() {
+      this.$http.get('news/list', {
+        params: {
+          page: 1,
+          limit: 6,
+          order: 'desc'
+        }
+      }).then(res => {
+        if (res.data.code === 0) {
+          this.newsList = (res.data.data && res.data.data.list) || []
+        }
+      })
+    },
+    getList() {
+      this.loading = true
+      this.$http.get('recommendation/today', { params: { limit: 8 } }).then(res => {
+        if (res.data.code === 0) {
+          this.shangpinxinxiRecommend = res.data.data || []
+        }
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    refreshRecommendations() {
+      if (!this.token) {
+        this.$message.warning('请先登录')
+        return
       }
+      this.loading = true
+      this.$http.post('recommendation/refresh').then(res => {
+        if (res.data.code === 0) {
+          this.$message.success('刷新成功')
+          this.getList()
+        } else {
+          this.loading = false
+        }
+      }).catch(() => {
+        this.loading = false
+      })
     },
-    created() {
-      this.baseUrl = this.$config.baseUrl;
-      this.getNewsList();
-      this.getAboutUs();
-      this.getList();
+    toGoodsDetail(item) {
+      const detailObj = Object.assign({}, item, { id: item.goodid || item.id })
+      this.$router.push({
+        path: '/index/shangpinxinxiDetail',
+        query: { detailObj: JSON.stringify(detailObj) }
+      })
     },
-    //方法集合
-    methods: {
-      preHttp(str) {
-          return str && str.substr(0,4)=='http';
-      },
-      getAboutUs() {
-          this.$http.get('aboutus/detail/1', {}).then(res => {
-            if(res.data.code == 0) {
-              this.aboutUsDetail = res.data.data;
-            }
-          })
-      },
-		getNewsList() {
-			this.$http.get('news/list', {params: {
-				page: 1,
-				limit: 6,
-			order: 'desc'}}).then(res => {
-				if (res.data.code == 0) {
-					this.newsList = res.data.data.list;
-					
-					
-				}
-			});
-		},
-		getList() {
-          let autoSortUrl = "";
-          autoSortUrl = "shangpinxinxi/autoSort";
-          if(localStorage.getItem('Token')) {
-              autoSortUrl = "shangpinxinxi/autoSort2";
-          }
-			this.$http.get(autoSortUrl, {params: {
-				page: 1,
-				limit: 8,
-			}}).then(res => {
-				if (res.data.code == 0) {
-					this.shangpinxinxiRecommend = res.data.data.list;
-					
-					
-					// 茶叶列表样式五
-					
-				}
-			});
-          autoSortUrl = "miaoshashangpin/autoSort";
-          if(localStorage.getItem('Token')) {
-              autoSortUrl = "miaoshashangpin/autoSort2";
-          }
-			this.$http.get(autoSortUrl, {params: {
-				page: 1,
-				limit: 8,
-			}}).then(res => {
-				if (res.data.code == 0) {
-					this.miaoshashangpinRecommend = res.data.data.list;
-					
-					
-					// 茶叶列表样式五
-					
-				}
-			});
-			
-		},
-		toDetail(path, item) {
-			this.$router.push({path: '/index/' + path, query: {detailObj: JSON.stringify(item)}});
-		},
-		moreBtn(path) {
-			this.$router.push({path: '/index/' + path});
-		}
+    toDetail(path, item) {
+      this.$router.push({ path: `/index/${path}`, query: { detailObj: JSON.stringify(item) } })
+    },
+    moreBtn(path) {
+      this.$router.push({ path: `/index/${path}` })
     }
   }
+}
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
-	.home-preview {
-	
-		.recommend {
-			.list3 .swiper-button-prev {
-				left: 10px;
-				right: auto;
-			}
-			
-			.list3 .swiper-button-prev::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list3 .swiper-button-next {
-				left: auto;
-				right: 10px;
-			}
-			
-			.list3 .swiper-button-next::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list5 .swiper-button-prev {
-				left: 10px;
-				right: auto;
-			}
-			
-			.list5 .swiper-button-prev::after {
-				color: rgb(64, 158, 255);
-        }
-        
-        .list5 .swiper-button-next {
-				left: auto;
-				right: 10px;
-			}
-			
-			.list5 .swiper-button-next::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list5 {
-				.swiper-slide-prev {
-					position: relative;
-					z-index: 3;
-				}
-		
-				.swiper-slide-next {
-					position: relative;
-					z-index: 3;
-				}
-		
-				.swiper-slide-active {
-					position: relative;
-					z-index: 5;
-				}
-			}
-			
-			.index-pv1 .animation-box {
-				transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-				z-index: initial;
-			}
-			
-			.index-pv1 .animation-box:hover {
-				-webkit-perspective: 1000px;
-				perspective: 1000px;
-				transition: 0.3s;
-				z-index: 1;
-			}
-			
-			.index-pv1 .animation-box img {
-				transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-			}
-			
-			.index-pv1 .animation-box img:hover {
-				-webkit-perspective: 1000px;
-				perspective: 1000px;
-				transition: 0.3s;
-			}
-		}
-		
-		.news {
-			.list3 .swiper-button-prev {
-				left: 10px;
-				right: auto;
-			}
-			
-			.list3 .swiper-button-prev::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list3 .swiper-button-next {
-				left: auto;
-				right: 10px;
-			}
-			
-			.list3 .swiper-button-next::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list6 .swiper-button-prev {
-				left: 10px;
-				right: auto;
-			}
-			
-			.list6 .swiper-button-prev::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list6 .swiper-button-next {
-				left: auto;
-				right: 10px;
-			}
-			
-			.list6 .swiper-button-next::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.index-pv1 .animation-box {
-				transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-				z-index: initial;
-			}
-			
-			.index-pv1 .animation-box:hover {
-				-webkit-perspective: 1000px;
-				perspective: 1000px;
-				transition: 0.3s;
-				z-index: 1;
-			}
-			
-			.index-pv1 .animation-box img {
-				transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-			}
-			
-			.index-pv1 .animation-box img:hover {
-				-webkit-perspective: 1000px;
-				perspective: 1000px;
-				transition: 0.3s;
-			}
-		}
-	
-		.lists {
-			.list3 .swiper-button-prev {
-				left: 10px;
-				right: auto;
-			}
-			
-			.list3 .swiper-button-prev::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list3 .swiper-button-next {
-				left: auto;
-				right: 10px;
-        }
-        
-        .list3 .swiper-button-next::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list5 .swiper-button-prev {
-				left: 10px;
-				right: auto;
-			}
-			
-			.list5 .swiper-button-prev::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list5 .swiper-button-next {
-            left: auto;
-            right: 10px;
-			}
-			
-			.list5 .swiper-button-next::after {
-				color: rgb(64, 158, 255);
-			}
-			
-			.list5 {
-				.swiper-slide-prev {
-					position: relative;
-					z-index: 3;
-				}
-		
-				.swiper-slide-next {
-					position: relative;
-					z-index: 3;
-				}
-		
-				.swiper-slide-active {
-					position: relative;
-					z-index: 5;
-				}
-			}
-			
-			.index-pv1 .animation-box {
-				transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-				z-index: initial;
-			}
-			
-			.index-pv1 .animation-box:hover {
-				-webkit-perspective: 1000px;
-				perspective: 1000px;
-				transition: 0.3s;
-				z-index: 1;
-			}
-			
-			.index-pv1 .animation-box img {
-				transform: rotate(0deg) scale(1) skew(0deg, 0deg) translate3d(0px, 0px, 0px);
-			}
-			
-			.index-pv1 .animation-box img:hover {
-				-webkit-perspective: 1000px;
-				perspective: 1000px;
-				transition: 0.3s;
-			}
-		}
-	}
+<style scoped>
+.portal-home { max-width: 1200px; margin: 0 auto; padding: 32px 0 56px; }
+.hero-section { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 24px; background: linear-gradient(135deg, #f5fbf7, #eef5ef); border: 1px solid #e7efe9; border-radius: 24px; padding: 36px; }
+.eyebrow { display: inline-block; margin-bottom: 12px; color: #2d5a27; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.hero-copy h1 { margin: 0 0 12px; font-size: 40px; color: #1f3a2e; }
+.hero-copy p { margin: 0 0 24px; color: #587064; line-height: 1.8; }
+.hero-actions { display: flex; gap: 12px; }
+.hero-panel { display: grid; gap: 16px; }
+.panel-card { background: #fff; border-radius: 18px; padding: 24px; box-shadow: 0 12px 40px rgba(34, 60, 45, 0.08); }
+.metric { font-size: 36px; font-weight: 700; color: #1f3a2e; }
+.label { margin-top: 8px; color: #6b8176; }
+.feature-section { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+.feature-card { background: #fff; border: 1px solid #edf1ed; border-radius: 18px; padding: 22px; }
+.feature-card h3 { margin: 0 0 10px; color: #244536; }
+.feature-card p { margin: 0; color: #64796e; line-height: 1.8; }
+.section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+.section-header h2 { margin: 0 0 8px; font-size: 28px; color: #1f3a2e; }
+.section-header p { margin: 0; color: #667c71; }
+.header-actions { display: flex; align-items: center; gap: 16px; }
+.more-link { color: #2d5a27; cursor: pointer; font-weight: 600; }
+.product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.product-card { background: #fff; border: 1px solid #eef2ef; border-radius: 18px; overflow: hidden; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(34, 60, 45, 0.12); }
+.image-wrapper { height: 240px; overflow: hidden; }
+.image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+.product-info { padding: 18px; }
+.product-info h3 { margin: 10px 0 8px; color: #1f3a2e; font-size: 18px; }
+.product-info p { margin: 0; color: #667c71; line-height: 1.6; }
+.category { color: #2d5a27; font-size: 12px; font-weight: 700; }
+.reason { margin-top: 8px !important; color: #a06c12 !important; }
+.content-section { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 36px; }
+.news-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #edf1ed; cursor: pointer; }
+.news-date { width: 72px; min-width: 72px; border-radius: 14px; background: #f4f8f5; text-align: center; padding: 10px 8px; }
+.news-date .day { display: block; font-size: 24px; font-weight: 700; color: #1f3a2e; }
+.news-date .month { color: #71857a; font-size: 13px; }
+.news-content h4 { margin: 0 0 8px; color: #244536; }
+.news-content p { margin: 0; color: #6c8176; line-height: 1.7; }
+.about-card { display: flex; flex-direction: column; gap: 18px; background: #fff; border: 1px solid #edf1ed; border-radius: 20px; padding: 18px; }
+.about-images { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.about-images img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; border-radius: 16px; background: #f5faf7; display: block; }
+.about-text { width: 100%; }
+.about-text h3 { margin: 0 0 8px; color: #244536; }
+.subtitle { margin: 0 0 12px; color: #7a8d83; }
+.content-preview { color: #5f7569; line-height: 1.8; max-height: 240px; overflow: hidden; }
+@media (max-width: 960px) {
+  .hero-section, .content-section, .feature-section, .product-grid { grid-template-columns: 1fr; }
+  .about-images { grid-template-columns: 1fr; }
+}
 </style>

@@ -2,194 +2,94 @@
 	<div class="main-content">
 		<!-- 列表页 -->
 		<template v-if="showFlag">
-			<el-form class="center-form-pv" :style='{"margin":"0 0 20px 0","position":"relative"}' :inline="true" :model="searchForm">
-				<el-row :style='{"width":"150px","position":"absolute","top":"0","left":"0","display":"block","zIndex":"1003"}' >
-					<div :style='{"margin":"0 0 5px","display":"inline-block"}'>
-						<label :style='{"margin":"0 10px 0 0","color":"#666","textAlign":"left","display":"inline-block","width":"100px","lineHeight":"40px","fontSize":"14px","fontWeight":"600","height":"40px"}' class="item-label">订单编号</label>
-						<el-input v-model="searchForm.orderid" placeholder="订单编号" clearable></el-input>
+			<div class="orders-list-panel">
+			<el-form class="center-form-pv orders-search-form" :inline="true" :model="searchForm">
+				<div class="orders-filter-row">
+					<div class="orders-filter-fields">
+						<div class="orders-search-item">
+							<label :style='{"margin":"0 10px 0 0","color":"#666","textAlign":"left","display":"inline-block","width":"100px","lineHeight":"40px","fontSize":"14px","fontWeight":"600","height":"40px"}' class="item-label">订单编号</label>
+							<el-input v-model="searchForm.orderid" placeholder="订单编号" clearable></el-input>
+						</div>
+						<div class="orders-search-item">
+							<label :style='{"margin":"0 10px 0 0","color":"#666","textAlign":"left","display":"inline-block","width":"100px","lineHeight":"40px","fontSize":"14px","fontWeight":"600","height":"40px"}' class="item-label">茶叶名称</label>
+							<el-input v-model="searchForm.goodname" placeholder="茶叶名称" clearable></el-input>
+						</div>
+						<el-button class="orders-search-button" type="success" @click="search()">查询</el-button>
 					</div>
-					<div :style='{"margin":"0 0 5px","display":"inline-block"}'>
-						<label :style='{"margin":"0 10px 0 0","color":"#666","textAlign":"left","display":"inline-block","width":"100px","lineHeight":"40px","fontSize":"14px","fontWeight":"600","height":"40px"}' class="item-label">茶叶名称</label>
-						<el-input v-model="searchForm.goodname" placeholder="茶叶名称" clearable></el-input>
+
+					<div class="orders-action-row">
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'删除')" :disabled="dataListSelections.length <= 0" type="danger" @click="deleteHandler()">删除</el-button>
+
+
+						<download-excel v-if="isAuth('orders'+'/'+orderStatus,'导出')" class="export-excel-wrapper" :data = "dataList" :fields = "json_fields" name = "订单.xls">
+							<!-- 导出excel -->
+							<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' type="danger">导出</el-button>
+						</download-excel>
+
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'日销量')" type="warning" @click="dayNumberChartDialog()">日销量</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'月销量')" type="warning" @click="monthNumberChartDialog()">月销量</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'年销量')" type="warning" @click="yearNumberChartDialog()">年销量</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}'	v-if="isAuth('orders'+'/'+orderStatus,'品销量')"	type="warning"	@click="goodnameNumberChartDialog()">茶叶销量</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'类销量')" type="warning" @click="goodtypeNumberChartDialog()">类型销量</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'日销额')" type="warning" @click="dayAmountChartDialog()">日销额</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'月销额')" type="warning" @click="monthAmountChartDialog()">月销额</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'年销额')" type="warning" @click="yearAmountChartDialog()">年销额</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'品销额')" type="warning" @click="goodnameAmountChartDialog()">茶叶销额</el-button>
+
+						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'类销额')" type="warning" @click="goodtypeAmountChartDialog()">类型销额</el-button>
 					</div>
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","outline":"none","margin":"10px 0 0 0","color":"#fff","borderRadius":"4px","background":"rgba(184, 222, 74, 1)","width":"150px","fontSize":"14px","height":"40px"}' type="success" @click="search()">查询</el-button>
-				</el-row>
-
-				<el-row :style='{"margin":"0","justifyContent":"flex-end","display":"flex"}'>
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'新增')" type="success" @click="addOrUpdateHandler()">新增</el-button>
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'删除')" :disabled="dataListSelections.length <= 0" type="danger" @click="deleteHandler()">删除</el-button>
-
-
-					<download-excel v-if="isAuth('orders'+'/'+orderStatus,'导出')" class="export-excel-wrapper" :data = "dataList" :fields = "json_fields" name = "订单.xls">
-						<!-- 导出excel -->
-						<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' type="danger">导出</el-button>
-					</download-excel>
-
-
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'日销量')" type="warning" @click="dayNumberChartDialog()">日销量</el-button>
-
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'月销量')" type="warning" @click="monthNumberChartDialog()">月销量</el-button>
-            
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'年销量')" type="warning" @click="yearNumberChartDialog()">年销量</el-button>
-            
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}'	v-if="isAuth('orders'+'/'+orderStatus,'品销量')"	type="warning"	@click="goodnameNumberChartDialog()">茶叶销量</el-button>
-            
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'类销量')" type="warning" @click="goodtypeNumberChartDialog()">类型销量</el-button>
-            
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'日销额')" type="warning" @click="dayAmountChartDialog()">日销额</el-button>
-            
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'月销额')" type="warning" @click="monthAmountChartDialog()">月销额</el-button>
-            
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'年销额')" type="warning" @click="yearAmountChartDialog()">年销额</el-button>
-            
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'品销额')" type="warning" @click="goodnameAmountChartDialog()">茶叶销额</el-button>
-            
-					<el-button :style='{"border":"0","cursor":"pointer","padding":"0 24px","margin":"0 10px 0 0","outline":"none","color":"#333","borderRadius":"40px","background":"rgba(184, 222, 74, 1)","width":"auto","fontSize":"14px","height":"40px"}' v-if="isAuth('orders'+'/'+orderStatus,'类销额')" type="warning" @click="goodtypeAmountChartDialog()">类型销额</el-button>
-				</el-row>
+				</div>
 			</el-form>
-			
+
 			<!-- <div> -->
-				<el-table class="tables"
+				<el-table ref="ordersTable" class="tables"
 					:stripe='false'
-					:style='{"padding":"0","borderColor":"#eee","margin":"0 0 0 180px","borderWidth":"1px","background":"#fff","width":"88%","borderStyle":"solid"}' 
+					:style='{"padding":"0","borderColor":"#eee","margin":"0","borderWidth":"1px","background":"#fff","width":"100%","borderStyle":"solid"}'
 					v-if="isAuth('orders'+'/'+orderStatus,'查看')"
 					:data="dataList"
 					v-loading="dataListLoading"
 				@selection-change="selectionChangeHandler">
-					<el-table-column :resizable='true' type="selection" align="center" width="50"></el-table-column>
-					<el-table-column :resizable='true' :sortable='false' label="索引" type="index" width="50" />
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="orderid"
-					label="订单编号">
+					<el-table-column :resizable='false' type="selection" align="center" width="42"></el-table-column>
+					<el-table-column :resizable='false' :sortable='false' label="索引" type="index" width="56" />
+					<el-table-column :resizable='false' :sortable='false' prop="orderid" label="订单编号" min-width="170" show-overflow-tooltip />
+					<el-table-column :resizable='false' :sortable='false' prop="goodname" label="茶叶名称" min-width="150" show-overflow-tooltip />
+					<el-table-column :resizable='false' :sortable='false' prop="buynumber" label="购买数量" width="100" />
+					<el-table-column :resizable='false' :sortable='false' label="支付类型" width="100">
+						<template slot-scope="scope">{{orderStatusFormatter(scope.row) || '-'}}</template>
+					</el-table-column>
+					<el-table-column :resizable='false' :sortable='false' prop="status" label="状态" width="110" show-overflow-tooltip />
+					<el-table-column :resizable='false' :sortable='false' prop="consignee" label="收货人" width="110" show-overflow-tooltip />
+					<el-table-column :resizable='false' :sortable='false' prop="tel" label="电话" width="130" show-overflow-tooltip />
+					<el-table-column :resizable='false' :sortable='false' prop="addtime" label="下单时间" width="170" show-overflow-tooltip />
+					<el-table-column :resizable='false' :sortable='false' label="折扣总价" width="120">
 						<template slot-scope="scope">
-							{{scope.row.orderid}}
+							<span class="order-total">¥ {{scope.row.discounttotal || scope.row.total || '-'}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="goodname"
-					label="茶叶名称">
+					<el-table-column width="300" label="操作" fixed="right" class-name="orders-operation-column">
 						<template slot-scope="scope">
-							{{scope.row.goodname}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false' prop="picture" width="200" label="茶叶图片">
-						<template slot-scope="scope">
-							<div v-if="scope.row.picture">
-								<img v-if="scope.row.picture.substring(0,4)=='http'" :src="scope.row.picture.split(',')[0]" width="100" height="100">
-								<img v-else :src="$base.url+scope.row.picture.split(',')[0]" width="100" height="100">
+							<div class="order-actions">
+							<el-button class="order-action-btn order-action-detail" v-if=" isAuth('orders'+'/'+orderStatus,'查看')" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">详情</el-button>
+							<el-button class="order-action-btn order-action-primary" v-if="isAuth('orders'+'/'+orderStatus,'物流')" type="primary" size="mini" @click="logisticsUpdate(scope.row.id)">物流</el-button>
+
+							<el-button class="order-action-btn order-action-primary" v-if="isAuth('orders'+'/'+orderStatus,'发货')" type="primary" size="mini" @click="updateHandler(scope.row)">发货</el-button>
+
+							<el-button class="order-action-btn order-action-primary order-action-wide" v-if="isAuth('orders'+'/'+orderStatus,'确认收货')" type="primary" size="mini" @click="updateHandler2(scope.row)">确认收货</el-button>
+
+
+
+
+							<el-button class="order-action-btn order-action-danger" v-if="isAuth('orders'+'/'+orderStatus,'删除') " type="danger" size="mini" @click="deleteHandler(scope.row.id)">删除</el-button>
 							</div>
-							<div v-else>无图片</div>
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="buynumber"
-					label="购买数量">
-						<template slot-scope="scope">
-							{{scope.row.buynumber}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="price"
-					label="价格">
-						<template slot-scope="scope">
-							{{scope.row.price}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="discountprice"
-					label="折扣价格">
-						<template slot-scope="scope">
-							{{scope.row.discountprice}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="total"
-					label="总价格">
-						<template slot-scope="scope">
-							{{scope.row.total}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="discounttotal"
-					label="折扣总价格">
-						<template slot-scope="scope">
-							{{scope.row.discounttotal}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="type"
-						:formatter="orderStatusFormatter"
-					label="支付类型">
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="status"
-					label="状态">
-						<template slot-scope="scope">
-							{{scope.row.status}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="address"
-					label="地址">
-						<template slot-scope="scope">
-							{{scope.row.address}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="tel"
-					label="电话">
-						<template slot-scope="scope">
-							{{scope.row.tel}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="consignee"
-					label="收货人">
-						<template slot-scope="scope">
-							{{scope.row.consignee}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="remark"
-					label="备注">
-						<template slot-scope="scope">
-							{{scope.row.remark}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="zhanghao"
-					label="商户名称">
-						<template slot-scope="scope">
-							{{scope.row.zhanghao}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false'  
-						prop="goodtype"
-					label="茶叶类型">
-						<template slot-scope="scope">
-							{{scope.row.goodtype}}
-						</template>
-					</el-table-column>
-					<el-table-column :resizable='true' :sortable='false' prop="tel" label="下单时间">
-						<template slot-scope="scope">
-							{{scope.row.addtime}}
-						</template>
-					</el-table-column>
-					<el-table-column width="300" label="操作">
-						<template slot-scope="scope">
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if=" isAuth('orders'+'/'+orderStatus,'查看')" type="success" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">详情</el-button>
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if=" isAuth('orders'+'/'+orderStatus,'修改')" type="primary" size="mini" @click="addOrUpdateHandler(scope.row.id)">修改</el-button>
-
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if="isAuth('orders'+'/'+orderStatus,'物流')" type="primary" size="mini" @click="logisticsUpdate(scope.row.id)">物流</el-button>
-                
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if="isAuth('orders'+'/'+orderStatus,'发货')" type="primary" size="mini" @click="updateHandler(scope.row)">发货</el-button>
-
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if="isAuth('orders'+'/'+orderStatus,'确认收货')" type="primary" size="mini" @click="updateHandler2(scope.row)">确认收货</el-button>
-
-
-
-
-							<el-button :style='{"border":"1px solid #AAAAAA","cursor":"pointer","padding":"0 24px","margin":"0 10px 5px 0","outline":"none","color":"#AAAAAA","borderRadius":"20px","background":"#fff","width":"auto","fontSize":"14px","height":"32px"}' v-if="isAuth('orders'+'/'+orderStatus,'删除') " type="danger" size="mini" @click="deleteHandler(scope.row.id)">删除</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -205,11 +105,12 @@
 					prev-text="<"
 					next-text=">"
 					:hide-on-single-page="false"
-					:style='{"padding":"0","margin":"20px 0 20px 180px","whiteSpace":"nowrap","color":"#333","textAlign":"center","width":"88%","fontWeight":"500"}'
+					:style='{"padding":"0","margin":"20px 0","whiteSpace":"nowrap","color":"#333","textAlign":"center","width":"100%","fontWeight":"500"}'
 				></el-pagination>
 			<!-- </div> -->
+			</div>
 		</template>
-		
+
 		<!-- 添加/修改页面  将父组件的search方法传递给子组件-->
 		<add-or-update v-if="addOrUpdateFlag" :parent="this" ref="addOrUpdate"></add-or-update>
 
@@ -236,7 +137,7 @@
 			<el-button @click="monthNumberChartDialog">返回</el-button>
 		  </span>
 		</el-dialog>
-		
+
 		<el-dialog
 		  title="年销量"
 		  :visible.sync="yearNumberChartVisiable"
@@ -246,7 +147,7 @@
 			<el-button @click="yearNumberChartDialog">返回</el-button>
 		  </span>
 		</el-dialog>
-    
+
 		<el-dialog
 		  title="茶叶销量"
 		  :visible.sync="goodnameNumberChartVisiable"
@@ -256,7 +157,7 @@
 			<el-button @click="goodnameNumberChartDialog">返回</el-button>
 		  </span>
 		</el-dialog>
-		
+
 		<el-dialog
 		  title="类型销量"
 		  :visible.sync="goodtypeNumberChartVisiable"
@@ -266,7 +167,7 @@
 			<el-button @click="goodtypeNumberChartDialog">返回</el-button>
 		  </span>
 		</el-dialog>
-    
+
 		<el-dialog
 		  title="日销额"
 		  :visible.sync="dayAmountChartVisiable"
@@ -276,7 +177,7 @@
 			<el-button @click="dayAmountChartDialog">返回</el-button>
 		  </span>
 		</el-dialog>
-		
+
 		<el-dialog
 		  title="月销额"
 		  :visible.sync="monthAmountChartVisiable"
@@ -286,7 +187,7 @@
 			<el-button @click="monthAmountChartDialog">返回</el-button>
 		  </span>
 		</el-dialog>
-    
+
 		<el-dialog
 		  title="年销额"
 		  :visible.sync="yearAmountChartVisiable"
@@ -296,7 +197,7 @@
 			<el-button @click="yearAmountChartDialog">返回</el-button>
 		  </span>
 		</el-dialog>
-		
+
 		<el-dialog
 		  title="茶叶销额"
 		  :visible.sync="goodnameAmountChartVisiable"
@@ -306,7 +207,7 @@
 			<el-button @click="goodnameAmountChartDialog">返回</el-button>
 		  </span>
 		</el-dialog>
-		
+
 		<el-dialog
 		  title="类型销额"
 		  :visible.sync="goodtypeAmountChartVisiable"
@@ -398,6 +299,11 @@ export default {
     this.contentStyleChange()
   },
   mounted() {
+    this.syncTableLayout()
+    window.addEventListener('resize', this.syncTableLayout)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.syncTableLayout)
   },
 //监听订单表参数是否变化，从而调取接口
   watch: {
@@ -408,6 +314,9 @@ export default {
         this.getDataList();
         this.contentStyleChange()
     }
+  },
+  dataList() {
+    this.syncTableLayout()
   }
   },
   filters: {
@@ -419,6 +328,14 @@ export default {
     AddOrUpdate,
   },
   methods: {
+
+    syncTableLayout() {
+      this.$nextTick(() => {
+        if (this.$refs.ordersTable && this.$refs.ordersTable.doLayout) {
+          this.$refs.ordersTable.doLayout()
+        }
+      })
+    },
 
     orderStatusFormatter: function(row, column) {
       var temp = ''
@@ -437,16 +354,22 @@ export default {
       return temp
     },
     updateHandler(row) {
-      this.$confirm(`确定进行发货操作?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        row.status = "已发货";
+      this.$prompt('请输入物流信息', '发货', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputType: 'textarea',
+        inputValue: row.logistics || '',
+        inputValidator: value => {
+          return value && value.trim() ? true : '请填写物流信息'
+        }
+      }).then(({ value }) => {
         this.$http({
-          url: `orders/update`,
+          url: `orders/ship`,
           method: "post",
-          data: row
+          data: {
+            id: row.id,
+            logistics: value.trim()
+          }
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
@@ -574,7 +497,7 @@ export default {
         });
       })
     },
-    
+
     monthNumberChartDialog() {
       this.monthNumberChartVisiable = !this.monthNumberChartVisiable;
       this.$nextTick(()=>{
@@ -628,7 +551,7 @@ export default {
         });
       })
     },
-    
+
     yearNumberChartDialog() {
       this.yearNumberChartVisiable = !this.yearNumberChartVisiable;
       this.$nextTick(()=>{
@@ -682,7 +605,7 @@ export default {
         });
       })
     },
-    
+
     goodnameNumberChartDialog() {
       this.goodnameNumberChartVisiable = !this.goodnameNumberChartVisiable;
       this.$nextTick(()=>{
@@ -736,7 +659,7 @@ export default {
         });
       })
     },
-    
+
     goodtypeNumberChartDialog() {
       this.goodtypeNumberChartVisiable = !this.goodtypeNumberChartVisiable;
       this.$nextTick(()=>{
@@ -790,7 +713,7 @@ export default {
         });
       })
     },
-    
+
     dayAmountChartDialog() {
       this.dayAmountChartVisiable = !this.dayAmountChartVisiable;
       this.$nextTick(()=>{
@@ -844,7 +767,7 @@ export default {
         });
       })
     },
-    
+
     monthAmountChartDialog() {
       this.monthAmountChartVisiable = !this.monthAmountChartVisiable;
       this.$nextTick(()=>{
@@ -898,7 +821,7 @@ export default {
         });
       })
     },
-    
+
     yearAmountChartDialog() {
       this.yearAmountChartVisiable = !this.yearAmountChartVisiable;
       this.$nextTick(()=>{
@@ -952,7 +875,7 @@ export default {
         });
       })
     },
-    
+
     goodnameAmountChartDialog() {
       this.goodnameAmountChartVisiable = !this.goodnameAmountChartVisiable;
       this.$nextTick(()=>{
@@ -1006,7 +929,7 @@ export default {
         });
       })
     },
-    
+
     goodtypeAmountChartDialog() {
       this.goodtypeAmountChartVisiable = !this.goodtypeAmountChartVisiable;
       this.$nextTick(()=>{
@@ -1103,6 +1026,7 @@ export default {
           this.totalPage = 0;
         }
         this.dataListLoading = false;
+        this.syncTableLayout();
       });
     },
     // 每页数
@@ -1179,17 +1103,254 @@ export default {
 	.export-excel-wrapper{
 		display: inline-block;
 	}
-	
+
+	.main-content {
+		background: #f7faf6;
+		padding: 12px;
+		min-height: 100%;
+	}
+
+	.orders-list-panel {
+		padding: 24px;
+		border-radius: 12px;
+		background: #ffffff;
+		box-shadow: 0 12px 32px rgba(41, 83, 43, .06);
+	}
+
+	.orders-search-form {
+		margin: 0 0 18px;
+		padding: 22px 28px;
+		border: 1px solid #dcebd6;
+		border-radius: 8px;
+		background: #ffffff;
+		box-shadow: none;
+	}
+
+	.orders-filter-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 20px;
+		min-height: 112px;
+	}
+
+	.orders-filter-fields {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 16px;
+	}
+
+	.orders-search-item {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.orders-search-item .item-label {
+		width: auto !important;
+		min-width: 72px;
+		margin: 0 !important;
+		color: #14361f !important;
+		font-weight: 700 !important;
+		font-size: 15px !important;
+	}
+
+	.orders-search-button {
+		border: 0;
+		cursor: pointer;
+		padding: 0 24px;
+		outline: none;
+		color: #fff;
+		border-radius: 6px;
+		background: #2f6b35 !important;
+		border-color: #2f6b35 !important;
+		width: 142px;
+		font-size: 14px;
+		font-weight: 700;
+		height: 46px;
+		box-shadow: 0 10px 22px rgba(47, 107, 53, .18);
+	}
+
+	.orders-action-row {
+		display: flex;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin: 0;
+		min-width: 92px;
+	}
+
+	.orders-action-row .el-button,
+	.export-excel-wrapper .el-button {
+		margin: 0 !important;
+		border-radius: 6px !important;
+		background: #f3f7ed !important;
+		border: 1px solid #cfe0c6 !important;
+		color: #2f5f33 !important;
+		box-shadow: none !important;
+		height: 38px !important;
+	}
+
+	.orders-action-row .el-button--danger,
+	.export-excel-wrapper .el-button--danger {
+		background: #fff5f3 !important;
+		border-color: #f1c7be !important;
+		color: #b44736 !important;
+	}
+
+	.tables {
+		border: 0 !important;
+		border-radius: 8px;
+		overflow: hidden;
+		box-shadow: 0 10px 24px rgba(41, 83, 43, .05);
+	}
+
+	.tables ::v-deep .el-table__fixed-right,
+	.tables ::v-deep .el-table__fixed {
+		box-shadow: none;
+	}
+
+	.order-actions {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 10px 12px;
+		padding: 2px 8px;
+		width: 100%;
+	}
+
+	.tables ::v-deep .el-table__header-wrapper thead tr th {
+		padding: 16px 0 !important;
+		background: #edf6e9 !important;
+		color: #14361f !important;
+		border-color: #dfe8d9 !important;
+		font-weight: 700 !important;
+	}
+
+	.tables ::v-deep .el-table__header-wrapper thead tr th .cell {
+		padding: 0 12px;
+		line-height: 24px;
+		white-space: normal;
+		word-break: break-all;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper tbody tr td,
+	.tables ::v-deep .el-table__fixed-body-wrapper tbody tr td {
+		padding: 18px 0 !important;
+		background: #fff !important;
+		color: #455548 !important;
+		border-color: #e8efe4 !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper tbody tr:hover td,
+	.tables ::v-deep .el-table__fixed-body-wrapper tbody tr:hover td {
+		background: #fbfdf9 !important;
+		color: #263f2a !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper tbody tr td .cell,
+	.tables ::v-deep .el-table__fixed-body-wrapper tbody tr td .cell {
+		padding: 0 12px;
+		line-height: 24px;
+		word-break: break-all;
+	}
+
+	.tables ::v-deep .orders-operation-column .cell {
+		padding: 0 14px !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper .order-action-btn,
+	.tables ::v-deep .el-table__fixed-body-wrapper .order-action-btn {
+		min-width: 70px !important;
+		height: 38px !important;
+		margin: 0 !important;
+		padding: 0 16px !important;
+		border-radius: 19px !important;
+		font-size: 13px !important;
+		font-weight: 700 !important;
+		letter-spacing: 0 !important;
+		line-height: 36px !important;
+		box-shadow: none !important;
+		transition: background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper .order-action-wide,
+	.tables ::v-deep .el-table__fixed-body-wrapper .order-action-wide {
+		min-width: 94px !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper .order-action-detail,
+	.tables ::v-deep .el-table__fixed-body-wrapper .order-action-detail {
+		background: #f8fcf5 !important;
+		border: 1px solid #c7ddbf !important;
+		color: #315f33 !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper .order-action-detail:hover,
+	.tables ::v-deep .el-table__fixed-body-wrapper .order-action-detail:hover {
+		background: #edf7e8 !important;
+		border-color: #9fc68e !important;
+		color: #254f28 !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper .order-action-primary,
+	.tables ::v-deep .el-table__fixed-body-wrapper .order-action-primary {
+		background: #2f6b35 !important;
+		border: 1px solid #2f6b35 !important;
+		color: #fff !important;
+		box-shadow: 0 6px 14px rgba(47, 107, 53, .16) !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper .order-action-primary:hover,
+	.tables ::v-deep .el-table__fixed-body-wrapper .order-action-primary:hover {
+		background: #255a2a !important;
+		border-color: #255a2a !important;
+		box-shadow: 0 8px 18px rgba(47, 107, 53, .22) !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper .order-action-danger,
+	.tables ::v-deep .el-table__fixed-body-wrapper .order-action-danger {
+		background: #fff5f3 !important;
+		border: 1px solid #f0c5bd !important;
+		color: #b44736 !important;
+	}
+
+	.tables ::v-deep .el-table__body-wrapper .order-action-danger:hover,
+	.tables ::v-deep .el-table__fixed-body-wrapper .order-action-danger:hover {
+		background: #ffece8 !important;
+		border-color: #e8a89d !important;
+		color: #9d3528 !important;
+	}
+
+	.order-total {
+		color: #2f6b35;
+		font-weight: 700;
+	}
+
+	@media (max-width: 1280px) {
+		.orders-filter-row {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+
+		.orders-action-row {
+			justify-content: flex-start;
+			width: 100%;
+		}
+	}
+
 	.center-form-pv {
 	  .el-date-editor.el-input {
 	    width: auto;
 	  }
 	}
-	
+
 	.el-input {
 	  width: auto;
 	}
-	
+
 	// form
 	.center-form-pv .el-input ::v-deep .el-input__inner {
 				border: 2px solid #B8DE4A;
@@ -1197,116 +1358,33 @@ export default {
 				padding: 0 12px;
 				outline: none;
 				color: rgba(0, 0, 0, 1);
-				width: 150px;
+				width: 176px;
 				font-size: 14px;
-				height: 40px;
+				height: 46px;
 			}
-	
+
 	.center-form-pv .el-select ::v-deep .el-input__inner {
 				border: 2px solid #B8DE4A;
 				border-radius: 4px;
 				padding: 0 10px;
 				outline: none;
 				color: rgba(0, 0, 0, 1);
-				width: 150px;
+				width: 176px;
 				font-size: 14px;
-				height: 40px;
+				height: 46px;
 			}
-	
+
 	.center-form-pv .el-date-editor ::v-deep .el-input__inner {
 				border: 2px solid #B8DE4A;
 				border-radius: 4px;
 				padding: 0 10px 0 30px;
 				outline: none;
 				color: rgba(0, 0, 0, 1);
-				width: 150px;
+				width: 176px;
 				font-size: 14px;
-				height: 40px;
-			}
-	
-	// table
-	.el-table ::v-deep .el-table__header-wrapper thead {
-				color: #333;
-				font-weight: 500;
-				width: 100%;
-			}
-	
-	.el-table ::v-deep .el-table__header-wrapper thead tr {
-				background: #fff;
-			}
-	
-	.el-table ::v-deep .el-table__header-wrapper thead tr th {
-				padding: 12px 0;
-				background: rgba(226, 226, 226, 1);
-				border-color: #eee;
-				border-width: 0 1px 1px 0;
-				border-style: solid;
-				text-align: center;
+				height: 46px;
 			}
 
-	.el-table ::v-deep .el-table__header-wrapper thead tr th .cell {
-				padding: 0 10px;
-				word-wrap: normal;
-				word-break: break-all;
-				white-space: normal;
-				font-weight: bold;
-				display: inline-block;
-				vertical-align: middle;
-				width: 100%;
-				line-height: 24px;
-				position: relative;
-				text-overflow: ellipsis;
-			}
-
-	
-	.el-table ::v-deep .el-table__body-wrapper tbody {
-				width: 100%;
-			}
-
-	.el-table ::v-deep .el-table__body-wrapper tbody tr {
-				background: #fff;
-			}
-	
-	.el-table ::v-deep .el-table__body-wrapper tbody tr td {
-				padding: 12px 0;
-				color: #999;
-				background: #fff;
-				border-color: #eee;
-				border-width: 0 1px 1px 0;
-				border-style: solid;
-				text-align: center;
-			}
-	
-		
-	.el-table ::v-deep .el-table__body-wrapper tbody tr:hover td {
-				padding: 12px 0;
-				color: #333;
-				background: rgba(226, 226, 226, .2);
-				border-color: #eee;
-				border-width: 0 1px 1px 0;
-				border-style: solid;
-				text-align: center;
-			}
-	
-	.el-table ::v-deep .el-table__body-wrapper tbody tr td {
-				padding: 12px 0;
-				color: #999;
-				background: #fff;
-				border-color: #eee;
-				border-width: 0 1px 1px 0;
-				border-style: solid;
-				text-align: center;
-			}
-
-	.el-table ::v-deep .el-table__body-wrapper tbody tr td .cell {
-				padding: 0 10px;
-				overflow: hidden;
-				word-break: break-all;
-				white-space: normal;
-				line-height: 24px;
-				text-overflow: ellipsis;
-			}
-	
 	// pagination
 	.main-content .el-pagination ::v-deep .el-pagination__total {
 				margin: 0 10px 0 0;
@@ -1318,7 +1396,7 @@ export default {
 				line-height: 28px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .btn-prev {
 				border: none;
 				border-radius: 2px;
@@ -1333,7 +1411,7 @@ export default {
 				min-width: 35px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .btn-next {
 				border: none;
 				border-radius: 2px;
@@ -1348,7 +1426,7 @@ export default {
 				min-width: 35px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .btn-prev:disabled {
 				border: none;
 				cursor: not-allowed;
@@ -1363,7 +1441,7 @@ export default {
 				line-height: 28px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .btn-next:disabled {
 				border: none;
 				cursor: not-allowed;
@@ -1401,7 +1479,7 @@ export default {
 				min-width: 30px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pager .number:hover {
 				cursor: pointer;
 				padding: 0 4px;
@@ -1417,7 +1495,7 @@ export default {
 				min-width: 30px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pager .number.active {
 				cursor: default;
 				padding: 0 4px;
@@ -1433,7 +1511,7 @@ export default {
 				min-width: 30px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pagination__sizes {
 				display: inline-block;
 				vertical-align: top;
@@ -1441,13 +1519,13 @@ export default {
 				line-height: 28px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pagination__sizes .el-input {
 				margin: 0 5px;
 				width: 100px;
 				position: relative;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pagination__sizes .el-input .el-input__inner {
 				border: 1px solid #DCDFE6;
 				cursor: pointer;
@@ -1463,14 +1541,14 @@ export default {
 				text-align: center;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pagination__sizes .el-input span.el-input__suffix {
 				top: 0;
 				position: absolute;
 				right: 0;
 				height: 100%;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pagination__sizes .el-input .el-input__suffix .el-select__caret {
 				cursor: pointer;
 				color: #C0C4CC;
@@ -1479,7 +1557,7 @@ export default {
 				line-height: 28px;
 				text-align: center;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pagination__jump {
 				margin: 0 0 0 24px;
 				color: #606266;
@@ -1489,7 +1567,7 @@ export default {
 				line-height: 28px;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pagination__jump .el-input {
 				border-radius: 3px;
 				padding: 0 2px;
@@ -1502,7 +1580,7 @@ export default {
 				text-align: center;
 				height: 28px;
 			}
-	
+
 	.main-content .el-pagination ::v-deep .el-pagination__jump .el-input .el-input__inner {
 				border: 1px solid #DCDFE6;
 				cursor: pointer;

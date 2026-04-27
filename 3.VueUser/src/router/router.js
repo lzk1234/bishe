@@ -1,6 +1,5 @@
 import VueRouter from 'vue-router'
 
-//引入组件
 import Index from '../pages'
 import Home from '../pages/home/home'
 import Login from '../pages/login/login'
@@ -26,135 +25,124 @@ import shangpinfenleiAdd from '../pages/shangpinfenlei/add'
 import shangpinxinxiList from '../pages/shangpinxinxi/list'
 import shangpinxinxiDetail from '../pages/shangpinxinxi/detail'
 import shangpinxinxiAdd from '../pages/shangpinxinxi/add'
-import miaoshashangpinList from '../pages/miaoshashangpin/list'
-import miaoshashangpinDetail from '../pages/miaoshashangpin/detail'
-import miaoshashangpinAdd from '../pages/miaoshashangpin/add'
+import recommendationList from '../pages/recommendation/list'
 
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
-	return originalPush.call(this, location).catch(err => err)
+  return originalPush.call(this, location).catch(err => err)
 }
 
-//配置路由
 export default new VueRouter({
-	routes:[
-		{
+  routes: [
+    {
       path: '/',
       redirect: '/index/home'
     },
-		{
-			path: '/index',
-			component: Index,
-			children:[
-				{
-					path: 'home',
-					component: Home
-				},
-				{
-					path: 'center',
-					component: Center,
-				},
-				{
-					path: 'storeup',
-					component: Storeup
-				},
-                {
-                    path: 'shop-address/list',
-                    component: AddrList
-                },
-                {
-                    path: 'shop-address/addOrUpdate',
-                    component: AddrAdd
-                },
-				{
-					path: 'shop-order/order',
-					component: Order
-				},
-				{
-					path: 'cart',
-					component: Cart
-				},
-				{
-					path: 'shop-order/orderConfirm',
-					component: OrderConfirm
-				},
-				{
-					path: 'news',
-					component: News
-				},
-				{
-					path: 'newsDetail',
-					component: NewsDetail
-				},
-				{
-					path: 'yonghu',
-					component: yonghuList
-				},
-				{
-					path: 'yonghuDetail',
-					component: yonghuDetail
-				},
-				{
-					path: 'yonghuAdd',
-					component: yonghuAdd
-				},
-				{
-					path: 'shangjia',
-					component: shangjiaList
-				},
-				{
-					path: 'shangjiaDetail',
-					component: shangjiaDetail
-				},
-				{
-					path: 'shangjiaAdd',
-					component: shangjiaAdd
-				},
-				{
-					path: 'shangpinfenlei',
-					component: shangpinfenleiList
-				},
-				{
-					path: 'shangpinfenleiDetail',
-					component: shangpinfenleiDetail
-				},
-				{
-					path: 'shangpinfenleiAdd',
-					component: shangpinfenleiAdd
-				},
-				{
-					path: 'shangpinxinxi',
-					component: shangpinxinxiList
-				},
-				{
-					path: 'shangpinxinxiDetail',
-					component: shangpinxinxiDetail
-				},
-				{
-					path: 'shangpinxinxiAdd',
-					component: shangpinxinxiAdd
-				},
-				{
-					path: 'miaoshashangpin',
-					component: miaoshashangpinList
-				},
-				{
-					path: 'miaoshashangpinDetail',
-					component: miaoshashangpinDetail
-				},
-				{
-					path: 'miaoshashangpinAdd',
-					component: miaoshashangpinAdd
-				},
-			]
-		},
-		{
-			path: '/login',
-			component: Login
-		},
-		{
-			path: '/register',
-			component: Register
-		},
-	]
+    {
+      path: '/index',
+      component: Index,
+      children: [
+        {
+          path: 'home',
+          component: Home
+        },
+        {
+          path: 'center',
+          component: Center
+        },
+        {
+          path: 'storeup',
+          component: Storeup
+        },
+        {
+          path: 'shop-address/list',
+          component: AddrList
+        },
+        {
+          path: 'shop-address/addOrUpdate',
+          component: AddrAdd
+        },
+        {
+          path: 'shop-order/order',
+          component: Order
+        },
+        {
+          path: 'cart',
+          component: Cart
+        },
+        {
+          path: 'shop-order/orderConfirm',
+          component: OrderConfirm
+        },
+        {
+          path: 'news',
+          component: News
+        },
+        {
+          path: 'newsDetail',
+          component: NewsDetail
+        },
+        {
+          path: 'yonghu',
+          component: yonghuList
+        },
+        {
+          path: 'yonghuDetail',
+          component: yonghuDetail
+        },
+        {
+          path: 'yonghuAdd',
+          component: yonghuAdd
+        },
+        {
+          path: 'shangjia',
+          component: shangjiaList
+        },
+        {
+          path: 'shangjiaDetail',
+          component: shangjiaDetail
+        },
+        {
+          path: 'shangjiaAdd',
+          component: shangjiaAdd
+        },
+        {
+          path: 'shangpinfenlei',
+          component: shangpinfenleiList
+        },
+        {
+          path: 'shangpinfenleiDetail',
+          component: shangpinfenleiDetail
+        },
+        {
+          path: 'shangpinfenleiAdd',
+          component: shangpinfenleiAdd
+        },
+        {
+          path: 'shangpinxinxi',
+          component: shangpinxinxiList
+        },
+        {
+          path: 'shangpinxinxiDetail',
+          component: shangpinxinxiDetail
+        },
+        {
+          path: 'shangpinxinxiAdd',
+          component: shangpinxinxiAdd
+        },
+        {
+          path: 'recommendation',
+          component: recommendationList
+        }
+      ]
+    },
+    {
+      path: '/login',
+      component: Login
+    },
+    {
+      path: '/register',
+      component: Register
+    }
+  ]
 })

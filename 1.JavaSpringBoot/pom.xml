@@ -100,12 +100,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		
-		<dependency>
-		    <groupId>com.microsoft.sqlserver</groupId>
-		    <artifactId>mssql-jdbc</artifactId>
-		    <version>6.2.0.jre8</version>
-		    <scope>runtime</scope>
-		</dependency>
 		<!-- 百度人工智能 -->
 		<dependency>
     		<groupId>com.baidu.aip</groupId>
@@ -157,7 +151,7 @@
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-surefire-plugin</artifactId>
                <configuration>
-                   <skipTests>true</skipTests>
+                   <skipTests>false</skipTests>
                </configuration>
            </plugin>
 		</plugins>

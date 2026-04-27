@@ -1,0 +1,25 @@
+2026-04-22 14:59:11.196 DEBUG 36420 --- [kground-preinit] .h.v.m.ResourceBundleMessageInterpolator : Loaded expression factory via original TCCL
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.2.2.RELEASE)
+
+2026-04-22 14:59:11.320  INFO 36420 --- [           main] com.SpringbootSchemaApplication          : Starting SpringbootSchemaApplication v0.0.1-SNAPSHOT on MMR with PID 36420 (F:\Desktop\chaye\TeaMallSystem\1.JavaSpringBoot\target\springbooty2rp6-0.0.1-SNAPSHOT.jar started by LZK in F:\Desktop\chaye\TeaMallSystem\1.JavaSpringBoot)
+2026-04-22 14:59:11.321  INFO 36420 --- [           main] com.SpringbootSchemaApplication          : No active profile set, falling back to default profiles: default
+2026-04-22 14:59:13.770  INFO 36420 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-04-22 14:59:13.781  INFO 36420 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-22 14:59:13.781  INFO 36420 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.29]
+2026-04-22 14:59:13.843  INFO 36420 --- [           main] o.a.c.c.C.[.[.[/springbooty2rp6]         : Initializing Spring embedded WebApplicationContext
+2026-04-22 14:59:13.843  INFO 36420 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2450 ms
+2026-04-22 14:59:14.034  INFO 36420 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-22 14:59:14.597  INFO 36420 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-22 14:59:16.230  INFO 36420 --- [           main] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2026-04-22 14:59:16.347  INFO 36420 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/springbooty2rp6'
+2026-04-22 14:59:16.354  INFO 36420 --- [           main] com.SpringbootSchemaApplication          : Started SpringbootSchemaApplication in 5.468 seconds (JVM running for 5.941)
+2026-04-22 15:06:02.235  INFO 36420 --- [nio-8080-exec-1] o.a.c.c.C.[.[.[/springbooty2rp6]         : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-22 15:06:02.235  INFO 36420 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-22 15:06:02.241  INFO 36420 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms

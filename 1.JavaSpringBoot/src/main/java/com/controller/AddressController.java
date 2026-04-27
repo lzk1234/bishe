@@ -139,7 +139,7 @@ public class AddressController {
     	//ValidatorUtils.validateEntity(address);
     	address.setUserid((Long)request.getSession().getAttribute("userId"));
 		Long userId = (Long)request.getSession().getAttribute("userId");
-    	if(address.getIsdefault().equals("是")) {
+    	if("是".equals(address.getIsdefault())) {
     		addressService.updateForSet("isdefault='否'", new EntityWrapper<AddressEntity>().eq("userid", userId));
     	}
     	address.setUserid(userId);
@@ -156,7 +156,7 @@ public class AddressController {
     	//ValidatorUtils.validateEntity(address);
     	address.setUserid((Long)request.getSession().getAttribute("userId"));
 		Long userId = (Long)request.getSession().getAttribute("userId");
-    	if(address.getIsdefault().equals("是")) {
+    	if("是".equals(address.getIsdefault())) {
     		addressService.updateForSet("isdefault='否'", new EntityWrapper<AddressEntity>().eq("userid", userId));
     	}
     	address.setUserid(userId);
@@ -173,7 +173,7 @@ public class AddressController {
     @Transactional
     public R update(@RequestBody AddressEntity address, HttpServletRequest request){
         //ValidatorUtils.validateEntity(address);
-        if(address.getIsdefault().equals("是")) {
+        if("是".equals(address.getIsdefault())) {
     		addressService.updateForSet("isdefault='否'", new EntityWrapper<AddressEntity>().eq("userid", request.getSession().getAttribute("userId")));
     	}
         addressService.updateById(address);//全部更新

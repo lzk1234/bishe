@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.UserBehaviorDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.entity.UserBehaviorEntity" id="userBehaviorMap">
+        <result property="userid" column="userid"/>
+        <result property="goodid" column="goodid"/>
+        <result property="behaviorType" column="behavior_type"/>
+        <result property="addtime" column="addtime"/>
+    </resultMap>
+
+	<select id="selectListVO"
+		resultType="com.entity.vo.UserBehaviorVO" >
+		SELECT * FROM user_behavior  user_behavior         
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectVO"
+		resultType="com.entity.vo.UserBehaviorVO" >
+		SELECT  user_behavior.* FROM user_behavior  user_behavior 	
+ 		<where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+
+    <select id="selectListView"
+		resultType="com.entity.view.UserBehaviorView" >
+
+		SELECT  user_behavior.* FROM user_behavior  user_behavior	        
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectView"
+		resultType="com.entity.view.UserBehaviorView" >
+		SELECT * FROM user_behavior  user_behavior <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<!-- 获取用户行为统计 -->
+	<select id="getUserBehaviorStats" resultType="java.util.HashMap">
+		SELECT 
+			behavior_type as behaviorType,
+			COUNT(*) as count
+		FROM user_behavior
+		WHERE userid = #{userid}
+		GROUP BY behavior_type
+	</select>
+	
+	<!-- 获取物品相似度（基于协同过滤） -->
+	<select id="getItemSimilarity" resultType="java.util.HashMap">
+		SELECT 
+			ub2.goodid as goodid,
+			COUNT(*) as similarity
+		FROM user_behavior ub1
+		JOIN user_behavior ub2 ON ub1.userid = ub2.userid AND ub1.goodid != ub2.goodid
+		WHERE ub1.goodid = #{goodid} 
+		  AND ub1.behavior_type IN ('buy', 'favorite')
+		  AND ub2.behavior_type IN ('buy', 'favorite')
+		GROUP BY ub2.goodid
+		ORDER BY similarity DESC
+		LIMIT 10
+	</select>
+	
+	<!-- 获取用户相似度（基于协同过滤） -->
+	<select id="getUserSimilarity" resultType="java.util.HashMap">
+		SELECT 
+			ub2.userid as userid,
+			COUNT(*) as similarity
+		FROM user_behavior ub1
+		JOIN user_behavior ub2 ON ub1.goodid = ub2.goodid AND ub1.userid != ub2.userid
+		WHERE ub1.userid = #{userid} 
+		  AND ub1.behavior_type IN ('buy', 'favorite')
+		  AND ub2.behavior_type IN ('buy', 'favorite')
+		GROUP BY ub2.userid
+		ORDER BY similarity DESC
+		LIMIT 10
+	</select>
+
+</mapper>

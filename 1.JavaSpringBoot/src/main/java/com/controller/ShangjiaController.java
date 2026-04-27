@@ -14,7 +14,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.utils.ValidatorUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,16 +33,15 @@ import com.service.ShangjiaService;
 import com.service.TokenService;
 import com.utils.PageUtils;
 import com.utils.R;
-import com.utils.MD5Util;
 import com.utils.MPUtil;
 import com.utils.CommonUtil;
 import java.io.IOException;
 
 /**
- * 商家
- * 后端接口
- * @author 
- * @email 
+ * 鍟嗗
+ * 鍚庣鎺ュ彛
+ * @author
+ * @email
  * @date 2023-03-08 09:39:22
  */
 @RestController
@@ -52,262 +50,221 @@ public class ShangjiaController {
     @Autowired
     private ShangjiaService shangjiaService;
 
+    @Autowired
+    private TokenService tokenService;
 
-    
-	@Autowired
-	private TokenService tokenService;
-	
-	/**
-	 * 登录
-	 */
-	@IgnoreAuth
-	@RequestMapping(value = "/login")
-	public R login(String username, String password, String captcha, HttpServletRequest request) {
-		ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", username));
-		if(u==null || !u.getMima().equals(MD5Util.md5(password))) {
-			return R.error("账号或密码不正确");
-		}
-		String token = tokenService.generateToken(u.getId(), username,"shangjia",  "商家" );
-		return R.ok().put("token", token);
-	}
-
-	
-	/**
-     * 注册
+    /**
+     * 鐧诲綍
      */
-	@IgnoreAuth
+    @IgnoreAuth
+    @RequestMapping(value = "/login")
+    public R login(String username, String password, String captcha, HttpServletRequest request) {
+        ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", username));
+        if (u == null || !u.getMima().equals(password)) {
+            return R.error("璐﹀彿鎴栧瘑鐮佷笉姝ｇ‘");
+        }
+        String token = tokenService.generateToken(u.getId(), username, "shangjia", "鍟嗗");
+        return R.ok().put("token", token);
+    }
+
+    /**
+     * 娉ㄥ唽
+     */
+    @IgnoreAuth
     @RequestMapping("/register")
-    public R register(@RequestBody ShangjiaEntity shangjia){
-    	//ValidatorUtils.validateEntity(shangjia);
-    	ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", shangjia.getZhanghao()));
-		if(u!=null) {
-			return R.error("注册用户已存在");
-		}
-		Long uId = new Date().getTime();
-		shangjia.setId(uId);
-                shangjia.setMima(MD5Util.md5(shangjia.getMima()));
+    public R register(@RequestBody ShangjiaEntity shangjia) {
+        ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", shangjia.getZhanghao()));
+        if (u != null) {
+            return R.error("娉ㄥ唽鐢ㄦ埛宸插瓨鍦?");
+        }
+        Long uId = new Date().getTime();
+        shangjia.setId(uId);
         shangjiaService.insert(shangjia);
         return R.ok();
     }
 
-	
-	/**
-	 * 退出
-	 */
-	@RequestMapping("/logout")
-	public R logout(HttpServletRequest request) {
-		request.getSession().invalidate();
-		return R.ok("退出成功");
-	}
-	
-	/**
-     * 获取用户的session用户信息
+    /**
+     * 閫€鍑?
+     */
+    @RequestMapping("/logout")
+    public R logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        return R.ok("閫€鍑烘垚鍔?");
+    }
+
+    /**
+     * 鑾峰彇鐢ㄦ埛鐨剆ession鐢ㄦ埛淇℃伅
      */
     @RequestMapping("/session")
-    public R getCurrUser(HttpServletRequest request){
-    	Long id = (Long)request.getSession().getAttribute("userId");
+    public R getCurrUser(HttpServletRequest request) {
+        Long id = (Long) request.getSession().getAttribute("userId");
         ShangjiaEntity u = shangjiaService.selectById(id);
         return R.ok().put("data", u);
     }
-    
+
     /**
-     * 密码重置
+     * 瀵嗙爜閲嶇疆
      */
     @IgnoreAuth
-	@RequestMapping(value = "/resetPass")
-    public R resetPass(String username, HttpServletRequest request){
-    	ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", username));
-    	if(u==null) {
-    		return R.error("账号不存在");
-    	}
-        u.setMima(MD5Util.md5("123456"));
+    @RequestMapping(value = "/resetPass")
+    public R resetPass(String username, HttpServletRequest request) {
+        ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", username));
+        if (u == null) {
+            return R.error("璐﹀彿涓嶅瓨鍦?");
+        }
+        u.setMima("123456");
         shangjiaService.updateById(u);
-        return R.ok("密码已重置为：123456");
+        return R.ok("瀵嗙爜宸查噸缃负锛?23456");
     }
 
-
     /**
-     * 后端列表
+     * 鍚庣鍒楄〃
      */
     @RequestMapping("/page")
-    public R page(@RequestParam Map<String, Object> params,ShangjiaEntity shangjia,
-		HttpServletRequest request){
+    public R page(@RequestParam Map<String, Object> params, ShangjiaEntity shangjia, HttpServletRequest request) {
         EntityWrapper<ShangjiaEntity> ew = new EntityWrapper<ShangjiaEntity>();
-
-		PageUtils page = shangjiaService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, shangjia), params), params));
-
+        PageUtils page = shangjiaService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, shangjia), params), params));
         return R.ok().put("data", page);
     }
-    
+
     /**
-     * 前端列表
+     * 鍓嶇鍒楄〃
      */
-	@IgnoreAuth
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params,ShangjiaEntity shangjia, 
-		HttpServletRequest request){
+    public R list(@RequestParam Map<String, Object> params, ShangjiaEntity shangjia, HttpServletRequest request) {
         EntityWrapper<ShangjiaEntity> ew = new EntityWrapper<ShangjiaEntity>();
-
-		PageUtils page = shangjiaService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, shangjia), params), params));
+        PageUtils page = shangjiaService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, shangjia), params), params));
         return R.ok().put("data", page);
     }
 
-	/**
-     * 列表
+    /**
+     * 鍒楄〃
      */
     @RequestMapping("/lists")
-    public R list( ShangjiaEntity shangjia){
-       	EntityWrapper<ShangjiaEntity> ew = new EntityWrapper<ShangjiaEntity>();
-      	ew.allEq(MPUtil.allEQMapPre( shangjia, "shangjia")); 
+    public R list(ShangjiaEntity shangjia) {
+        EntityWrapper<ShangjiaEntity> ew = new EntityWrapper<ShangjiaEntity>();
+        ew.allEq(MPUtil.allEQMapPre(shangjia, "shangjia"));
         return R.ok().put("data", shangjiaService.selectListView(ew));
     }
 
-	 /**
-     * 查询
+    /**
+     * 鏌ヨ
      */
     @RequestMapping("/query")
-    public R query(ShangjiaEntity shangjia){
-        EntityWrapper< ShangjiaEntity> ew = new EntityWrapper< ShangjiaEntity>();
- 		ew.allEq(MPUtil.allEQMapPre( shangjia, "shangjia")); 
-		ShangjiaView shangjiaView =  shangjiaService.selectView(ew);
-		return R.ok("查询商家成功").put("data", shangjiaView);
+    public R query(ShangjiaEntity shangjia) {
+        EntityWrapper<ShangjiaEntity> ew = new EntityWrapper<ShangjiaEntity>();
+        ew.allEq(MPUtil.allEQMapPre(shangjia, "shangjia"));
+        ShangjiaView shangjiaView = shangjiaService.selectView(ew);
+        return R.ok("鏌ヨ鍟嗗鎴愬姛").put("data", shangjiaView);
     }
-	
+
     /**
-     * 后端详情
+     * 鍚庣璇︽儏
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
+    public R info(@PathVariable("id") Long id) {
         ShangjiaEntity shangjia = shangjiaService.selectById(id);
         return R.ok().put("data", shangjia);
     }
 
     /**
-     * 前端详情
+     * 鍓嶇璇︽儏
      */
-	@IgnoreAuth
+    @IgnoreAuth
     @RequestMapping("/detail/{id}")
-    public R detail(@PathVariable("id") Long id){
+    public R detail(@PathVariable("id") Long id) {
         ShangjiaEntity shangjia = shangjiaService.selectById(id);
         return R.ok().put("data", shangjia);
     }
-    
-
-
 
     /**
-     * 后端保存
+     * 鍚庣淇濆瓨
      */
     @RequestMapping("/save")
-    public R save(@RequestBody ShangjiaEntity shangjia, HttpServletRequest request){
-    	shangjia.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(shangjia);
-    	ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", shangjia.getZhanghao()));
-		if(u!=null) {
-			return R.error("用户已存在");
-		}
-		shangjia.setId(new Date().getTime());
-                shangjia.setMima(MD5Util.md5(shangjia.getMima())); 
+    public R save(@RequestBody ShangjiaEntity shangjia, HttpServletRequest request) {
+        shangjia.setId(new Date().getTime() + new Double(Math.floor(Math.random() * 1000)).longValue());
+        ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", shangjia.getZhanghao()));
+        if (u != null) {
+            return R.error("鐢ㄦ埛宸插瓨鍦?");
+        }
+        shangjia.setId(new Date().getTime());
         shangjiaService.insert(shangjia);
         return R.ok();
     }
-    
+
     /**
-     * 前端保存
+     * 鍓嶇淇濆瓨
      */
     @RequestMapping("/add")
-    public R add(@RequestBody ShangjiaEntity shangjia, HttpServletRequest request){
-    	shangjia.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(shangjia);
-    	ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", shangjia.getZhanghao()));
-		if(u!=null) {
-			return R.error("用户已存在");
-		}
-		shangjia.setId(new Date().getTime());
-                shangjia.setMima(MD5Util.md5(shangjia.getMima()));
+    public R add(@RequestBody ShangjiaEntity shangjia, HttpServletRequest request) {
+        shangjia.setId(new Date().getTime() + new Double(Math.floor(Math.random() * 1000)).longValue());
+        ShangjiaEntity u = shangjiaService.selectOne(new EntityWrapper<ShangjiaEntity>().eq("zhanghao", shangjia.getZhanghao()));
+        if (u != null) {
+            return R.error("鐢ㄦ埛宸插瓨鍦?");
+        }
+        shangjia.setId(new Date().getTime());
         shangjiaService.insert(shangjia);
         return R.ok();
     }
 
-
-
     /**
-     * 修改
+     * 淇敼
      */
     @RequestMapping("/update")
     @Transactional
-    public R update(@RequestBody ShangjiaEntity shangjia, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(shangjia);
-	ShangjiaEntity shangjiaEntity = shangjiaService.selectById(shangjia.getId());
-        if(StringUtils.isNotBlank(shangjia.getMima()) && !shangjia.getMima().equals(shangjiaEntity.getMima())) {
-                shangjia.setMima(MD5Util.md5(shangjia.getMima()));
-        }
-        shangjiaService.updateById(shangjia);//全部更新
+    public R update(@RequestBody ShangjiaEntity shangjia, HttpServletRequest request) {
+        shangjiaService.updateById(shangjia);
         return R.ok();
     }
 
-
-    
-
     /**
-     * 删除
+     * 鍒犻櫎
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
+    public R delete(@RequestBody Long[] ids) {
         shangjiaService.deleteBatchIds(Arrays.asList(ids));
         return R.ok();
     }
-    
+
     /**
-     * 提醒接口
+     * 鎻愰啋鎺ュ彛
      */
-	@RequestMapping("/remind/{columnName}/{type}")
-	public R remindCount(@PathVariable("columnName") String columnName, HttpServletRequest request, 
-						 @PathVariable("type") String type,@RequestParam Map<String, Object> map) {
-		map.put("column", columnName);
-		map.put("type", type);
-		
-		if(type.equals("2")) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Calendar c = Calendar.getInstance();
-			Date remindStartDate = null;
-			Date remindEndDate = null;
-			if(map.get("remindstart")!=null) {
-				Integer remindStart = Integer.parseInt(map.get("remindstart").toString());
-				c.setTime(new Date()); 
-				c.add(Calendar.DAY_OF_MONTH,remindStart);
-				remindStartDate = c.getTime();
-				map.put("remindstart", sdf.format(remindStartDate));
-			}
-			if(map.get("remindend")!=null) {
-				Integer remindEnd = Integer.parseInt(map.get("remindend").toString());
-				c.setTime(new Date());
-				c.add(Calendar.DAY_OF_MONTH,remindEnd);
-				remindEndDate = c.getTime();
-				map.put("remindend", sdf.format(remindEndDate));
-			}
-		}
-		
-		Wrapper<ShangjiaEntity> wrapper = new EntityWrapper<ShangjiaEntity>();
-		if(map.get("remindstart")!=null) {
-			wrapper.ge(columnName, map.get("remindstart"));
-		}
-		if(map.get("remindend")!=null) {
-			wrapper.le(columnName, map.get("remindend"));
-		}
+    @RequestMapping("/remind/{columnName}/{type}")
+    public R remindCount(@PathVariable("columnName") String columnName, HttpServletRequest request,
+                         @PathVariable("type") String type, @RequestParam Map<String, Object> map) {
+        map.put("column", columnName);
+        map.put("type", type);
 
+        if (type.equals("2")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar c = Calendar.getInstance();
+            Date remindStartDate = null;
+            Date remindEndDate = null;
+            if (map.get("remindstart") != null) {
+                Integer remindStart = Integer.parseInt(map.get("remindstart").toString());
+                c.setTime(new Date());
+                c.add(Calendar.DAY_OF_MONTH, remindStart);
+                remindStartDate = c.getTime();
+                map.put("remindstart", sdf.format(remindStartDate));
+            }
+            if (map.get("remindend") != null) {
+                Integer remindEnd = Integer.parseInt(map.get("remindend").toString());
+                c.setTime(new Date());
+                c.add(Calendar.DAY_OF_MONTH, remindEnd);
+                remindEndDate = c.getTime();
+                map.put("remindend", sdf.format(remindEndDate));
+            }
+        }
 
-		int count = shangjiaService.selectCount(wrapper);
-		return R.ok().put("count", count);
-	}
-	
+        Wrapper<ShangjiaEntity> wrapper = new EntityWrapper<ShangjiaEntity>();
+        if (map.get("remindstart") != null) {
+            wrapper.ge(columnName, map.get("remindstart"));
+        }
+        if (map.get("remindend") != null) {
+            wrapper.le(columnName, map.get("remindend"));
+        }
 
-
-
-
-
-
-
-
-
+        int count = shangjiaService.selectCount(wrapper);
+        return R.ok().put("count", count);
+    }
 }

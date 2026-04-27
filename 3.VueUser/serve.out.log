@@ -1,0 +1,146 @@
+
+> front@0.1.0 serve
+> set NODE_OPTIONS=--openssl-legacy-provider&& vue-cli-service serve
+
+ INFO  Starting development server...
+ DONE  Compiled successfully in 3396ms23:25:34
+
+
+  App running at:
+  - Local:   http://localhost:8083 
+  - Network: http://10.50.58.33:8083
+
+  Note that the development build is not optimized.
+  To create a production build, run npm run build.
+
+ WAIT  Compiling...12:07:21
+
+ DONE  Compiled successfully in 3997ms12:07:26
+
+
+  App running at:
+  - Local:   http://localhost:8083 
+  - Network: http://10.50.58.33:8083
+
+ WAIT  Compiling...12:07:26
+
+ DONE  Compiled successfully in 144ms12:07:26
+
+
+  App running at:
+  - Local:   http://localhost:8083 
+  - Network: http://10.50.58.33:8083
+
+ WAIT  Compiling...00:10:52
+
+ DONE  Compiled successfully in 2662ms00:10:55
+
+
+  App running at:
+  - Local:   http://localhost:8083 
+  - Network: http://10.50.58.33:8083
+
+ WAIT  Compiling...00:21:25
+
+ DONE  Compiled successfully in 209ms00:21:26
+
+
+  App running at:
+  - Local:   http://localhost:8083 
+  - Network: http://10.50.58.33:8083
+
+ WAIT  Compiling...00:31:41
+
+ ERROR  Failed to compile with 1 error00:31:42
+
+ error  in ./src/pages/index.vue?vue&type=script&lang=js
+
+Syntax Error: F:\Desktop\chaye\TeaMallSystem\3.VueUser\src\pages\index.vue: Unexpected token, expected "," (7:943)
+
+[0m [90m  5 |[39m 		[36mreturn[39m {
+ [90m  6 |[39m             activeIndex[33m:[39m [32m'0'[39m[33m,[39m
+[31m[1m>[22m[39m[90m  7 |[39m 			roleMenus[33m:[39m [{[32m"backMenu"[39m[33m:[39m[{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-clothes"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏂板"[39m[33m,[39m[32m"鏌ョ湅"[39m[33m,[39m[32m"淇敼"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鐢ㄦ埛"[39m[33m,[39m[32m"menuJump"[39m[33m:[39m[32m"鍒楄〃"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"yonghu"[39m}][33m,[39m[32m"menu"[39m[33m:[39m[32m"鐢ㄦ埛绠＄悊"[39m}[33m,[39m{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-flashlightopen"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏂板"[39m[33m,[39m[32m"鏌ョ湅"[39m[33m,[39m[32m"淇敼"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鍟嗗"[39m[33m,[39m[32m"menuJump"[39m[33m:[39m[32m"鍒楄〃"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"shangjia"[39m}][33m,[39m[32m"menu"[39m[33m:[39m[32m"鍟嗗绠＄悊"[39m}[33m,[39m{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-brand"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏂板"[39m[33m,[39m[32m"鏌ョ湅"[39m[33m,[39m[32m"淇敼"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾鍒嗙被"[39m[33m,[39m[32m"menuJump"[39m[33m:[39m[32m"鍒楄〃"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"shangpinfenlei"[39m}][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾鍒嗙被绠＄悊"[39m}[33m,[39m{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-newshot"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"淇敼"[39m[33m,[39m[32m"鍒犻櫎"[39m[33m,[39m[32m"鏌ョ湅璇勮"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾淇℃伅"[39m[33m,[39m[32m"menuJump"[39m[33m:[39m[32m"鍒楄〃"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"shangpinxinxi"[39m}][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾淇℃伅绠＄悊"[39m}[33m,[39m{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-news"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏂板"[39m[33m,[39m[32m"鏌ョ湅"[39m[33m,[39m[32m"淇敼"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鍟嗗煄璧勮"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"news"[39m}[33m,[39m{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-cardboard"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"淇敼"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鍏充簬鎴戜滑"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"aboutus"[39m}[33m,[39m{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-form"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"淇敼"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"杞挱鍥剧鐞?,"[39mtableName[32m":"[39mconfig[32m"}],"[39mmenu[32m":"[39m绯荤粺绠＄悊[32m"}],"[39mfrontMenu[32m":[{"[39mchild[32m":[{"[39mappFrontIcon[32m":"[39mcuIcon[33m-[39mflashlightopen[32m","[39mbuttons[32m":["[39m鏌ョ湅[32m"],"[39mmenu[32m":"[39m鑼跺彾淇℃伅鍒楄〃[32m","[39mmenuJump[32m":"[39m鍒楄〃[32m","[39mtableName[32m":"[39mshangpinxinxi[32m"}],"[39mmenu[32m":"[39m鑼跺彾淇℃伅妯″潡[32m"}],"[39mhasBackLogin[32m":"[39m鏄[33m?[39m[33m,[39m[32m"hasBackRegister"[39m[33m:[39m[32m"鍚?,"[39mhasFrontLogin[32m":"[39m鍚[33m?[39m[33m,[39m[32m"hasFrontRegister"[39m[33m:[39m[32m"鍚?,"[39mroleName[32m":"[39m绠＄悊鍛[33m?[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"users"[39m}[33m,[39m{[32m"backMenu"[39m[33m:[39m[][33m,[39m[32m"frontMenu"[39m[33m:[39m[{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-flashlightopen"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾淇℃伅鍒楄〃"[39m[33m,[39m[32m"menuJump"[39m[33m:[39m[32m"鍒楄〃"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"shangpinxinxi"[39m}][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾淇℃伅妯″潡"[39m}][33m,[39m[32m"hasBackLogin"[39m[33m:[39m[32m"鍚?,"[39mhasBackRegister[32m":"[39m鍚[33m?[39m[33m,[39m[32m"hasFrontLogin"[39m[33m:[39m[32m"鏄?,"[39mhasFrontRegister[32m":"[39m鏄[33m?[39m[33m,[39m[32m"roleName"[39m[33m:[39m[32m"鐢ㄦ埛"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"yonghu"[39m}[33m,[39m{[32m"backMenu"[39m[33m:[39m[{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-newshot"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏂板"[39m[33m,[39m[32m"鏌ョ湅"[39m[33m,[39m[32m"淇敼"[39m[33m,[39m[32m"鍒犻櫎"[39m[33m,[39m[32m"鏌ョ湅璇勮"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾淇℃伅"[39m[33m,[39m[32m"menuJump"[39m[33m:[39m[32m"鍒楄〃"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"shangpinxinxi"[39m}][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾淇℃伅绠＄悊"[39m}[33m,[39m{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-goods"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"宸查€€娆捐鍗?,"[39mtableName[32m":"[39morders[33m/[39m宸查€€娆[33m?[39m}[33m,[39m{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-flashlightopen"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鏈敮浠樿鍗?,"[39mtableName[32m":"[39morders[33m/[39m鏈敮浠[33m?[39m}[33m,[39m{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-present"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"宸插彂璐ц鍗?,"[39mtableName[32m":"[39morders[33m/[39m宸插彂璐[33m?[39m}[33m,[39m{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-goodsnew"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"鍙戣揣"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"宸叉敮浠樿鍗?,"[39mtableName[32m":"[39morders[33m/[39m宸叉敮浠[33m?[39m}[33m,[39m{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-explore"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"鍒犻櫎"[39m[33m,[39m[32m"鏃ラ攢閲?,"[39m鏈堥攢閲[33m?[39m[33m,[39m[32m"鍝侀攢閲?,"[39m绫婚攢閲[33m?[39m[33m,[39m[32m"鏈堥攢棰?,"[39m鏃ラ攢棰[33m?[39m[33m,[39m[32m"鍝侀攢棰?,"[39m绫婚攢棰[33m?[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"宸插畬鎴愯鍗?,"[39mtableName[32m":"[39morders[33m/[39m宸插畬鎴[33m?[39m}[33m,[39m{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-pic"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m[33m,[39m[32m"鍒犻櫎"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"宸插彇娑堣鍗?,"[39mtableName[32m":"[39morders[33m/[39m宸插彇娑[33m?[39m}][33m,[39m[32m"menu"[39m[33m:[39m[32m"璁㈠崟绠＄悊"[39m}][33m,[39m[32m"frontMenu"[39m[33m:[39m[{[32m"child"[39m[33m:[39m[{[32m"appFrontIcon"[39m[33m:[39m[32m"cuIcon-flashlightopen"[39m[33m,[39m[32m"buttons"[39m[33m:[39m[[32m"鏌ョ湅"[39m][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾淇℃伅鍒楄〃"[39m[33m,[39m[32m"menuJump"[39m[33m:[39m[32m"鍒楄〃"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"shangpinxinxi"[39m}][33m,[39m[32m"menu"[39m[33m:[39m[32m"鑼跺彾淇℃伅妯″潡"[39m}][33m,[39m[32m"hasBackLogin"[39m[33m:[39m[32m"鏄?,"[39mhasBackRegister[32m":"[39m鏄[33m?[39m[33m,[39m[32m"hasFrontLogin"[39m[33m:[39m[32m"鍚?,"[39mhasFrontRegister[32m":"[39m鍚[33m?[39m[33m,[39m[32m"roleName"[39m[33m:[39m[32m"鍟嗗"[39m[33m,[39m[32m"tableName"[39m[33m:[39m[32m"shangjia"[39m}][33m,[39m
+ [90m    |[39m 			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            [31m[1m^[22m[39m
+ [90m  8 |[39m 			baseUrl[33m:[39m [32m''[39m[33m,[39m
+ [90m  9 |[39m 			carouselList[33m:[39m [][33m,[39m
+ [90m 10 |[39m 			bannerHeight[33m:[39m [32m'500px'[39m[33m,[39m[0m
+
+
+ @ ./src/pages/index.vue?vue&type=script&lang=js 1:0-273 1:289-292 1:294-564 1:294-564
+ @ ./src/pages/index.vue
+ @ ./src/router/router.js
+ @ ./src/main.js
+ @ multi (webpack)-dev-server/client?http://10.50.58.33:8083&sockPath=/sockjs-node (webpack)/hot/dev-server.js ./src/main.js
+
+ WAIT  Compiling...00:33:08
+
+ ERROR  Failed to compile with 1 error00:33:08
+
+ error  in ./src/pages/index.vue?vue&type=template&id=57509004&scoped=true
+
+Module Error (from ./node_modules/vue-loader/lib/loaders/templateLoader.js):
+(Emitted value instead of an instance of Error) 
+
+  Errors compiling template:
+
+  tag <el-button> has no matching end tag.
+
+  7  |  				<div v-if="Token" :style='{"color":"var(--text-secondary)","fontSize":"14px","display":"inline-block","marginRight":"15px"}'>灏婅吹浼氬憳锛歿{username}}</div>
+  8  |  				<el-button v-if="!Token" @click="toLogin()" type="primary" size="small" style="border-radius: 4px;">鐧诲綍 / 娉ㄥ唽</el-button>
+  9  |                  <el-button v-if="Token" @click="logout" size="small" style="border-radius: 4px; border: 1px solid #ddd; color: #666;">瀹夊叏閫€鍑?/el-button>
+     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |  			</div>
+  11 |  		</div>
+
+  tag <span> has no matching end tag.
+
+  21 |  					<el-menu-item :index="menuList.length + 1 + ''" @click="goMenu('/index/cart')">
+  22 |  						<i v-if="true" :style='{"marginRight":"5px","color":"inherit","fontSize":"16px"}' class="el-icon-shopping-cart-2"></i>
+  23 |  						<span :style='{"fontSize":"15px","color":"inherit"}'>璐墿杞?/span>
+     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  24 |  					</el-menu-item>
+  25 |  					<el-menu-item :index="menuList.length + 2 + ''" v-if="Token && notAdmin" @click="goMenu('/index/center')">
+
+
+ @ ./src/pages/index.vue?vue&type=template&id=57509004&scoped=true 1:0-509 1:0-509
+ @ ./src/pages/index.vue
+ @ ./src/router/router.js
+ @ ./src/main.js
+ @ multi (webpack)-dev-server/client?http://10.50.58.33:8083&sockPath=/sockjs-node (webpack)/hot/dev-server.js ./src/main.js
+
+ WAIT  Compiling...08:49:46
+
+ ERROR  Failed to compile with 1 error08:49:47
+
+ error  in ./src/pages/index.vue?vue&type=template&id=57509004&scoped=true
+
+Module Error (from ./node_modules/vue-loader/lib/loaders/templateLoader.js):
+(Emitted value instead of an instance of Error) 
+
+  Errors compiling template:
+
+  tag <el-button> has no matching end tag.
+
+  7  |  				<div v-if="Token" :style='{"color":"var(--text-secondary)","fontSize":"14px","display":"inline-block","marginRight":"15px"}'>灏婅吹浼氬憳锛歿{username}}</div>
+  8  |  				<el-button v-if="!Token" @click="toLogin()" type="primary" size="small" style="border-radius: 4px;">鐧诲綍 / 娉ㄥ唽</el-button>
+  9  |                  <el-button v-if="Token" @click="logout" size="small" style="border-radius: 4px; border: 1px solid #ddd; color: #666;">瀹夊叏閫€鍑?/el-button>
+     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |  			</div>
+  11 |  		</div>
+
+  tag <span> has no matching end tag.
+
+  21 |  					<el-menu-item :index="menuList.length + 1 + ''" @click="goMenu('/index/cart')">
+  22 |  						<i v-if="true" :style='{"marginRight":"5px","color":"inherit","fontSize":"16px"}' class="el-icon-shopping-cart-2"></i>
+  23 |  						<span :style='{"fontSize":"15px","color":"inherit"}'>璐墿杞?/span>
+     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  24 |  					</el-menu-item>
+  25 |  					<el-menu-item :index="menuList.length + 2 + ''" v-if="Token && notAdmin" @click="goMenu('/index/center')">
+
+
+ @ ./src/pages/index.vue?vue&type=template&id=57509004&scoped=true 1:0-509 1:0-509
+ @ ./src/pages/index.vue
+ @ ./src/router/router.js
+ @ ./src/main.js
+ @ multi (webpack)-dev-server/client?http://10.50.58.33:8083&sockPath=/sockjs-node (webpack)/hot/dev-server.js ./src/main.js
+
