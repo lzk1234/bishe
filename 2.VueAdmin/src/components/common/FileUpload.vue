@@ -27,6 +27,7 @@
 <script>
 import storage from "@/utils/storage";
 import base from "@/utils/base";
+import { imageUrl, normalizeFilePath } from "@/utils/image";
 export default {
   data() {
     return {
@@ -118,17 +119,15 @@ export default {
       var token = storage.get("token");
       let _this = this;
       fileList.forEach(function(item, index) {
-        var url = item.url.split("?")[0];
-	if(!url.startsWith("http")) {
-	  url = _this.$base.url+url
-	}
+        var storedUrl = normalizeFilePath(item.url);
+        var url = imageUrl(storedUrl, _this.$base.url);
         var name = item.name;
         var file = {
           name: name,
           url: url + "?token=" + token
         };
         fileArray.push(file);
-        fileUrlArray.push(url);
+        fileUrlArray.push(storedUrl);
       });
       this.fileList = fileArray;
       this.fileUrlList = fileUrlArray;

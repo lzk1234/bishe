@@ -165,27 +165,31 @@ public class TeabatchController {
         if (teabatch.getEnterpriseaccount() == null || teabatch.getEnterpriseaccount().trim().length() == 0) {
             return R.error("enterpriseaccount required");
         }
-        if (teabatch.getBasename() == null || teabatch.getBasename().trim().length() == 0) {
-            return R.error("basename required");
+        if (teabatch.getBaseid() == null) {
+            return R.error("baseid required");
         }
-        if (teabatch.getProductname() == null || teabatch.getProductname().trim().length() == 0) {
-            return R.error("productname required");
+        if (teabatch.getProductid() == null) {
+            return R.error("productid required");
         }
 
-        TeabaseEntity base = teabaseService.selectOne(new EntityWrapper<TeabaseEntity>()
-                .eq("basename", teabatch.getBasename())
-                .eq("enterpriseaccount", teabatch.getEnterpriseaccount()));
+        TeabaseEntity base = teabaseService.selectById(teabatch.getBaseid());
         if (base == null) {
             return R.error("base not found for enterprise");
         }
+        if (!Objects.equals(teabatch.getEnterpriseaccount(), base.getEnterpriseaccount())) {
+            return R.error("base enterprise mismatch");
+        }
 
-        ShangpinxinxiEntity product = shangpinxinxiService.selectOne(new EntityWrapper<ShangpinxinxiEntity>()
-                .eq("shangpinmingcheng", teabatch.getProductname())
-                .eq("zhanghao", teabatch.getEnterpriseaccount()));
+        ShangpinxinxiEntity product = shangpinxinxiService.selectById(teabatch.getProductid());
         if (product == null) {
             return R.error("product not found for enterprise");
         }
+        if (!Objects.equals(teabatch.getEnterpriseaccount(), product.getZhanghao())) {
+            return R.error("product enterprise mismatch");
+        }
 
+        teabatch.setBasename(base.getBasename());
+        teabatch.setProductname(product.getShangpinmingcheng());
         teabatch.setAltitude(base.getAltitude());
         teabatch.setTeatype(product.getShangpinfenlei());
         return null;

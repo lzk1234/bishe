@@ -6,7 +6,7 @@
 			<div class="user-actions">
 				<div v-if="Token" :style='{"color":"var(--text-secondary)","fontSize":"14px","display":"inline-block","marginRight":"15px"}'>灏婅吹浼氬憳锛歿{username}}</div>
 				<el-button v-if="!Token" @click="toLogin()" type="primary" size="small" style="border-radius: 4px;">鐧诲綍 / 娉ㄥ唽</el-button>
-                <el-button v-if="Token" @click="logout" size="small" style="border-radius: 4px; border: 1px solid #ddd; color: #666;">瀹夊叏閫€鍑?/el-button>
+                <el-button v-if="Token" @click="logout" size="small" style="border-radius: 4px; border: 1px solid #ddd; color: #666;">退出</el-button>
 			</div>
 		</div>
 		
@@ -20,7 +20,7 @@
 					</el-menu-item>
 					<el-menu-item :index="menuList.length + 1 + ''" @click="goMenu('/index/cart')">
 						<i v-if="true" :style='{"marginRight":"5px","color":"inherit","fontSize":"16px"}' class="el-icon-shopping-cart-2"></i>
-						<span :style='{"fontSize":"15px","color":"inherit"}'>璐墿杞?/span>
+						<span :style='{"fontSize":"15px","color":"inherit"}'>购物车</span>
 					</el-menu-item>
 					<el-menu-item :index="menuList.length + 2 + ''" v-if="Token && notAdmin" @click="goMenu('/index/center')">
 						<i v-if="true" :style='{"marginRight":"5px","color":"inherit","fontSize":"16px"}' class="el-icon-user"></i>
@@ -52,7 +52,7 @@
 							<h4 style="color: #fff; margin-bottom: 20px;">閫夎喘鎸囧崡</h4>
 							<ul style="list-style: none; padding: 0; font-size: 14px; color: rgba(255,255,255,0.6); line-height: 2.5;">
 								<li>缁胯尪绯诲垪</li>
-								<li>绾㈣尪鐗归€?/li>
+								<li>红茶特选</li>
 								<li>涔岄緳鍚嶅搧</li>
 								<li>鏅幢闄堥</li>
 							</ul>

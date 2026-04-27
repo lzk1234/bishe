@@ -1,0 +1,38 @@
+# Compiled class files
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+run-logs/
+*.err.log
+*.out.log
+
+# Uploads (optional, can be kept if needed)
+static/upload/
+src/main/resources/static/upload/
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar

@@ -33,6 +33,7 @@ import Editor from "@/components/common/Editor";
 import api from '@/utils/api'
 // 数据校验工具类
 import * as validate from '@/utils/validate.js'
+import { imageUrl, installImageFallback } from '@/utils/image'
 // 后台地图
 import VueAMap from 'vue-amap'
 import '@/icons'
@@ -53,6 +54,10 @@ VueAMap.initAMapApiLoader({
   v: '1.4.4'
 })
 Vue.prototype.$validate = validate
+Vue.prototype.$imageUrl = function(value) {
+  return imageUrl(value, this.$base && this.$base.url)
+}
+installImageFallback()
 Vue.prototype.$http = http // ajax请求方法
 Vue.prototype.$echarts = echarts
 Vue.prototype.$base = base.get()

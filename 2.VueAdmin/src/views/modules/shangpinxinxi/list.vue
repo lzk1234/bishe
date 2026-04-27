@@ -246,9 +246,7 @@ export default {
       return `${item.batchcode || ''}${item.productname ? ' / ' + item.productname : ''}`
     },
     imageUrl(value) {
-      const path = (value || '').split(',')[0]
-      if (!path) return ''
-      return path.startsWith('http') ? path : this.$base.url + path
+      return this.$imageUrl(value)
     },
     splitImages(value) {
       return value ? value.split(',') : []

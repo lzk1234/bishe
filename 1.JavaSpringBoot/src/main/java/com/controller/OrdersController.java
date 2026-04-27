@@ -28,10 +28,12 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.annotation.IgnoreAuth;
 
 import com.entity.OrdersEntity;
+import com.entity.ShangpinxinxiEntity;
 import com.entity.view.OrdersView;
 
 import com.service.OrderInventorySyncService;
 import com.service.OrdersService;
+import com.service.ShangpinxinxiService;
 import com.service.TokenService;
 import com.service.UserBehaviorService;
 import com.utils.PageUtils;
@@ -56,6 +58,9 @@ public class OrdersController {
 
     @Autowired
     private UserBehaviorService userBehaviorService;
+
+    @Autowired
+    private ShangpinxinxiService shangpinxinxiService;
 
     @Autowired
     private OrderInventorySyncService orderInventorySyncService;
@@ -155,10 +160,17 @@ public class OrdersController {
      */
     @RequestMapping("/add")
     public R add(@RequestBody OrdersEntity orders, HttpServletRequest request){
+        if(!"yonghu".equals(request.getSession().getAttribute("tableName"))) {
+            return R.error(403, "front order creation is limited to user sessions");
+        }
     	orders.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
     	//ValidatorUtils.validateEntity(orders);
         if("yonghu".equals(request.getSession().getAttribute("tableName")) && orders.getUserid() == null) {
             orders.setUserid((Long)request.getSession().getAttribute("userId"));
+        }
+        R invalid = normalizeFrontOrder(orders);
+        if(invalid != null) {
+            return invalid;
         }
         ordersService.insert(orders);
         syncInventoryIfNeeded(null, orders);
@@ -395,6 +407,34 @@ public class OrdersController {
         if(orders.getUserid() != null && orders.getGoodid() != null) {
             userBehaviorService.recordBehavior(orders.getUserid(), orders.getGoodid(), "buy");
         }
+    }
+
+    private R normalizeFrontOrder(OrdersEntity orders) {
+        if(orders.getGoodid() == null) {
+            return R.error("goodid required");
+        }
+        ShangpinxinxiEntity goods = shangpinxinxiService.selectById(orders.getGoodid());
+        if(goods == null) {
+            return R.error("goods not found");
+        }
+        int buyNumber = orders.getBuynumber() == null ? 1 : orders.getBuynumber();
+        if(buyNumber <= 0) {
+            return R.error("buy number must be positive");
+        }
+        orders.setTablename("shangpinxinxi");
+        orders.setGoodname(goods.getShangpinmingcheng());
+        orders.setGoodtype(goods.getShangpinfenlei());
+        orders.setPicture(goods.getTupian());
+        orders.setBuynumber(buyNumber);
+        orders.setPrice(goods.getPrice());
+        orders.setDiscountprice(goods.getVipprice());
+        if(goods.getPrice() != null) {
+            orders.setTotal(goods.getPrice() * buyNumber);
+        }
+        if(goods.getVipprice() != null) {
+            orders.setDiscounttotal(goods.getVipprice() * buyNumber);
+        }
+        return null;
     }
 
     private void syncInventoryIfNeeded(OrdersEntity previous, OrdersEntity current) {

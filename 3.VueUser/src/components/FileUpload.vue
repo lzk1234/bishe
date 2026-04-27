@@ -27,6 +27,7 @@
 <script>
 import storage from "@/common/storage";
 import config from "@/config/config";
+import { imageUrl, normalizeFilePath } from "@/utils/image";
 export default {
   data() {
     return {
@@ -120,18 +121,15 @@ export default {
       var token = storage.get("token");
       let _this = this;
       fileList.forEach(function(item, index) {
-        var url = item.url.split("?")[0];
-        var isAbsoluteUrl = /^(https?:)?\/\//i.test(url) || /^data:/i.test(url) || /^blob:/i.test(url);
-        if(!isAbsoluteUrl) {
-          url = _this.baseUrl +  url
-        }
+        var storedUrl = normalizeFilePath(item.url);
+        var url = imageUrl(storedUrl, _this.baseUrl);
         var name = item.name;
         var file = {
           name: name,
-          url: isAbsoluteUrl ? url : url + "?token=" + token
+          url: url + "?token=" + token
         };
         fileArray.push(file);
-        fileUrlArray.push(url);
+        fileUrlArray.push(storedUrl);
       });
       this.fileList = fileArray;
       this.fileUrlList = fileUrlArray;

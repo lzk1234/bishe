@@ -52,8 +52,7 @@
       <div class="product-grid" v-loading="loading">
         <div v-for="item in shangpinxinxiRecommend" :key="item.id || item.goodid" class="product-card" @click="toGoodsDetail(item)">
           <div class="image-wrapper">
-            <img v-if="preHttp(item.tupian)" :src="item.tupian.split(',')[0]" alt="" />
-            <img v-else :src="baseUrl + imagePath(item.tupian)" alt="" />
+            <img :src="$imageUrl(item.tupian)" alt="" />
           </div>
           <div class="product-info">
             <span class="category">{{ item.shangpinfenlei || '未分类' }}</span>
@@ -97,8 +96,8 @@
         </div>
         <div class="about-card">
           <div class="about-images">
-            <img :src="baseUrl + (aboutUsDetail.picture1 || '')" class="img1">
-            <img :src="baseUrl + (aboutUsDetail.picture2 || '')" class="img2">
+            <img :src="$imageUrl(aboutUsDetail.picture1)" class="img1">
+            <img :src="$imageUrl(aboutUsDetail.picture2)" class="img2">
           </div>
           <div class="about-text">
             <h3>{{ aboutUsDetail.title }}</h3>

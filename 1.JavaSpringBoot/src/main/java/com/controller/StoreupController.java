@@ -151,9 +151,16 @@ public class StoreupController {
      */
     @RequestMapping("/add")
     public R add(@RequestBody StoreupEntity storeup, HttpServletRequest request){
+        if(!"yonghu".equals(request.getSession().getAttribute("tableName"))) {
+            return R.error(403, "front favorite creation is limited to user sessions");
+        }
     	storeup.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
     	//ValidatorUtils.validateEntity(storeup);
     	storeup.setUserid((Long)request.getSession().getAttribute("userId"));
+        R invalid = normalizeFrontFavorite(storeup);
+        if(invalid != null) {
+            return invalid;
+        }
         storeupService.insert(storeup);
         recordFavoriteBehavior(storeup, request);
         return R.ok();
@@ -168,6 +175,20 @@ public class StoreupController {
     @Transactional
     public R update(@RequestBody StoreupEntity storeup, HttpServletRequest request){
         return R.error(403, "admin favorite update is disabled");
+    }
+
+    private R normalizeFrontFavorite(StoreupEntity storeup) {
+        if(storeup.getRefid() == null) {
+            return R.error("refid required");
+        }
+        ShangpinxinxiEntity goods = shangpinxinxiService.selectById(storeup.getRefid());
+        if(goods == null) {
+            return R.error("goods not found");
+        }
+        storeup.setTablename("shangpinxinxi");
+        storeup.setName(goods.getShangpinmingcheng());
+        storeup.setPicture(goods.getTupian());
+        return null;
     }
 
 

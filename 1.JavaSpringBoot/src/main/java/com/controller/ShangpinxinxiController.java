@@ -203,6 +203,10 @@ public class ShangpinxinxiController {
     @Transactional
     public R update(@RequestBody ShangpinxinxiEntity shangpinxinxi, HttpServletRequest request){
         //ValidatorUtils.validateEntity(shangpinxinxi);
+        R invalid = normalizeProduct(shangpinxinxi, request);
+        if(invalid != null) {
+            return invalid;
+        }
         shangpinxinxiService.updateById(shangpinxinxi);//全部更新
         return R.ok();
     }
@@ -354,6 +358,34 @@ public class ShangpinxinxiController {
         if(userid != null && goodid != null) {
             userBehaviorService.recordBehavior(userid, goodid, "view");
         }
+    }
+
+    private R normalizeProduct(ShangpinxinxiEntity product, HttpServletRequest request) {
+        String tableName = String.valueOf(request.getSession().getAttribute("tableName"));
+        if("shangjia".equals(tableName)) {
+            product.setZhanghao(String.valueOf(request.getSession().getAttribute("username")));
+        }
+        if(product.getZhanghao() == null || product.getZhanghao().trim().length() == 0) {
+            return R.error("enterprise account required");
+        }
+        if(product.getShengchanpici() == null || product.getShengchanpici().trim().length() == 0) {
+            return null;
+        }
+
+        TeabatchEntity batch = teabatchService.selectOne(new EntityWrapper<TeabatchEntity>()
+                .eq("batchcode", product.getShengchanpici()));
+        if(batch == null) {
+            return R.error("batch not found");
+        }
+        if(batch.getEnterpriseaccount() != null && !batch.getEnterpriseaccount().equals(product.getZhanghao())) {
+            return R.error("batch enterprise mismatch");
+        }
+        product.setChandi(batch.getBasename());
+        product.setHaiba(batch.getAltitude());
+        if(batch.getTeatype() != null && batch.getTeatype().trim().length() > 0) {
+            product.setShangpinfenlei(batch.getTeatype());
+        }
+        return null;
     }
 
 

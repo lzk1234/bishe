@@ -40,8 +40,7 @@
       <div class="product-grid">
         <div v-for="(item, index) in dataList" :key="index" class="product-card" @click="toDetail(item)">
           <div class="image-wrapper">
-            <img v-if="item.tupian && item.tupian.substr(0, 4) === 'http'" :src="item.tupian" class="image" />
-            <img v-else :src="baseUrl + (item.tupian ? item.tupian.split(',')[0] : '')" class="image" />
+            <img :src="$imageUrl(item.tupian)" class="image" />
           </div>
           <div class="product-info">
             <div class="top-row">

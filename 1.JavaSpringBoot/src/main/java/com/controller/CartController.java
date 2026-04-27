@@ -28,9 +28,11 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.annotation.IgnoreAuth;
 
 import com.entity.CartEntity;
+import com.entity.ShangpinxinxiEntity;
 import com.entity.view.CartView;
 
 import com.service.CartService;
+import com.service.ShangpinxinxiService;
 import com.service.TokenService;
 import com.utils.PageUtils;
 import com.utils.R;
@@ -51,6 +53,9 @@ import java.io.IOException;
 public class CartController {
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private ShangpinxinxiService shangpinxinxiService;
 
 
     
@@ -141,9 +146,16 @@ public class CartController {
      */
     @RequestMapping("/add")
     public R add(@RequestBody CartEntity cart, HttpServletRequest request){
+        if(!"yonghu".equals(request.getSession().getAttribute("tableName"))) {
+            return R.error(403, "front cart creation is limited to user sessions");
+        }
     	cart.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
     	//ValidatorUtils.validateEntity(cart);
     	cart.setUserid((Long)request.getSession().getAttribute("userId"));
+        R invalid = normalizeFrontCart(cart);
+        if(invalid != null) {
+            return invalid;
+        }
         cartService.insert(cart);
         return R.ok();
     }
@@ -157,6 +169,28 @@ public class CartController {
     @Transactional
     public R update(@RequestBody CartEntity cart, HttpServletRequest request){
         return R.error(403, "admin cart update is disabled");
+    }
+
+    private R normalizeFrontCart(CartEntity cart) {
+        if(cart.getGoodid() == null) {
+            return R.error("goodid required");
+        }
+        ShangpinxinxiEntity goods = shangpinxinxiService.selectById(cart.getGoodid());
+        if(goods == null) {
+            return R.error("goods not found");
+        }
+        int buyNumber = cart.getBuynumber() == null ? 1 : cart.getBuynumber();
+        if(buyNumber <= 0) {
+            return R.error("buy number must be positive");
+        }
+        cart.setTablename("shangpinxinxi");
+        cart.setGoodname(goods.getShangpinmingcheng());
+        cart.setGoodtype(goods.getShangpinfenlei());
+        cart.setPicture(goods.getTupian());
+        cart.setBuynumber(buyNumber);
+        cart.setPrice(goods.getPrice());
+        cart.setDiscountprice(goods.getVipprice());
+        return null;
     }
 
 

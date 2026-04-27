@@ -52,11 +52,7 @@ public class FileController{
 			throw new EIException("上传文件不能为空");
 		}
 		String fileExt = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
-		File path = new File(ResourceUtils.getURL("classpath:static").getPath());
-		if(!path.exists()) {
-		    path = new File("");
-		}
-		File upload = new File(path.getAbsolutePath(),"/upload/");
+		File upload = new File(System.getProperty("user.dir"), "static/upload");
 		if(!upload.exists()) {
 		    upload.mkdirs();
 		}
@@ -90,15 +86,7 @@ public class FileController{
 	@RequestMapping("/download")
 	public ResponseEntity<byte[]> download(@RequestParam String fileName) {
 		try {
-			File path = new File(ResourceUtils.getURL("classpath:static").getPath());
-			if(!path.exists()) {
-			    path = new File("");
-			}
-			File upload = new File(path.getAbsolutePath(),"/upload/");
-			if(!upload.exists()) {
-			    upload.mkdirs();
-			}
-			File file = new File(upload.getAbsolutePath()+"/"+fileName);
+			File file = resolveUploadFile(fileName);
 			if(file.exists()){
 				/*if(!fileService.canRead(file, SessionManager.getSessionUser())){
 					getResponse().sendError(403);
@@ -112,6 +100,15 @@ public class FileController{
 			e.printStackTrace();
 		}
 		return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	private File resolveUploadFile(String fileName) throws FileNotFoundException {
+		File persistent = new File(new File(System.getProperty("user.dir"), "static/upload"), fileName);
+		if(persistent.exists()) {
+			return persistent;
+		}
+		File classpathStatic = new File(ResourceUtils.getURL("classpath:static").getPath());
+		return new File(new File(classpathStatic, "upload"), fileName);
 	}
 	
 }

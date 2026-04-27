@@ -57,16 +57,16 @@
         <el-row :gutter="16">
           <el-col :span="12"><el-form-item label="批次编号" prop="batchcode"><el-input v-model="form.batchcode" :disabled="readOnly" /></el-form-item></el-col>
           <el-col :span="12">
-            <el-form-item label="基地名称" prop="basename">
-              <el-select v-model="form.basename" :disabled="readOnly" filterable clearable style="width:100%" @change="onBaseChange">
-                <el-option v-for="item in baseOptions" :key="item.id" :label="baseLabel(item)" :value="item.basename" />
+            <el-form-item label="基地名称" prop="baseid">
+              <el-select v-model="form.baseid" :disabled="readOnly" filterable clearable style="width:100%" @change="onBaseChange">
+                <el-option v-for="item in baseOptions" :key="item.id" :label="baseLabel(item)" :value="item.id" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="茶品名称" prop="productname">
-              <el-select v-model="form.productname" :disabled="readOnly" filterable clearable style="width:100%" @change="onProductChange">
-                <el-option v-for="item in productOptions" :key="item.id" :label="productLabel(item)" :value="item.shangpinmingcheng" />
+            <el-form-item label="茶品名称" prop="productid">
+              <el-select v-model="form.productid" :disabled="readOnly" filterable clearable style="width:100%" @change="onProductChange">
+                <el-option v-for="item in productOptions" :key="item.id" :label="productLabel(item)" :value="item.id" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -107,7 +107,9 @@
 const emptyForm = () => ({
   id: null,
   batchcode: '',
+  baseid: null,
   basename: '',
+  productid: null,
   productname: '',
   teatype: '',
   pickingdate: '',
@@ -138,8 +140,8 @@ export default {
       searchForm: { batchcode: '', productname: '' },
       rules: {
         batchcode: [{ required: true, message: '请输入批次编号', trigger: 'blur' }],
-        basename: [{ required: true, message: '请输入基地名称', trigger: 'blur' }],
-        productname: [{ required: true, message: '请输入茶品名称', trigger: 'blur' }],
+        baseid: [{ required: true, message: '请选择基地', trigger: 'change' }],
+        productid: [{ required: true, message: '请选择茶品', trigger: 'change' }],
         enterpriseaccount: [{ required: true, message: '请输入企业账号', trigger: 'blur' }]
       }
     }
@@ -220,36 +222,48 @@ export default {
       const params = { page: 1, limit: 1000, sort: 'id', order: 'desc' }
       if (account) params.enterpriseaccount = account
       this.$http.get('teabase/page', { params }).then(({ data }) => {
-        if (data && data.code === 0) this.baseOptions = data.data.list || []
+        if (data && data.code === 0) {
+          this.baseOptions = data.data.list || []
+          const base = this.baseOptions.find(item => item.basename === this.form.basename)
+          if (base) this.form.baseid = base.id
+        }
       })
     },
     loadProducts(account) {
       const params = { page: 1, limit: 1000, sort: 'id', order: 'desc' }
       if (account) params.zhanghao = account
       this.$http.get('shangpinxinxi/page', { params }).then(({ data }) => {
-        if (data && data.code === 0) this.productOptions = data.data.list || []
+        if (data && data.code === 0) {
+          this.productOptions = data.data.list || []
+          const product = this.productOptions.find(item => item.shangpinmingcheng === this.form.productname)
+          if (product) this.form.productid = product.id
+        }
       })
     },
     onEnterpriseChange(account) {
+      this.form.baseid = null
       this.form.basename = ''
+      this.form.productid = null
       this.form.productname = ''
       this.form.teatype = ''
       this.form.altitude = null
       this.loadBases(account)
       this.loadProducts(account)
     },
-    onBaseChange(basename) {
-      const base = this.baseOptions.find(item => item.basename === basename)
+    onBaseChange(baseid) {
+      const base = this.baseOptions.find(item => item.id === baseid)
       if (!base) return
+      this.form.basename = base.basename || ''
       this.form.altitude = base.altitude
       if (!this.isEnterprise && base.enterpriseaccount) {
         this.form.enterpriseaccount = base.enterpriseaccount
         this.loadProducts(base.enterpriseaccount)
       }
     },
-    onProductChange(productname) {
-      const product = this.productOptions.find(item => item.shangpinmingcheng === productname)
+    onProductChange(productid) {
+      const product = this.productOptions.find(item => item.id === productid)
       if (!product) return
+      this.form.productname = product.shangpinmingcheng || ''
       this.form.teatype = product.shangpinfenlei || ''
       if (!this.isEnterprise && product.zhanghao) {
         this.form.enterpriseaccount = product.zhanghao

@@ -12,6 +12,7 @@ import 'quill/dist/quill.bubble.css'
 import '@/assets/css/iconfont.css'
 import config from './config/config'
 import validate from './common/validate'
+import { imageUrl, installImageFallback } from './utils/image'
 import { isAuth, getCurDateTime, getCurDate } from './common/system'
 import App from './App.vue'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -24,6 +25,10 @@ Vue.config.productionTip = false
 
 Vue.prototype.$config = config
 Vue.prototype.$validate = validate
+Vue.prototype.$imageUrl = function(value) {
+  return imageUrl(value, this.$config && this.$config.baseUrl)
+}
+installImageFallback()
 Vue.prototype.isAuth = isAuth
 Vue.prototype.getCurDateTime = getCurDateTime
 Vue.prototype.getCurDate = getCurDate

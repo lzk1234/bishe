@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.entity.ProductionSalesPlanEntity;
+import com.entity.ShangpinxinxiEntity;
 import com.service.ProductionSalesPlanAnalysisService;
 import com.service.ProductionSalesPlanService;
+import com.service.ShangpinxinxiService;
 import com.utils.MPUtil;
 import com.utils.PageUtils;
 import com.utils.R;
@@ -37,6 +39,9 @@ public class ProductionSalesPlanController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ShangpinxinxiService shangpinxinxiService;
 
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, ProductionSalesPlanEntity plan, HttpServletRequest request) {
@@ -60,6 +65,8 @@ public class ProductionSalesPlanController {
         if (!canAccess(request)) return forbidden();
         plan.setId(new Date().getTime() + (long) Math.floor(Math.random() * 1000));
         fillEnterprise(plan, request);
+        R invalid = normalizePlanProduct(plan);
+        if (invalid != null) return invalid;
         productionSalesPlanService.insert(plan);
         return R.ok();
     }
@@ -72,6 +79,8 @@ public class ProductionSalesPlanController {
             if (stored != null && !canAccessEnterpriseRecord(request, stored.getEnterpriseaccount())) return forbidden();
         }
         fillEnterprise(plan, request);
+        R invalid = normalizePlanProduct(plan);
+        if (invalid != null) return invalid;
         productionSalesPlanService.updateById(plan);
         return R.ok();
     }
@@ -115,6 +124,18 @@ public class ProductionSalesPlanController {
 
     private void fillEnterprise(ProductionSalesPlanEntity plan, HttpServletRequest request) {
         if (isEnterprise(request)) plan.setEnterpriseaccount(currentUsername(request));
+    }
+    private R normalizePlanProduct(ProductionSalesPlanEntity plan) {
+        if (plan.getProductid() == null) return R.error("productid required");
+        ShangpinxinxiEntity product = shangpinxinxiService.selectById(plan.getProductid());
+        if (product == null) return R.error("product not found");
+        if (plan.getEnterpriseaccount() != null && product.getZhanghao() != null && !Objects.equals(plan.getEnterpriseaccount(), product.getZhanghao())) {
+            return R.error("product enterprise mismatch");
+        }
+        plan.setEnterpriseaccount(product.getZhanghao());
+        plan.setProductname(product.getShangpinmingcheng());
+        plan.setTeatype(product.getShangpinfenlei());
+        return null;
     }
     private boolean canAccess(HttpServletRequest request) { return isAdministrator(request) || isEnterprise(request); }
     private boolean canAccessEnterpriseRecord(HttpServletRequest request, String enterpriseAccount) { return isAdministrator(request) || (isEnterprise(request) && Objects.equals(currentUsername(request), enterpriseAccount)); }

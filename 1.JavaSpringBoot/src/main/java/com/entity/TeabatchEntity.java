@@ -9,6 +9,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -45,6 +46,12 @@ public class TeabatchEntity<T> implements Serializable {
     private Integer altitude;
     private String enterpriseaccount;
     private String remark;
+
+    @TableField(exist = false)
+    private Long baseid;
+
+    @TableField(exist = false)
+    private Long productid;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat
@@ -152,6 +159,22 @@ public class TeabatchEntity<T> implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Long getBaseid() {
+        return baseid;
+    }
+
+    public void setBaseid(Long baseid) {
+        this.baseid = baseid;
+    }
+
+    public Long getProductid() {
+        return productid;
+    }
+
+    public void setProductid(Long productid) {
+        this.productid = productid;
     }
 
     public Date getAddtime() {

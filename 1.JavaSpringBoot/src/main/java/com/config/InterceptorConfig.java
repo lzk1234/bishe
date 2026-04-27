@@ -18,7 +18,8 @@ public class InterceptorConfig extends WebMvcConfigurationSupport{
 	
 	@Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(getAuthorizationInterceptor()).addPathPatterns("/**").excludePathPatterns("/static/**");
+        registry.addInterceptor(getAuthorizationInterceptor()).addPathPatterns("/**")
+                .excludePathPatterns("/static/**", "/upload/**", "/file/download");
         super.addInterceptors(registry);
 	}
 	
@@ -32,7 +33,8 @@ public class InterceptorConfig extends WebMvcConfigurationSupport{
         .addResourceLocations("classpath:/static/")
         .addResourceLocations("classpath:/admin/")
         .addResourceLocations("classpath:/front/")
-        .addResourceLocations("classpath:/public/");
+        .addResourceLocations("classpath:/public/")
+        .addResourceLocations("file:static/");
 		super.addResourceHandlers(registry);
     }
 }
